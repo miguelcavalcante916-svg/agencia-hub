@@ -344,6 +344,55 @@
     return s + '</svg>';
   }
 
+  /* ---------- animações (fluidez) ---------- */
+
+  function movimentoReduzido() {
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  // Números que "contam" até o valor final. Elementos: [data-contar="1234.5"][data-formato="moeda|num|pct"].
+  // Anima só quando ui._deveAnimar está ligado (troca de tela); em re-renderizações aplica direto.
+  ui._deveAnimar = false;
+  ui.animarContadores = function (raiz) {
+    var els = raiz.querySelectorAll('[data-contar]');
+    var animar = ui._deveAnimar && !movimentoReduzido();
+    ui._deveAnimar = false;
+    els.forEach(function (el) {
+      var alvo = parseFloat(el.getAttribute('data-contar')) || 0;
+      var formato = el.getAttribute('data-formato') || 'num';
+      function fmt(v) {
+        if (formato === 'moeda') return AH.fmt.moeda(v);
+        if (formato === 'pct') return AH.fmt.pct(v);
+        return AH.fmt.num(Math.round(v));
+      }
+      if (!animar) { el.textContent = fmt(alvo); return; }
+      var inicio = null, dur = 800;
+      function passo(t) {
+        if (inicio === null) inicio = t;
+        var p = Math.min(1, (t - inicio) / dur);
+        var e = 1 - Math.pow(1 - p, 3);
+        el.textContent = fmt(alvo * e);
+        if (p < 1) requestAnimationFrame(passo);
+      }
+      requestAnimationFrame(passo);
+    });
+  };
+
+  // Liga a revelação ao rolar para os elementos .revelar dentro de `raiz`
+  ui.revelarAoRolar = function (raiz) {
+    var els = raiz.querySelectorAll('.revelar');
+    if (!('IntersectionObserver' in window) || movimentoReduzido()) {
+      els.forEach(function (el) { el.classList.add('visivel'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('visivel'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+    els.forEach(function (el) { io.observe(el); });
+  };
+
   // Monta o gráfico dentro de `container` e liga o tooltip.
   // dados: [{ mes: 'YYYY-MM', total: number }]
   ui.montarGraficoMeses = function (container, dados, ariaRotulo) {

@@ -78,7 +78,25 @@ section { position: relative; padding: 88px 0; }
   cursor: pointer; transition: transform .15s ease, background .15s ease, border-color .15s ease;
   white-space: nowrap;
 }
-.btn:active { transform: translateY(1px); }
+.btn:active { transform: translateY(1px) scale(.98); }
+.btn svg { transition: transform .22s cubic-bezier(.22, 1, .36, 1); }
+.btn:hover svg { transform: translateX(3px) scale(1.05); }
+
+/* frases e títulos reagem ao mouse */
+.titulo, .dividida h3, .servico h3, .hero h1 { transition: text-shadow .3s ease; }
+.titulo:hover, .dividida h3:hover, .hero h1:hover { text-shadow: 0 0 34px rgba(107, 141, 255, .35); }
+.servico h3, .servico p, .problema-cartao p { transition: color .25s ease; }
+.servico:hover h3 { color: var(--azul-claro); }
+.problema-cartao:hover p { color: var(--tinta); }
+.lista-check li { transition: transform .25s cubic-bezier(.22, 1, .36, 1), color .2s ease; }
+.lista-check li:hover { transform: translateX(5px); color: #fff; }
+.chip { transition: border-color .2s ease, transform .2s cubic-bezier(.22, 1, .36, 1), color .2s ease; }
+.chip:hover { border-color: rgba(76, 110, 245, .55); transform: translateY(-2px); color: var(--tinta); }
+.numeros .cartao b { transition: color .25s ease; }
+.numeros .cartao:hover b { color: var(--azul-claro); }
+
+/* tilt 3D suave nos mocks (controlado por JS) */
+.moldura { transition: transform .35s cubic-bezier(.22, 1, .36, 1), box-shadow .35s ease; transform-style: preserve-3d; will-change: transform; }
 .btn-azul { background: var(--azul); color: #fff; box-shadow: 0 18px 45px -14px rgba(67, 97, 238, .55); }
 .btn-azul:hover { background: var(--azul-vivo); }
 .btn-fantasma { color: var(--tinta-2); border-color: var(--borda); }
@@ -121,8 +139,14 @@ header.rolou { background: rgba(4, 6, 13, .82); backdrop-filter: blur(14px); bor
 .logo strong span { color: var(--azul-claro); }
 .logo small { font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--tinta-3); }
 nav.principal { display: flex; gap: 28px; }
-nav.principal a { font-size: 14px; color: var(--tinta-2); }
+nav.principal a { font-size: 14px; color: var(--tinta-2); position: relative; padding: 4px 0; transition: color .2s ease; }
+nav.principal a::after {
+  content: ""; position: absolute; left: 0; bottom: 0; height: 2px; width: 0;
+  border-radius: 2px; background: linear-gradient(90deg, var(--azul), var(--azul-claro));
+  transition: width .28s cubic-bezier(.22, 1, .36, 1);
+}
 nav.principal a:hover { color: var(--tinta); }
+nav.principal a:hover::after { width: 100%; }
 .header-acoes { display: flex; align-items: center; gap: 14px; }
 .header-acoes .entrar { font-size: 14px; color: var(--tinta-2); }
 .header-acoes .entrar:hover { color: var(--tinta); }
@@ -747,6 +771,20 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       if (!estavaAberto) item.classList.add('aberto');
     });
   });
+
+  // tilt 3D suave nos mocks, acompanhando o mouse
+  var podeMover = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (podeMover) {
+    document.querySelectorAll('.moldura').forEach(function (m) {
+      m.addEventListener('mousemove', function (e) {
+        var r = m.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width - 0.5;
+        var y = (e.clientY - r.top) / r.height - 0.5;
+        m.style.transform = 'perspective(900px) rotateY(' + (x * 4) + 'deg) rotateX(' + (-y * 4) + 'deg) translateY(-2px)';
+      });
+      m.addEventListener('mouseleave', function () { m.style.transform = ''; });
+    });
+  }
 
   if ('IntersectionObserver' in window) {
     var obs = new IntersectionObserver(function (entradas) {

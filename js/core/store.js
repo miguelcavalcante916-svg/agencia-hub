@@ -221,7 +221,7 @@
     return {
       versao: 1,
       configuracoes: {
-        nomeAgencia: 'Sua agência',
+        nomeAgencia: 'Agência Cavalcante',
         slogan: 'Marketing & Produção Audiovisual',
         responsavel: '',
         email: '',
@@ -385,7 +385,7 @@
     var s = estadoVazio();
     var d = AH.diasISO, m = AH.mesISO;
 
-    s.configuracoes.nomeAgencia = 'Sua agência';
+    s.configuracoes.nomeAgencia = 'Agência Cavalcante';
     s.configuracoes.slogan = 'Marketing & Produção Audiovisual';
     s.configuracoes.condicoesPadrao = '50% na aprovação e 50% na entrega. Proposta válida por 15 dias.';
 
@@ -646,7 +646,10 @@
       .filter(function (p) { return p.clienteId === clienteId; })
       .sort(function (a, b) { return String(a.prazo || '9999').localeCompare(String(b.prazo || '9999')); })
       .map(function (p) {
-        return { titulo: p.titulo, tipo: p.tipo, status: p.status, prazo: p.prazo || '' };
+        return {
+          titulo: p.titulo, tipo: p.tipo, status: p.status, prazo: p.prazo || '',
+          descricao: String(p.descricao || '').slice(0, 180)
+        };
       });
 
     var eventos = AH.state.eventos

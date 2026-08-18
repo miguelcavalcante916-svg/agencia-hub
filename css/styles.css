@@ -1,6 +1,8 @@
 /* AgênciaHub — tema escuro */
 
 :root {
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  --ease-mola: cubic-bezier(.3, 1.35, .45, 1);
   --bg: #0b0e16;
   --surface: #121624;
   --surface-2: #1a2032;
@@ -627,4 +629,183 @@ body.modo-portal { background: var(--bg); }
   .lista-item { flex-wrap: wrap; }
   .lista-item .principal { min-width: 62%; }
   .lista-item .principal .titulo { white-space: normal; }
+}
+
+/* ============================================================
+   Fluidez & microinterações (estilo Apple)
+   ============================================================ */
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+/* entrada de tela com leve escalonamento */
+@keyframes vista-entrar {
+  from { opacity: 0; transform: translateY(16px) scale(.992); }
+  to { opacity: 1; transform: none; }
+}
+.view.entrando > * { animation: vista-entrar .55s var(--ease) both; }
+.view.entrando > *:nth-child(2) { animation-delay: .06s; }
+.view.entrando > *:nth-child(3) { animation-delay: .12s; }
+.view.entrando > *:nth-child(4) { animation-delay: .18s; }
+.view.entrando > *:nth-child(n+5) { animation-delay: .24s; }
+
+/* revelação ao rolar (portal e listas longas) */
+.revelar { opacity: 0; transform: translateY(22px); transition: opacity .65s var(--ease), transform .65s var(--ease); }
+.revelar.visivel { opacity: 1; transform: none; }
+
+/* botões com resposta física */
+.btn { transition: transform .18s var(--ease), filter .18s ease, background .18s ease, box-shadow .25s var(--ease); will-change: transform; }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0) scale(.97); }
+.btn-primario { box-shadow: 0 8px 24px -10px rgba(249, 115, 22, .55); }
+.btn-primario:hover { box-shadow: 0 14px 32px -12px rgba(249, 115, 22, .7); }
+.btn svg { transition: transform .2s var(--ease); }
+.btn:hover svg { transform: scale(1.08); }
+
+/* cartões e tiles flutuam ao passar o mouse */
+.card { transition: transform .3s var(--ease), border-color .3s ease, box-shadow .35s var(--ease); }
+.tile:hover, .pessoa-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(251, 146, 60, .35);
+  box-shadow: 0 18px 42px -20px rgba(0, 0, 0, .55);
+}
+.tile .tile-valor { transition: color .25s ease; }
+
+/* navegação lateral */
+.nav-item { transition: background .2s ease, color .2s ease, border-color .2s ease, transform .22s var(--ease), padding-left .22s var(--ease); }
+.nav-item:hover { transform: translateX(3px); }
+.nav-item svg { transition: transform .25s var(--ease), color .2s ease; }
+.nav-item:hover svg { transform: scale(1.12); }
+
+/* tabelas e listas */
+.tabela tbody tr { transition: background .18s ease; }
+.lista-item { transition: background .18s ease, transform .22s var(--ease); }
+.lista-item:hover { background: rgba(255, 255, 255, .018); }
+
+/* kanban */
+.cartao { transition: transform .25s var(--ease), border-color .25s ease, box-shadow .3s var(--ease); }
+.cartao:hover { transform: translateY(-3px); box-shadow: 0 16px 34px -18px rgba(0, 0, 0, .6); }
+.tarefa-check:hover { transform: scale(1.12); border-color: var(--accent); }
+
+/* segmentos */
+.segmentos button { transition: background .2s ease, color .2s ease, transform .18s var(--ease); }
+.segmentos button:active { transform: scale(.95); }
+
+/* modal com mola */
+@keyframes modal-entrar {
+  from { transform: translateY(22px) scale(.955); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.modal { animation: modal-entrar .42s var(--ease-mola); }
+@keyframes veu-entrar { from { opacity: 0; } }
+.modal-backdrop { animation: veu-entrar .25s ease; }
+
+/* toast com mola */
+@keyframes toast-entrar {
+  from { transform: translateY(16px) scale(.94); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.toast { animation: toast-entrar .45s var(--ease-mola); }
+
+/* gráfico: barras crescem ao montar */
+@keyframes barra-crescer { from { transform: scaleY(0); } }
+.grafico .barra-visual { transform-origin: bottom; animation: barra-crescer .8s var(--ease) both; }
+.grafico .barra:nth-child(4) .barra-visual { animation-delay: .05s; }
+.grafico .barra:nth-child(5) .barra-visual { animation-delay: .1s; }
+.grafico .barra:nth-child(6) .barra-visual { animation-delay: .15s; }
+.grafico .barra:nth-child(7) .barra-visual { animation-delay: .2s; }
+.grafico .barra:nth-child(8) .barra-visual { animation-delay: .25s; }
+.grafico .barra:nth-child(9) .barra-visual { animation-delay: .3s; }
+
+/* ============================================================
+   Portal do cliente — visual de aplicativo
+   ============================================================ */
+
+body.modo-portal { scroll-behavior: smooth; }
+
+.portal-topo {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 13px 4px;
+  margin: 0 0 8px;
+  background: rgba(11, 14, 22, .72);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border-bottom: 1px solid rgba(255, 255, 255, .05);
+}
+.portal-topo .brand { padding: 0; }
+
+.portal-hero { padding: 34px 0 10px; }
+.portal-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .24em; text-transform: uppercase; color: var(--texto-3); }
+.portal-hero h1 { font-size: clamp(30px, 6vw, 44px); letter-spacing: -.03em; line-height: 1.08; margin-top: 10px; font-weight: 800; }
+.portal-hero h1 .grad {
+  background: linear-gradient(92deg, var(--accent) 0%, #fbbf6b 55%, var(--accent-2) 110%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.portal-hero .sub { color: var(--texto-2); font-size: 16px; margin: 10px 0 14px; max-width: 560px; }
+
+.portal-nav {
+  position: sticky; top: 62px; z-index: 25;
+  display: flex; gap: 7px; overflow-x: auto;
+  padding: 10px 2px 14px;
+  scrollbar-width: none;
+}
+.portal-nav::-webkit-scrollbar { display: none; }
+.portal-nav a {
+  flex: none;
+  padding: 7px 15px; border-radius: 999px;
+  background: rgba(255, 255, 255, .035);
+  border: 1px solid rgba(255, 255, 255, .07);
+  font-size: 12.5px; font-weight: 600; color: var(--texto-2);
+  backdrop-filter: blur(12px);
+  transition: all .22s var(--ease);
+}
+.portal-nav a:hover { color: var(--texto); border-color: rgba(251, 146, 60, .5); transform: translateY(-1px); text-decoration: none; }
+
+.portal-secao { margin: 34px 0 14px; font-size: 16.5px; }
+.portal-secao .icone {
+  width: 34px; height: 34px; border-radius: 11px; flex: none;
+  background: linear-gradient(135deg, rgba(249, 115, 22, .18), rgba(139, 92, 246, .12));
+  border: 1px solid rgba(251, 146, 60, .3);
+  display: grid; place-items: center;
+}
+.portal-secao .icone svg { width: 17px; height: 17px; color: var(--accent); }
+
+.portal .tile { cursor: default; }
+.portal .card { border-radius: 18px; }
+
+/* barra de progresso animada ao aparecer */
+.portal .progresso-preenchido { width: 0; transition: width 1s var(--ease) .2s; }
+.portal .visivel .progresso-preenchido, .portal .progresso-preenchido.sem-anim { width: var(--w, 0%); }
+
+/* funil de leads */
+.funil { display: flex; flex-direction: column; gap: 9px; margin-top: 14px; }
+.funil-linha { display: grid; grid-template-columns: 110px 1fr 40px; gap: 12px; align-items: center; font-size: 12.5px; }
+.funil-linha span { color: var(--texto-2); font-weight: 600; }
+.funil-linha b { text-align: right; font-variant-numeric: tabular-nums; }
+.funil-barra { height: 10px; border-radius: 99px; background: rgba(255, 255, 255, .05); overflow: hidden; }
+.funil-fill { display: block; height: 100%; border-radius: 99px; width: 0; transition: width .9s var(--ease) .25s; }
+.visivel .funil-fill { width: var(--w, 0%); }
+.f-azul { background: var(--azul); } .f-ciano { background: var(--ciano); }
+.f-amarelo { background: var(--amarelo); } .f-verde { background: var(--verde); } .f-cinza { background: var(--texto-3); }
+
+.portal-mini-tabela { margin-top: 12px; }
+.portal-mini-tabela table { min-width: 0; }
+.portal-mini-tabela td, .portal-mini-tabela th { padding: 8px 12px; font-size: 12.5px; }
+
+.portal-cta {
+  margin-top: 40px; text-align: center;
+  padding: 34px 22px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(249, 115, 22, .12), rgba(139, 92, 246, .07));
+  border: 1px solid rgba(251, 146, 60, .25);
+}
+.portal-cta h3 { font-size: 20px; letter-spacing: -.02em; margin-bottom: 6px; }
+.portal-cta p { color: var(--texto-2); font-size: 14px; margin-bottom: 18px; }
+
+/* movimento reduzido: respeita a preferência do usuário */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .revelar { opacity: 1; transform: none; }
+  .portal .progresso-preenchido, .funil-fill { width: var(--w, 0%); transition: none; }
+  body.modo-portal { scroll-behavior: auto; }
 }

@@ -70,10 +70,15 @@
     var view = AH.views[rota.view];
     document.getElementById('page-title').textContent = view.titulo || rota.nome;
     var el = document.getElementById('view');
+    AH.ui._deveAnimar = true;
     view.render(el);
     montarNav();
     el.scrollTop = 0;
     window.scrollTo(0, 0);
+    // reinicia a animação de entrada da tela
+    el.classList.remove('entrando');
+    void el.offsetWidth;
+    el.classList.add('entrando');
   }
 
   // Rerenderiza a tela atual (chamado após qualquer alteração de dados)

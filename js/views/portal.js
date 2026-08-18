@@ -1,7 +1,8 @@
 /* AgênciaHub — Portal do cliente
    Gera um link exclusivo por cliente com um retrato dos dados dele (projetos,
-   agenda, anúncios e cobranças). O link abre uma página limpa, sem o painel
-   da agência — e contém SOMENTE os dados daquele cliente. */
+   aprovações, postagens, agenda, anúncios, leads e cobranças). O link abre uma
+   página com cara de aplicativo, sem o painel da agência — e contém SOMENTE os
+   dados daquele cliente. */
 (function () {
   'use strict';
   var AH = window.AH;
@@ -13,12 +14,11 @@
   AH.renderPortalHTML = function (d) {
     var ag = d.agencia || {};
     var mmAtual = AH.mesISO(0);
+    var campanhas = d.campanhas || [];
 
     var regsMes = [];
-    var regsTotal = [];
-    (d.campanhas || []).forEach(function (c) {
+    campanhas.forEach(function (c) {
       (c.registros || []).forEach(function (r) {
-        regsTotal.push(r);
         if (String(r.de).slice(0, 7) === mmAtual) regsMes.push(r);
       });
     });
@@ -26,39 +26,72 @@
 
     var emAndamento = (d.projetos || []).filter(function (p) { return p.status !== 'entregue'; });
     var proximoEvento = (d.eventos || [])[0] || null;
+    var pendentesMat = (d.materiais || []).filter(function (mt) { return mt.status !== 'aprovado'; });
+    var aprovadosMat = (d.materiais || []).filter(function (mt) { return mt.status === 'aprovado'; });
+
+    // investimento por mês (para o gráfico, igual ao painel da agência)
+    var invMeses = [];
+    for (var i = 5; i >= 0; i--) {
+      var mm = AH.mesISO(-i), tot = 0;
+      campanhas.forEach(function (c) {
+        (c.registros || []).forEach(function (r) {
+          if (String(r.de).slice(0, 7) === mm) tot += Number(r.investimento) || 0;
+        });
+      });
+      invMeses.push({ mes: mm, total: tot });
+    }
+    var temGrafico = invMeses.some(function (x) { return x.total > 0; });
 
     var html = '<div class="portal">';
 
-    html += '<header class="portal-cab">' +
+    /* topo fixo com vidro */
+    html += '<header class="portal-topo">' +
       '<div class="brand"><div class="brand-logo" aria-hidden="true"></div>' +
       '<div class="brand-text"><strong>' + AH.esc(ag.nome || 'Agência') + '</strong>' +
       '<span>' + AH.esc(ag.slogan || '') + '</span></div></div>' +
       '<span class="badge badge-laranja">Portal do cliente</span>' +
       '</header>';
 
-    html += '<div class="portal-ola">' +
-      '<h1>Olá, ' + AH.esc(d.cliente ? d.cliente.nome : 'cliente') + '!</h1>' +
-      '<p>Acompanhe aqui o andamento dos seus projetos com a ' + AH.esc(ag.nome || 'agência') + '.</p>' +
+    /* saudação */
+    html += '<section class="portal-hero revelar">' +
+      '<p class="portal-eyebrow">Acompanhamento em tempo de relatório</p>' +
+      '<h1>Olá, <span class="grad">' + AH.esc(d.cliente ? d.cliente.nome : 'cliente') + '</span></h1>' +
+      '<p class="sub">Tudo o que a ' + AH.esc(ag.nome || 'agência') + ' está fazendo pela sua marca — projetos, conteúdo, anúncios e resultados — em um só lugar.</p>' +
       '<span class="chip">' + AH.icons.calendario + 'Atualizado em ' + AH.fmt.data(d.geradoEm) + (d.geradoHora ? ' às ' + AH.esc(d.geradoHora) : '') + '</span>' +
-      '</div>';
+      '</section>';
 
+    /* navegação por seções */
+    var pills = [];
+    if (pendentesMat.length || aprovadosMat.length) pills.push(['p-aprovacoes', 'Aprovações']);
+    if ((d.projetos || []).length) pills.push(['p-projetos', 'Projetos']);
+    if ((d.postagens || []).length) pills.push(['p-postagens', 'Postagens']);
+    if ((d.eventos || []).length) pills.push(['p-agenda', 'Agenda']);
+    if (campanhas.length) pills.push(['p-anuncios', 'Anúncios']);
+    if (d.leads && d.leads.mes) pills.push(['p-leads', 'Leads']);
+    if ((d.cobrancas || []).length) pills.push(['p-pagamentos', 'Pagamentos']);
+    if (pills.length > 1) {
+      html += '<nav class="portal-nav" aria-label="Seções">' + pills.map(function (p) {
+        return '<a href="#' + p[0] + '" data-rolar="' + p[0] + '">' + p[1] + '</a>';
+      }).join('') + '</nav>';
+    }
+
+    /* indicadores */
     var tiles = [];
-    tiles.push(tile('Projetos em andamento', String(emAndamento.length)));
+    tiles.push(tileNum('Projetos em andamento', emAndamento.length, 'num'));
     if (proximoEvento) {
-      tiles.push(tile('Próximo compromisso', AH.fmt.dataCurta(proximoEvento.data), AH.esc(proximoEvento.titulo)));
+      tiles.push(tileTexto('Próximo compromisso', AH.fmt.dataCurta(proximoEvento.data), AH.esc(proximoEvento.titulo)));
     }
-    if ((d.campanhas || []).length) {
-      tiles.push(tile('Anúncios no mês', AH.fmt.moeda(mMes.investimento), 'investimento'));
-      tiles.push(tile('Resultados no mês', AH.fmt.num(mMes.resultados), mMes.custoResultado != null ? AH.fmt.moeda(mMes.custoResultado) + ' por resultado' : ''));
+    if (campanhas.length) {
+      tiles.push(tileNum('Anúncios no mês', mMes.investimento, 'moeda', 'investimento'));
+      tiles.push(tileNum('Resultados no mês', mMes.resultados, 'num',
+        mMes.custoResultado != null ? AH.fmt.moeda(mMes.custoResultado) + ' por resultado' : ''));
     }
-    html += '<div class="grid grid-4 portal-tiles">' + tiles.join('') + '</div>';
+    html += '<div class="grid grid-4 portal-tiles revelar">' + tiles.join('') + '</div>';
 
-    /* materiais para aprovação (processo criativo) */
-    var pendentesMat = (d.materiais || []).filter(function (mt) { return mt.status !== 'aprovado'; });
-    var aprovadosMat = (d.materiais || []).filter(function (mt) { return mt.status === 'aprovado'; });
+    /* aprovações (processo criativo) */
     if ((d.materiais || []).length) {
-      html += secao('aprovacao', 'Materiais para você revisar');
-      html += '<div class="card" style="padding:8px 16px"><div class="lista">';
+      html += secao('p-aprovacoes', 'aprovacao', 'Materiais para você revisar');
+      html += '<div class="card revelar" style="padding:8px 16px"><div class="lista">';
       pendentesMat.forEach(function (mt) {
         var rotulo = mt.titulo + (mt.projeto ? ' (projeto: ' + mt.projeto + ')' : '');
         var msgAprovar = 'Olá! APROVO o material "' + rotulo + '". Pode seguir!';
@@ -86,31 +119,32 @@
     }
 
     /* projetos */
-    html += secao('projetos', 'Seus projetos');
+    html += secao('p-projetos', 'projetos', 'Seus projetos');
     if ((d.projetos || []).length) {
       html += '<div class="grid grid-2">';
       d.projetos.forEach(function (p) {
         var pct = PROGRESSO[p.status] != null ? PROGRESSO[p.status] : 50;
         var entregue = p.status === 'entregue';
-        html += '<div class="card portal-projeto">' +
+        html += '<div class="card portal-projeto revelar">' +
           '<div class="cartao-titulo">' + AH.esc(p.titulo) + '</div>' +
           '<div class="toolbar" style="margin:6px 0 10px;gap:7px">' +
           '<span class="badge badge-roxo">' + AH.esc(p.tipo || 'Projeto') + '</span>' +
           (entregue ? '<span class="badge badge-verde">Entregue ✓</span>' : (p.prazo ? '<span class="chip">' + AH.icons.calendario + 'previsão: ' + AH.fmt.data(p.prazo) + '</span>' : '')) +
           '</div>' +
-          '<div class="progresso"><div class="progresso-preenchido' + (entregue ? ' progresso-ok' : '') + '" style="width:' + pct + '%"></div></div>' +
+          (p.descricao ? '<p class="celula-sub" style="margin-bottom:10px">' + AH.esc(p.descricao) + '</p>' : '') +
+          '<div class="progresso"><div class="progresso-preenchido' + (entregue ? ' progresso-ok' : '') + '" style="--w:' + pct + '%"></div></div>' +
           '<div class="progresso-rotulo"><span>' + AH.esc(AH.nomeColuna(p.status)) + '</span><b>' + pct + '%</b></div>' +
           '</div>';
       });
       html += '</div>';
     } else {
-      html += '<p class="nota-rodape">Nenhum projeto em andamento no momento.</p>';
+      html += '<p class="nota-rodape revelar">Nenhum projeto em andamento no momento.</p>';
     }
 
     /* postagens */
     if ((d.postagens || []).length) {
-      html += secao('conteudo', 'Suas postagens');
-      html += '<div class="card" style="padding:8px 16px"><div class="lista">';
+      html += secao('p-postagens', 'conteudo', 'Suas postagens');
+      html += '<div class="card revelar" style="padding:8px 16px"><div class="lista">';
       d.postagens.forEach(function (pt) {
         html += '<div class="lista-item">' +
           '<div class="principal"><div class="titulo">' + AH.esc(pt.titulo) + '</div>' +
@@ -126,8 +160,8 @@
 
     /* agenda */
     if ((d.eventos || []).length) {
-      html += secao('calendario', 'Próximos compromissos');
-      html += '<div class="card" style="padding:8px 16px"><div class="lista">';
+      html += secao('p-agenda', 'calendario', 'Próximos compromissos');
+      html += '<div class="card revelar" style="padding:8px 16px"><div class="lista">';
       d.eventos.forEach(function (e) {
         var cor = AH.ui.corEvento[e.tipo] || 'cinza';
         html += '<div class="lista-item"><span class="ponto ponto-' + cor + '"></span>' +
@@ -139,13 +173,19 @@
     }
 
     /* anúncios */
-    if ((d.campanhas || []).length) {
-      html += secao('megafone', 'Seus anúncios (tráfego pago)');
-      d.campanhas.forEach(function (c) {
+    if (campanhas.length) {
+      html += secao('p-anuncios', 'megafone', 'Seus anúncios (tráfego pago)');
+      if (temGrafico) {
+        html += '<div class="card revelar" style="margin-bottom:12px"><div class="card-titulo">' + AH.icons.financeiro +
+          'Investimento em anúncios — últimos 6 meses</div>' +
+          '<div class="portal-grafico" data-meses="' + AH.esc(JSON.stringify(invMeses)) + '"></div></div>';
+      }
+      campanhas.forEach(function (c) {
         var m = AH.metricasTrafego(c.registros);
         var unidade = AH.unidadeObjetivo(c.objetivo);
-        var ultimo = (c.registros || []).slice().sort(function (a, b) { return String(b.ate).localeCompare(String(a.ate)); })[0];
-        html += '<div class="card" style="margin-bottom:12px">' +
+        var ordenados = (c.registros || []).slice().sort(function (a, b) { return String(b.de).localeCompare(String(a.de)); });
+        var ultimo = ordenados[0];
+        html += '<div class="card revelar" style="margin-bottom:12px">' +
           '<div class="card-titulo" style="margin-bottom:10px">' + AH.esc(c.nome) +
           '<span style="margin-left:auto;display:inline-flex;gap:6px">' + AH.ui.badgePlataforma(c.plataforma) + AH.ui.badgeStatusCampanha(c.status) + '</span></div>' +
           '<div class="metricas-grid">' +
@@ -156,27 +196,53 @@
           metrica('Custo por resultado', m.custoResultado != null ? AH.fmt.moeda(m.custoResultado) : '—') +
           metrica('CTR', AH.fmt.pct(m.ctr)) +
           (m.roas != null ? metrica('Retorno (ROAS)', m.roas.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + 'x') : '') +
-          '</div>' +
-          (ultimo ? '<p class="nota-rodape" style="margin-top:10px">Último período registrado: ' + AH.fmt.data(ultimo.de) + ' a ' + AH.fmt.data(ultimo.ate) + '.</p>' : '') +
           '</div>';
+        if (ordenados.length) {
+          html += '<div class="portal-mini-tabela tabela-wrap"><table class="tabela"><thead><tr>' +
+            '<th>Período</th><th class="num">Investido</th><th class="num">' + AH.esc(capitalizar(unidade)) + '</th><th class="num">Custo/res.</th>' +
+            '</tr></thead><tbody>';
+          ordenados.slice(0, 3).forEach(function (r) {
+            var mr = AH.metricasTrafego([r]);
+            html += '<tr><td>' + AH.fmt.dataCurta(r.de) + ' — ' + AH.fmt.dataCurta(r.ate) + '</td>' +
+              '<td class="num">' + AH.fmt.moeda(r.investimento) + '</td>' +
+              '<td class="num"><b>' + AH.fmt.num(r.resultados) + '</b></td>' +
+              '<td class="num">' + (mr.custoResultado != null ? AH.fmt.moeda(mr.custoResultado) : '—') + '</td></tr>';
+          });
+          html += '</tbody></table></div>';
+        }
+        if (ultimo) html += '<p class="nota-rodape" style="margin-top:10px">Último período registrado: ' + AH.fmt.data(ultimo.de) + ' a ' + AH.fmt.data(ultimo.ate) + '.</p>';
+        html += '</div>';
       });
     }
 
     /* leads e conversões */
     if (d.leads && d.leads.mes) {
       var lm = d.leads.mes, lg = d.leads.geral;
-      html += secao('leads', 'Leads e conversões — este mês');
-      html += '<div class="card">' +
+      html += secao('p-leads', 'leads', 'Leads e conversões — este mês');
+      var etapas = [
+        ['Novos', lm.novo, 'f-azul'],
+        ['Em contato', lm.contato, 'f-ciano'],
+        ['Negociação', lm.negociacao, 'f-amarelo'],
+        ['Convertidos', lm.convertido, 'f-verde'],
+        ['Perdidos', lm.perdido, 'f-cinza']
+      ];
+      var maxEtapa = Math.max.apply(null, etapas.map(function (e) { return e[1]; }).concat([1]));
+      html += '<div class="card revelar">' +
         '<div class="metricas-grid">' +
         metrica('Leads no mês', AH.fmt.num(lm.total)) +
-        metrica('Novos contatos', AH.fmt.num(lm.novo)) +
-        metrica('Em negociação', AH.fmt.num(lm.contato + lm.negociacao)) +
         metrica('Convertidos', AH.fmt.num(lm.convertido)) +
         metrica('Taxa de conversão', lm.taxa != null ? AH.fmt.pct(lm.taxa) : '—') +
         metrica('Valor gerado', AH.fmt.moeda(lm.valor)) +
         '</div>' +
+        '<div class="funil">' +
+        etapas.map(function (e) {
+          return '<div class="funil-linha"><span>' + e[0] + '</span>' +
+            '<div class="funil-barra"><i class="funil-fill ' + e[2] + '" style="--w:' + Math.round(e[1] / maxEtapa * 100) + '%"></i></div>' +
+            '<b>' + e[1] + '</b></div>';
+        }).join('') +
+        '</div>' +
         (lg && lg.total
-          ? '<p class="nota-rodape" style="margin-top:10px">Desde o início do trabalho: ' + AH.fmt.num(lg.convertido) + ' conversões · ' + AH.fmt.moeda(lg.valor) + ' gerados.</p>'
+          ? '<p class="nota-rodape" style="margin-top:14px">Desde o início do trabalho: ' + AH.fmt.num(lg.convertido) + ' conversões · ' + AH.fmt.moeda(lg.valor) + ' gerados.</p>'
           : '') +
         '</div>';
     }
@@ -184,8 +250,8 @@
     /* cobranças */
     if ((d.cobrancas || []).length) {
       var totalPend = d.cobrancas.reduce(function (a, c) { return a + (Number(c.valor) || 0); }, 0);
-      html += secao('financeiro', 'Pagamentos em aberto');
-      html += '<div class="card" style="padding:8px 16px"><div class="lista">';
+      html += secao('p-pagamentos', 'financeiro', 'Pagamentos em aberto');
+      html += '<div class="card revelar" style="padding:8px 16px"><div class="lista">';
       d.cobrancas.forEach(function (c) {
         html += '<div class="lista-item"><div class="principal">' +
           '<div class="titulo">' + AH.esc(c.descricao) + '</div>' +
@@ -198,11 +264,16 @@
       html += '</div>';
     }
 
-    /* rodapé */
+    /* rodapé com convite */
+    html += '<div class="portal-cta revelar">' +
+      '<h3>Precisa de algo? É só chamar.</h3>' +
+      '<p>Dúvidas, ajustes ou uma nova ideia — a gente responde rápido.</p>' +
+      (ag.whatsapp
+        ? '<a class="btn btn-primario" href="' + AH.telLink(ag.whatsapp) + '" target="_blank" rel="noopener">' + AH.icons.whatsapp + 'Falar com a agência</a>'
+        : '') +
+      '</div>';
+
     html += '<footer class="portal-rodape">';
-    if (ag.whatsapp) {
-      html += '<a class="btn btn-primario" href="' + AH.telLink(ag.whatsapp) + '" target="_blank" rel="noopener">' + AH.icons.whatsapp + 'Falar com a agência</a>';
-    }
     var contatos = [];
     if (ag.instagram) contatos.push('<a href="' + AH.instaLink(ag.instagram) + '" target="_blank" rel="noopener">' + AH.esc(ag.instagram) + '</a>');
     if (ag.site) contatos.push(AH.esc(ag.site));
@@ -213,18 +284,43 @@
 
     return html + '</div>';
 
-    function tile(rotulo, valor, extra) {
+    function tileNum(rotulo, valor, formato, extra) {
+      return '<div class="card tile"><div class="tile-rotulo">' + AH.esc(rotulo) + '</div>' +
+        '<div class="tile-valor" data-contar="' + (Number(valor) || 0) + '" data-formato="' + formato + '"></div>' +
+        (extra ? '<div class="tile-extra">' + AH.esc(extra) + '</div>' : '') + '</div>';
+    }
+    function tileTexto(rotulo, valor, extra) {
       return '<div class="card tile"><div class="tile-rotulo">' + AH.esc(rotulo) + '</div>' +
         '<div class="tile-valor">' + AH.esc(valor) + '</div>' +
         (extra ? '<div class="tile-extra">' + extra + '</div>' : '') + '</div>';
     }
-    function secao(icone, titulo) {
-      return '<h2 class="portal-secao">' + (AH.icons[icone] || '') + AH.esc(titulo) + '</h2>';
+    function secao(id, icone, titulo) {
+      return '<h2 class="portal-secao revelar" id="' + id + '"><span class="icone">' + (AH.icons[icone] || '') + '</span>' + AH.esc(titulo) + '</h2>';
     }
     function metrica(rotulo, valor) {
       return '<div class="metrica"><span>' + AH.esc(rotulo) + '</span><b>' + AH.esc(valor) + '</b></div>';
     }
     function capitalizar(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
+  };
+
+  // Liga as animações e interações do portal depois que o HTML entra na página
+  AH.ligarPortal = function (raiz) {
+    var g = raiz.querySelector('.portal-grafico');
+    if (g) {
+      try {
+        AH.ui.montarGraficoMeses(g, JSON.parse(g.getAttribute('data-meses')), 'Investimento em anúncios dos últimos 6 meses');
+      } catch (e) { /* sem gráfico */ }
+    }
+    raiz.querySelectorAll('[data-rolar]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        var alvo = raiz.querySelector('#' + a.getAttribute('data-rolar'));
+        if (alvo) alvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+    AH.ui.revelarAoRolar(raiz);
+    AH.ui._deveAnimar = true;
+    AH.ui.animarContadores(raiz);
   };
 
   /* ---------- modo público (aberto pelo link) ---------- */
@@ -243,6 +339,7 @@
     AH.decodificarPortal(payload).then(function (dados) {
       document.title = (dados.agencia && dados.agencia.nome ? dados.agencia.nome + ' · ' : '') + 'Portal do cliente';
       raiz.innerHTML = AH.renderPortalHTML(dados);
+      AH.ligarPortal(raiz);
     }).catch(function (e) {
       console.warn('Portal: link inválido.', e);
       raiz.innerHTML = '<div class="portal"><div class="card" style="margin-top:48px;text-align:center;padding:32px">' +
@@ -312,7 +409,7 @@
 
     var html = '<div class="card" style="margin-bottom:16px"><div class="card-titulo">' + AH.icons.portal + 'Como funciona</div>' +
       '<p class="nota-rodape">1) Escolha o cliente · 2) Copie o link exclusivo dele · 3) Envie no WhatsApp. ' +
-      'O cliente abre e vê os projetos, a agenda, os resultados dos anúncios e as cobranças — só dele, sem acessar o seu painel. ' +
+      'O cliente abre e vê os projetos, materiais para aprovar, postagens, anúncios, leads e cobranças — só dele, sem acessar o seu painel. ' +
       '<b>O link é um retrato do momento:</b> depois de atualizar os dados aqui, gere e envie um novo link (ótimo para o relatório semanal).</p>' +
       '</div>';
 
@@ -348,6 +445,7 @@
     function atualizar() {
       var snap = AH.snapshotPortal(sel.clienteId, { incluirCobrancas: sel.incluirCobrancas });
       preview.innerHTML = snap ? AH.renderPortalHTML(snap) : '';
+      if (snap) AH.ligarPortal(preview);
       inputLink.value = 'Gerando link...';
       gerarLink().then(function (url) { inputLink.value = url; });
     }

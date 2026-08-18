@@ -53,7 +53,7 @@
       ['nomeAgencia', 'slogan', 'whatsapp', 'email', 'instagram', 'site', 'cidade', 'cnpj', 'pix', 'urlPublica', 'condicoesPadrao'].forEach(function (k) {
         cfg[k] = String(f.get(k) || '').trim();
       });
-      if (!cfg.nomeAgencia) cfg.nomeAgencia = 'Sua agência';
+      if (!cfg.nomeAgencia) cfg.nomeAgencia = 'Agência Cavalcante';
       AH.salvar();
       AH.atualizarMarca();
       AH.ui.toast('Dados da agência salvos.');

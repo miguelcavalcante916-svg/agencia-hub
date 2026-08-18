@@ -50,14 +50,14 @@
     var html = '';
 
     html += '<div class="grid grid-4">';
-    html += tile(AH.icons.dinheiro, 'Recebido no mês', AH.fmt.moeda(recebidoMes),
+    html += tile(AH.icons.dinheiro, 'Recebido no mês', recebidoMes, 'moeda',
       'A receber (pendente): <b>' + AH.fmt.moeda(aReceber) + '</b>');
-    html += tile(AH.icons.projetos, 'Projetos em andamento', String(emAndamento.length),
+    html += tile(AH.icons.projetos, 'Projetos em andamento', emAndamento.length, 'num',
       clientesAtivos + ' cliente' + (clientesAtivos === 1 ? '' : 's') + ' ativo' + (clientesAtivos === 1 ? '' : 's'));
-    html += tile(AH.icons.tarefas, 'Tarefas pendentes', String(pendentes.length),
+    html += tile(AH.icons.tarefas, 'Tarefas pendentes', pendentes.length, 'num',
       atrasadas.length ? '<b>' + atrasadas.length + ' atrasada' + (atrasadas.length === 1 ? '' : 's') + '</b>' : 'Nenhuma atrasada 🎉',
       atrasadas.length ? 'tile-alerta' : '');
-    html += tile(AH.icons.propostas, 'Propostas aguardando', String(propostasEnviadas.length),
+    html += tile(AH.icons.propostas, 'Propostas aguardando', propostasEnviadas.length, 'num',
       'Em negociação: <b>' + AH.fmt.moeda(valorEnviadas) + '</b>');
     html += '</div>';
 
@@ -118,6 +118,7 @@
     el.innerHTML = html;
 
     AH.ui.montarGraficoMeses(el.querySelector('#grafico-receita'), dadosGrafico, 'Receita dos últimos 6 meses');
+    AH.ui.animarContadores(el);
 
     el.querySelectorAll('[data-atalho]').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -130,10 +131,10 @@
     });
   }
 
-  function tile(icone, rotulo, valor, extra, classe) {
+  function tile(icone, rotulo, valor, formato, extra, classe) {
     return '<div class="card tile ' + (classe || '') + '">' +
       '<div class="tile-rotulo">' + icone + AH.esc(rotulo) + '</div>' +
-      '<div class="tile-valor">' + AH.esc(valor) + '</div>' +
+      '<div class="tile-valor" data-contar="' + (Number(valor) || 0) + '" data-formato="' + formato + '"></div>' +
       (extra ? '<div class="tile-extra">' + extra + '</div>' : '') +
       '</div>';
   }
