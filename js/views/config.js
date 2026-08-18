@@ -20,6 +20,7 @@
       ui.campo('Cidade / UF', ui.input('cidade', cfg.cidade)) +
       ui.campo('CNPJ', ui.input('cnpj', cfg.cnpj)) +
       ui.campo('Chave PIX (sai nas propostas)', ui.input('pix', cfg.pix), 'campo-cheio') +
+      ui.campo('Endereço público do app (usado nos links do portal do cliente)', ui.input('urlPublica', cfg.urlPublica, 'placeholder="https://seu-usuario.github.io/agencia-hub/"'), 'campo-cheio') +
       ui.campo('Condições de pagamento padrão', ui.textarea('condicoesPadrao', cfg.condicoesPadrao, 'rows="2"'), 'campo-cheio') +
       '</div>' +
       '<div style="margin-top:14px;display:flex;justify-content:flex-end">' +
@@ -49,7 +50,7 @@
     el.querySelector('#form-cfg').addEventListener('submit', function (e) {
       e.preventDefault();
       var f = new FormData(e.target);
-      ['nomeAgencia', 'slogan', 'whatsapp', 'email', 'instagram', 'site', 'cidade', 'cnpj', 'pix', 'condicoesPadrao'].forEach(function (k) {
+      ['nomeAgencia', 'slogan', 'whatsapp', 'email', 'instagram', 'site', 'cidade', 'cnpj', 'pix', 'urlPublica', 'condicoesPadrao'].forEach(function (k) {
         cfg[k] = String(f.get(k) || '').trim();
       });
       if (!cfg.nomeAgencia) cfg.nomeAgencia = 'Sua agência';

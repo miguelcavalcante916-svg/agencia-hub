@@ -16,68 +16,6 @@
     return meses;
   }
 
-  /* Gráfico de barras (série única — sem legenda; o título nomeia a série).
-     Barras finas com topo arredondado ancoradas na base, grade discreta,
-     rótulos diretos seletivos (maior valor + mês atual) e tooltip no hover. */
-  function graficoReceita(dados) {
-    var W = 560, H = 210, padL = 58, padR = 12, padT = 16, padB = 30;
-    var plotW = W - padL - padR, plotH = H - padT - padB;
-    var max = Math.max.apply(null, dados.map(function (d) { return d.total; }).concat([1]));
-    // teto "redondo" para a escala
-    var passo = Math.pow(10, Math.floor(Math.log10(max)));
-    var teto = Math.ceil(max / passo) * passo;
-    if (teto / max > 2) teto = Math.ceil(max / (passo / 2)) * (passo / 2);
-
-    var n = dados.length;
-    var slot = plotW / n;
-    var larguraBarra = Math.min(44, slot * 0.52);
-
-    var maxIdx = dados.reduce(function (best, d, i) { return d.total > dados[best].total ? i : best; }, 0);
-
-    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Receita dos últimos ' + n + ' meses">';
-    s += '<defs><clipPath id="clip-plot"><rect x="0" y="0" width="' + W + '" height="' + (padT + plotH) + '"/></clipPath></defs>';
-
-    // grade horizontal discreta (3 linhas internas + base)
-    for (var g = 1; g <= 3; g++) {
-      var gy = padT + plotH - (plotH * g / 3);
-      s += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + gy + '" y2="' + gy + '" stroke="#262e46" stroke-width="1"/>';
-      s += '<text x="' + (padL - 8) + '" y="' + (gy + 3.5) + '" text-anchor="end" font-size="10" fill="#78829e">' + compacto(teto * g / 3).replace('R$ ', '') + '</text>';
-    }
-    s += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + (padT + plotH) + '" y2="' + (padT + plotH) + '" stroke="#34405f" stroke-width="1"/>';
-
-    dados.forEach(function (d, i) {
-      var h = teto ? Math.round(plotH * d.total / teto) : 0;
-      var x = padL + slot * i + (slot - larguraBarra) / 2;
-      var y = padT + plotH - h;
-      var rotuloMes = AH.fmt.mesCurto(d.mes);
-      s += '<g class="barra" data-i="' + i + '">';
-      // barra com topo arredondado: 4px extras abaixo da base, cortados pelo clip
-      if (d.total > 0) {
-        s += '<rect class="barra-visual" clip-path="url(#clip-plot)" x="' + x + '" y="' + y + '" width="' + larguraBarra + '" height="' + (h + 6) + '" rx="4" fill="#fb923c"/>';
-      } else {
-        s += '<rect x="' + x + '" y="' + (padT + plotH - 2) + '" width="' + larguraBarra + '" height="2" rx="1" fill="#34405f"/>';
-      }
-      // rótulo direto seletivo: maior mês e mês atual
-      if ((i === maxIdx || i === n - 1) && d.total > 0) {
-        s += '<text x="' + (x + larguraBarra / 2) + '" y="' + (y - 7) + '" text-anchor="middle" font-size="10.5" font-weight="700" fill="#a6aec4">' + compacto(d.total) + '</text>';
-      }
-      s += '<text x="' + (padL + slot * i + slot / 2) + '" y="' + (H - 10) + '" text-anchor="middle" font-size="10.5" fill="#78829e">' + rotuloMes + '</text>';
-      // área de hover maior que a marca
-      s += '<rect class="barra-hit" x="' + (padL + slot * i) + '" y="' + padT + '" width="' + slot + '" height="' + plotH + '" fill="transparent"/>';
-      s += '</g>';
-    });
-    s += '</svg>';
-    return s;
-  }
-
-  function compacto(v) {
-    if (v >= 1000) {
-      var k = v / 1000;
-      return 'R$ ' + (k % 1 === 0 ? k : k.toFixed(1)).toString().replace('.', ',') + ' mil';
-    }
-    return 'R$ ' + Math.round(v);
-  }
-
   function render(el) {
     var st = AH.state;
     var hoje = AH.hojeISO();
@@ -128,8 +66,7 @@
     // coluna esquerda: gráfico + prazos
     html += '<div class="grid" style="gap:16px">';
     html += '<div class="card"><div class="card-titulo">' + AH.icons.financeiro + 'Receita — últimos 6 meses</div>' +
-      '<div class="grafico-wrap grafico" id="grafico-receita">' + graficoReceita(dadosGrafico) +
-      '<div class="grafico-tooltip" id="grafico-tip"></div></div></div>';
+      '<div id="grafico-receita"></div></div>';
 
     html += '<div class="card"><div class="card-titulo">' + AH.icons.alerta + 'Prazos de projetos' +
       '<a href="#/projetos" class="ver-todos">ver kanban →</a></div>';
@@ -180,27 +117,7 @@
 
     el.innerHTML = html;
 
-    // tooltip do gráfico
-    var wrap = el.querySelector('#grafico-receita');
-    var tip = el.querySelector('#grafico-tip');
-    if (wrap && tip) {
-      wrap.querySelectorAll('.barra').forEach(function (b) {
-        var i = parseInt(b.getAttribute('data-i'), 10);
-        var d = dadosGrafico[i];
-        b.addEventListener('mousemove', function (ev) {
-          var r = wrap.getBoundingClientRect();
-          tip.style.display = 'block';
-          tip.style.left = (ev.clientX - r.left) + 'px';
-          tip.style.top = Math.max(30, ev.clientY - r.top) + 'px';
-          tip.innerHTML = '<span>' + AH.esc(AH.fmt.mesAno(d.mes)) + '</span><b>' + AH.fmt.moeda(d.total) + '</b>';
-          b.classList.add('hover');
-        });
-        b.addEventListener('mouseleave', function () {
-          tip.style.display = 'none';
-          b.classList.remove('hover');
-        });
-      });
-    }
+    AH.ui.montarGraficoMeses(el.querySelector('#grafico-receita'), dadosGrafico, 'Receita dos últimos 6 meses');
 
     el.querySelectorAll('[data-atalho]').forEach(function (btn) {
       btn.addEventListener('click', function () {

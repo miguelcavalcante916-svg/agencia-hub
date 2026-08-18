@@ -52,7 +52,11 @@
     duplicar: svg('<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>'),
     download: svg('<path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>'),
     upload: svg('<path d="M12 15V3m0 0 4 4m-4-4-4 4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>'),
-    filme: svg('<rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="M7 4v16M17 4v16M2.5 9h4.5M2.5 15h4.5M17 9h4.5M17 15h4.5"/>')
+    filme: svg('<rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="M7 4v16M17 4v16M2.5 9h4.5M2.5 15h4.5M17 9h4.5M17 15h4.5"/>'),
+    megafone: svg('<path d="m3 11 18-6v14L3 13z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>'),
+    portal: svg('<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 3.9 5.7 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.7-3.9-9S9.4 5.6 12 3z"/>'),
+    olho: svg('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>'),
+    externo: svg('<path d="M14 4h6v6"/><path d="m20 4-9 9"/><path d="M20 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5"/>')
   };
 
   /* ---------- mapas de rótulo/cor ---------- */
@@ -83,6 +87,18 @@
 
   ui.corEvento = { gravacao: 'roxo', entrega: 'laranja', reuniao: 'azul', postagem: 'verde', outro: 'cinza' };
   ui.nomeEvento = { gravacao: 'Gravação', entrega: 'Entrega', reuniao: 'Reunião', postagem: 'Postagem', outro: 'Outro' };
+
+  ui.badgePlataforma = function (id) {
+    var cores = { meta: 'azul', google: 'amarelo', tiktok: 'rosa', outra: 'cinza' };
+    var cor = cores[id] || 'cinza';
+    return '<span class="badge badge-' + cor + '">' + AH.esc(AH.nomePlataforma(id, true)) + '</span>';
+  };
+
+  ui.badgeStatusCampanha = function (st) {
+    var map = { ativa: ['Ativa', 'verde'], pausada: ['Pausada', 'amarelo'], encerrada: ['Encerrada', 'cinza'] };
+    var b = map[st] || [st, 'cinza'];
+    return '<span class="badge badge-' + b[1] + '">' + AH.esc(b[0]) + '</span>';
+  };
 
   ui.avatar = function (membro, tam) {
     if (!membro) return '';
@@ -237,5 +253,85 @@
 
   ui.opcoesEquipe = function () {
     return AH.state.equipe.map(function (m) { return { id: m.id, nome: m.nome }; });
+  };
+
+  /* ---------- gráfico de barras mensal (série única, R$) ----------
+     Segue as regras de dataviz: barras finas com topo arredondado ancoradas na
+     base, grade discreta com rótulos em calha própria, rótulo direto seletivo
+     (maior mês + mês atual) e tooltip no hover com área maior que a marca. */
+
+  function compactoMoeda(v) {
+    if (v >= 1000) {
+      var k = v / 1000;
+      return 'R$ ' + (k % 1 === 0 ? k : k.toFixed(1)).toString().replace('.', ',') + ' mil';
+    }
+    return 'R$ ' + Math.round(v);
+  }
+
+  function svgGraficoMeses(dados, ariaRotulo) {
+    var W = 560, H = 210, padL = 58, padR = 12, padT = 16, padB = 30;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var max = Math.max.apply(null, dados.map(function (d) { return d.total; }).concat([1]));
+    var passo = Math.pow(10, Math.floor(Math.log10(max)));
+    var teto = Math.ceil(max / passo) * passo;
+    if (teto / max > 2) teto = Math.ceil(max / (passo / 2)) * (passo / 2);
+
+    var n = dados.length;
+    var slot = plotW / n;
+    var larguraBarra = Math.min(44, slot * 0.52);
+    var maxIdx = dados.reduce(function (best, d, i) { return d.total > dados[best].total ? i : best; }, 0);
+    var clipId = 'clip-' + Math.random().toString(36).slice(2, 8);
+
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + AH.esc(ariaRotulo || 'Valores por mês') + '">';
+    s += '<defs><clipPath id="' + clipId + '"><rect x="0" y="0" width="' + W + '" height="' + (padT + plotH) + '"/></clipPath></defs>';
+
+    for (var g = 1; g <= 3; g++) {
+      var gy = padT + plotH - (plotH * g / 3);
+      s += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + gy + '" y2="' + gy + '" stroke="#262e46" stroke-width="1"/>';
+      s += '<text x="' + (padL - 8) + '" y="' + (gy + 3.5) + '" text-anchor="end" font-size="10" fill="#78829e">' + compactoMoeda(teto * g / 3).replace('R$ ', '') + '</text>';
+    }
+    s += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + (padT + plotH) + '" y2="' + (padT + plotH) + '" stroke="#34405f" stroke-width="1"/>';
+
+    dados.forEach(function (d, i) {
+      var h = teto ? Math.round(plotH * d.total / teto) : 0;
+      var x = padL + slot * i + (slot - larguraBarra) / 2;
+      var y = padT + plotH - h;
+      s += '<g class="barra" data-i="' + i + '">';
+      if (d.total > 0) {
+        s += '<rect class="barra-visual" clip-path="url(#' + clipId + ')" x="' + x + '" y="' + y + '" width="' + larguraBarra + '" height="' + (h + 6) + '" rx="4" fill="#fb923c"/>';
+      } else {
+        s += '<rect x="' + x + '" y="' + (padT + plotH - 2) + '" width="' + larguraBarra + '" height="2" rx="1" fill="#34405f"/>';
+      }
+      if ((i === maxIdx || i === n - 1) && d.total > 0) {
+        s += '<text x="' + (x + larguraBarra / 2) + '" y="' + (y - 7) + '" text-anchor="middle" font-size="10.5" font-weight="700" fill="#a6aec4">' + compactoMoeda(d.total) + '</text>';
+      }
+      s += '<text x="' + (padL + slot * i + slot / 2) + '" y="' + (H - 10) + '" text-anchor="middle" font-size="10.5" fill="#78829e">' + AH.fmt.mesCurto(d.mes) + '</text>';
+      s += '<rect class="barra-hit" x="' + (padL + slot * i) + '" y="' + padT + '" width="' + slot + '" height="' + plotH + '" fill="transparent"/>';
+      s += '</g>';
+    });
+    return s + '</svg>';
+  }
+
+  // Monta o gráfico dentro de `container` e liga o tooltip.
+  // dados: [{ mes: 'YYYY-MM', total: number }]
+  ui.montarGraficoMeses = function (container, dados, ariaRotulo) {
+    container.classList.add('grafico-wrap', 'grafico');
+    container.innerHTML = svgGraficoMeses(dados, ariaRotulo) + '<div class="grafico-tooltip"></div>';
+    var tip = container.querySelector('.grafico-tooltip');
+    container.querySelectorAll('.barra').forEach(function (b) {
+      var d = dados[parseInt(b.getAttribute('data-i'), 10)];
+      b.addEventListener('mousemove', function (ev) {
+        var r = container.getBoundingClientRect();
+        tip.style.display = 'block';
+        tip.style.left = (ev.clientX - r.left) + 'px';
+        tip.style.top = Math.max(30, ev.clientY - r.top) + 'px';
+        tip.innerHTML = '<span>' + AH.esc(AH.fmt.mesAno(d.mes)) + '</span><b>' + AH.fmt.moeda(d.total) + '</b>';
+        b.classList.add('hover');
+      });
+      b.addEventListener('mouseleave', function () {
+        tip.style.display = 'none';
+        b.classList.remove('hover');
+      });
+    });
   };
 })();

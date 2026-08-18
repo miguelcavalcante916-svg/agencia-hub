@@ -248,7 +248,7 @@
           }).join('') + '</select></td>' +
           '<td class="acoes">' +
           (p.status === 'aprovada' && !jaLancada
-            ? '<button class="btn btn-p btn-contorno" data-acao="financeiro" title="Criar receita no financeiro">' + AH.icons.dinheiro + '→ Financeiro</button>'
+            ? '<button class="btn btn-p btn-contorno sempre-visivel" data-acao="financeiro" title="Criar receita no financeiro">' + AH.icons.dinheiro + '→ Financeiro</button>'
             : '') +
           '<button class="btn btn-ghost btn-icon btn-p" data-acao="imprimir" title="Imprimir / PDF">' + AH.icons.imprimir + '</button>' +
           '<button class="btn btn-ghost btn-icon btn-p" data-acao="duplicar" title="Duplicar">' + AH.icons.duplicar + '</button>' +

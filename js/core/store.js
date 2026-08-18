@@ -65,6 +65,14 @@
       var partes = String(nome || '?').trim().split(/\s+/);
       var s = partes[0].charAt(0) + (partes.length > 1 ? partes[partes.length - 1].charAt(0) : '');
       return s.toUpperCase();
+    },
+    num: function (n) {
+      return (Number(n) || 0).toLocaleString('pt-BR');
+    },
+    // fração (0.024) -> "2,4%"
+    pct: function (frac) {
+      if (frac == null || !isFinite(frac)) return '—';
+      return (frac * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '%';
     }
   };
 
@@ -144,6 +152,26 @@
       'Ensaio fotográfico (até 3h)',
       'Captação e edição de podcast (por episódio)',
       'Landing page'
+    ],
+    plataformas: [
+      { id: 'meta', nome: 'Meta Ads (Facebook/Instagram)', curto: 'Meta' },
+      { id: 'google', nome: 'Google Ads', curto: 'Google' },
+      { id: 'tiktok', nome: 'TikTok Ads', curto: 'TikTok' },
+      { id: 'outra', nome: 'Outra plataforma', curto: 'Outra' }
+    ],
+    objetivosTrafego: [
+      { id: 'mensagens', nome: 'Mensagens / WhatsApp', unidade: 'conversas' },
+      { id: 'cadastros', nome: 'Cadastros (leads)', unidade: 'leads' },
+      { id: 'conversoes', nome: 'Vendas / Conversões', unidade: 'vendas' },
+      { id: 'trafego', nome: 'Tráfego (cliques no link)', unidade: 'cliques no link' },
+      { id: 'engajamento', nome: 'Engajamento', unidade: 'interações' },
+      { id: 'alcance', nome: 'Alcance / Reconhecimento', unidade: 'resultados' },
+      { id: 'seguidores', nome: 'Seguidores', unidade: 'seguidores' }
+    ],
+    statusCampanha: [
+      { id: 'ativa', nome: 'Ativa' },
+      { id: 'pausada', nome: 'Pausada' },
+      { id: 'encerrada', nome: 'Encerrada' }
     ]
   };
 
@@ -168,6 +196,7 @@
         cidade: '',
         cnpj: '',
         pix: '',
+        urlPublica: '',
         condicoesPadrao: '50% na aprovação e 50% na entrega. Valores válidos conforme prazo da proposta.'
       },
       clientes: [],
@@ -178,6 +207,7 @@
       lancamentos: [],
       equipamentos: [],
       equipe: [],
+      campanhas: [],
       proximoNumeroProposta: 1
     };
   }
@@ -244,6 +274,57 @@
       return acc + (Number(it.qtd) || 0) * (Number(it.valor) || 0);
     }, 0);
     return Math.max(0, soma - (Number(p.desconto) || 0));
+  };
+
+  /* ---------- tráfego pago ---------- */
+
+  AH.campanhaPorId = function (id) {
+    return AH.state.campanhas.filter(function (c) { return c.id === id; })[0] || null;
+  };
+
+  AH.nomePlataforma = function (id, curto) {
+    var p = AH.dominio.plataformas.filter(function (x) { return x.id === id; })[0];
+    return p ? (curto ? p.curto : p.nome) : id;
+  };
+
+  AH.unidadeObjetivo = function (id) {
+    var o = AH.dominio.objetivosTrafego.filter(function (x) { return x.id === id; })[0];
+    return o ? o.unidade : 'resultados';
+  };
+
+  AH.nomeObjetivo = function (id) {
+    var o = AH.dominio.objetivosTrafego.filter(function (x) { return x.id === id; })[0];
+    return o ? o.nome : id;
+  };
+
+  // Soma os registros informados (ou todos da campanha) e deriva as métricas
+  AH.metricasTrafego = function (registros) {
+    var t = { investimento: 0, alcance: 0, impressoes: 0, cliques: 0, resultados: 0, receita: 0 };
+    (registros || []).forEach(function (r) {
+      t.investimento += Number(r.investimento) || 0;
+      t.alcance += Number(r.alcance) || 0;
+      t.impressoes += Number(r.impressoes) || 0;
+      t.cliques += Number(r.cliques) || 0;
+      t.resultados += Number(r.resultados) || 0;
+      t.receita += Number(r.receita) || 0;
+    });
+    t.ctr = t.impressoes > 0 ? t.cliques / t.impressoes : null;
+    t.cpc = t.cliques > 0 ? t.investimento / t.cliques : null;
+    t.cpm = t.impressoes > 0 ? (t.investimento / t.impressoes) * 1000 : null;
+    t.custoResultado = t.resultados > 0 ? t.investimento / t.resultados : null;
+    t.roas = t.receita > 0 && t.investimento > 0 ? t.receita / t.investimento : null;
+    return t;
+  };
+
+  // Registros de uma lista de campanhas cujo início cai no mês YYYY-MM
+  AH.registrosDoMes = function (campanhas, yyyymm) {
+    var lista = [];
+    campanhas.forEach(function (c) {
+      (c.registros || []).forEach(function (r) {
+        if (String(r.de).slice(0, 7) === yyyymm) lista.push(r);
+      });
+    });
+    return lista;
   };
 
   /* ---------- dados de demonstração ---------- */
@@ -406,6 +487,155 @@
       eqp('MacBook Pro M2 (ilha de edição)', 'Computador', 'Apple', '', 'em_uso')
     ];
 
+    var reg = function (de, ate, investimento, alcance, impressoes, cliques, resultados, receita) {
+      return {
+        id: AH.uid(), de: de, ate: ate, investimento: investimento, alcance: alcance,
+        impressoes: impressoes, cliques: cliques, resultados: resultados, receita: receita || 0
+      };
+    };
+    s.campanhas = [
+      {
+        id: AH.uid(), clienteId: c2.id, nome: 'Ofertas da semana — WhatsApp',
+        plataforma: 'meta', objetivo: 'mensagens', status: 'ativa',
+        linkGerenciador: '', notas: 'Verba do cliente: R$ 650/mês.',
+        registros: [
+          reg(m(-2) + '-01', m(-2) + '-28', 600, 45200, 89400, 2140, 182),
+          reg(m(-1) + '-01', m(-1) + '-28', 650, 52100, 103800, 2410, 214),
+          reg(mmAtual + '-01', AH.hojeISO(), 480, 38300, 71200, 1760, 158)
+        ]
+      },
+      {
+        id: AH.uid(), clienteId: c5.id, nome: 'Lançamento da coleção — cadastros',
+        plataforma: 'meta', objetivo: 'cadastros', status: 'ativa',
+        linkGerenciador: '', notas: '',
+        registros: [
+          reg(m(-1) + '-10', m(-1) + '-28', 300, 21500, 40200, 980, 64),
+          reg(mmAtual + '-01', AH.hojeISO(), 350, 24800, 47600, 1130, 78)
+        ]
+      },
+      {
+        id: AH.uid(), clienteId: c3.id, nome: 'Agendamentos — Pesquisa Google',
+        plataforma: 'google', objetivo: 'conversoes', status: 'pausada',
+        linkGerenciador: '', notas: 'Pausada a pedido do cliente até a reforma da recepção.',
+        registros: [
+          reg(m(-2) + '-01', m(-2) + '-28', 420, 8900, 15400, 640, 22, 3300),
+          reg(m(-1) + '-01', m(-1) + '-15', 210, 4300, 7600, 310, 11, 1650)
+        ]
+      }
+    ];
+
     return s;
+  };
+
+  /* ---------- portal do cliente: retrato dos dados + codificação para link ---------- */
+
+  // Monta o "retrato" (snapshot) que vai dentro do link do portal.
+  // Contém APENAS os dados daquele cliente — nada da agência ou de outros clientes vaza.
+  AH.snapshotPortal = function (clienteId, opcoes) {
+    opcoes = opcoes || {};
+    var c = AH.clientePorId(clienteId);
+    if (!c) return null;
+    var cfg = AH.state.configuracoes;
+    var hoje = AH.hojeISO();
+    var agora = new Date();
+
+    var projetos = AH.state.projetos
+      .filter(function (p) { return p.clienteId === clienteId; })
+      .sort(function (a, b) { return String(a.prazo || '9999').localeCompare(String(b.prazo || '9999')); })
+      .map(function (p) {
+        return { titulo: p.titulo, tipo: p.tipo, status: p.status, prazo: p.prazo || '' };
+      });
+
+    var eventos = AH.state.eventos
+      .filter(function (e) { return e.clienteId === clienteId && e.data >= hoje; })
+      .sort(function (a, b) { return (a.data + a.hora).localeCompare(b.data + b.hora); })
+      .slice(0, 8)
+      .map(function (e) {
+        return { titulo: e.titulo, data: e.data, hora: e.hora || '', tipo: e.tipo, local: e.local || '' };
+      });
+
+    var campanhas = AH.state.campanhas
+      .filter(function (cp) { return cp.clienteId === clienteId; })
+      .map(function (cp) {
+        return {
+          nome: cp.nome, plataforma: cp.plataforma, objetivo: cp.objetivo, status: cp.status,
+          registros: (cp.registros || []).map(function (r) {
+            return {
+              de: r.de, ate: r.ate, investimento: r.investimento, alcance: r.alcance,
+              impressoes: r.impressoes, cliques: r.cliques, resultados: r.resultados, receita: r.receita
+            };
+          })
+        };
+      });
+
+    var cobrancas = [];
+    if (opcoes.incluirCobrancas) {
+      cobrancas = AH.state.lancamentos
+        .filter(function (l) { return l.tipo === 'receita' && l.status === 'pendente' && l.clienteId === clienteId; })
+        .sort(function (a, b) { return String(a.data).localeCompare(String(b.data)); })
+        .map(function (l) { return { descricao: l.descricao, valor: l.valor, data: l.data }; });
+    }
+
+    return {
+      v: 1,
+      geradoEm: hoje,
+      geradoHora: (agora.getHours() < 10 ? '0' : '') + agora.getHours() + ':' + (agora.getMinutes() < 10 ? '0' : '') + agora.getMinutes(),
+      agencia: {
+        nome: cfg.nomeAgencia || 'Sua agência', slogan: cfg.slogan || '',
+        whatsapp: cfg.whatsapp || '', instagram: cfg.instagram || '',
+        site: cfg.site || '', email: cfg.email || '',
+        pix: opcoes.incluirCobrancas ? (cfg.pix || '') : ''
+      },
+      cliente: { nome: c.nome, empresa: c.empresa || '' },
+      projetos: projetos,
+      eventos: eventos,
+      campanhas: campanhas,
+      cobrancas: cobrancas
+    };
+  };
+
+  function bytesParaB64url(bytes) {
+    var bin = '';
+    for (var i = 0; i < bytes.length; i += 0x8000) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    }
+    return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  function b64urlParaBytes(str) {
+    var s = String(str).replace(/-/g, '+').replace(/_/g, '/');
+    while (s.length % 4) s += '=';
+    var bin = atob(s);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return bytes;
+  }
+
+  // Codifica um objeto para o pedaço final do link (#/p?d=...). Usa compressão
+  // quando o navegador suporta; senão, vai sem compressão (prefixo indica o modo).
+  AH.codificarPortal = function (obj) {
+    var texto = JSON.stringify(obj);
+    var bytes = new TextEncoder().encode(texto);
+    if (typeof CompressionStream === 'undefined') {
+      return Promise.resolve('j.' + bytesParaB64url(bytes));
+    }
+    var comprimido = new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+    return new Response(comprimido).arrayBuffer().then(function (buf) {
+      return 'd.' + bytesParaB64url(new Uint8Array(buf));
+    });
+  };
+
+  AH.decodificarPortal = function (payload) {
+    var i = String(payload).indexOf('.');
+    if (i < 0) return Promise.reject(new Error('link inválido'));
+    var modo = payload.slice(0, i);
+    var bytes = b64urlParaBytes(payload.slice(i + 1));
+    if (modo === 'j') {
+      return Promise.resolve(JSON.parse(new TextDecoder().decode(bytes)));
+    }
+    var descomprimido = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    return new Response(descomprimido).arrayBuffer().then(function (buf) {
+      return JSON.parse(new TextDecoder().decode(buf));
+    });
   };
 })();

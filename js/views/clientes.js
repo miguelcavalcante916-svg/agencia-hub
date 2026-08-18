@@ -102,6 +102,7 @@
           '<td>' + AH.ui.badgeStatusCliente(c.status) + '</td>' +
           '<td class="num">' + projs + '</td>' +
           '<td class="acoes">' +
+          '<button class="btn btn-ghost btn-icon btn-p" data-acao="portal" title="Portal do cliente">' + AH.icons.portal + '</button>' +
           '<button class="btn btn-ghost btn-icon btn-p" data-acao="editar" title="Editar">' + AH.icons.editar + '</button>' +
           '<button class="btn btn-ghost btn-icon btn-p" data-acao="excluir" title="Excluir">' + AH.icons.excluir + '</button>' +
           '</td></tr>';
@@ -125,6 +126,7 @@
     });
     el.querySelectorAll('tbody tr').forEach(function (tr) {
       var c = AH.clientePorId(tr.getAttribute('data-id'));
+      tr.querySelector('[data-acao="portal"]').addEventListener('click', function () { location.hash = '#/portal?c=' + c.id; });
       tr.querySelector('[data-acao="editar"]').addEventListener('click', function () { abrirForm(c); });
       tr.querySelector('[data-acao="excluir"]').addEventListener('click', function () { excluir(c); });
     });

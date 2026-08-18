@@ -16,7 +16,9 @@ Os dados ficam salvos no próprio navegador (localStorage).
 | **Tarefas** | Lista rápida com prazos, prioridades, responsáveis e filtros (hoje, semana, atrasadas) |
 | **Calendário** | Agenda mensal de gravações, entregas, reuniões e postagens |
 | **Propostas** | Orçamentos com itens, desconto e total automático — imprima ou salve em PDF para enviar no WhatsApp |
+| **Tráfego pago** | Abas por plataforma (Meta/Facebook, Google, TikTok): espelhe os números do Gerenciador de Anúncios — investimento, alcance, cliques, resultados, custo por resultado, CTR e ROAS |
 | **Financeiro** | Receitas e despesas por mês, contas a receber, resultado do mês |
+| **Portal do cliente** | Link exclusivo por cliente para enviar no WhatsApp: ele acompanha o andamento dos projetos, a agenda, os resultados dos anúncios e as cobranças — sem acessar o seu painel |
 | **Equipamentos** | Controle de câmeras, lentes, drones, áudio e iluminação (disponível / em uso / manutenção) |
 | **Equipe** | Pessoas fixas e freelas, com carga de trabalho de cada uma |
 | **Configurações** | Dados da agência (saem nas propostas), backup e restauração |
@@ -41,6 +43,20 @@ Os dados ficam salvos no próprio navegador (localStorage).
 1. Vá em **Configurações** e preencha os dados da sua agência (nome, WhatsApp, PIX...) — eles saem no cabeçalho das propostas.
 2. Ainda em Configurações, quando quiser começar de verdade, use **Apagar todos os dados** para limpar a demonstração.
 3. Cadastre seus clientes, crie os projetos e arraste os cartões conforme o trabalho avança.
+
+## 👥 Portal do cliente — como funciona
+
+1. Publique o app na internet (GitHub Pages, veja acima) e informe o endereço em **Configurações → Endereço público do app**.
+2. Vá em **Portal do cliente**, escolha o cliente e clique em **Copiar link do portal**.
+3. Envie o link no WhatsApp do cliente. Ele abre uma página limpa, com a marca da sua agência, mostrando **apenas os dados dele**: andamento dos projetos (com barra de progresso), próximos compromissos, resultados de tráfego pago e pagamentos em aberto (opcional).
+
+> **Importante:** o link carrega um *retrato* dos dados no momento em que foi gerado — os dados do cliente viajam dentro do próprio link, nada fica em servidor. Atualizou o kanban ou registrou novos números de anúncio? Gere um novo link e envie de novo (perfeito como relatório semanal). Compartilhe cada link somente com o respectivo cliente.
+
+## 📣 Tráfego pago — como funciona
+
+O módulo **Tráfego pago** é o espelho do Gerenciador de Anúncios: crie a campanha (Meta, Google ou TikTok), e a cada semana ou mês registre o período com investimento, alcance, impressões, cliques, resultados e receita. O app calcula CTR, CPC, custo por resultado e ROAS, mostra o gráfico de investimento dos últimos 6 meses e leva tudo para o portal do cliente.
+
+> Esta versão funciona sem servidor, então os números são digitados por você (2 minutos por semana com o Gerenciador aberto do lado). Uma integração automática com a API do Meta exigiria um servidor com login — dá para evoluir depois.
 
 ## 💾 Seus dados
 

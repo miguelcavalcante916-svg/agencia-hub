@@ -10,7 +10,9 @@
     { hash: '#/tarefas', view: 'tarefas', nome: 'Tarefas', icone: 'tarefas' },
     { hash: '#/calendario', view: 'calendario', nome: 'Calendário', icone: 'calendario' },
     { hash: '#/propostas', view: 'propostas', nome: 'Propostas', icone: 'propostas' },
+    { hash: '#/trafego', view: 'trafego', nome: 'Tráfego pago', icone: 'megafone' },
     { hash: '#/financeiro', view: 'financeiro', nome: 'Financeiro', icone: 'financeiro' },
+    { hash: '#/portal', view: 'portal', nome: 'Portal do cliente', icone: 'portal' },
     { hash: '#/equipamentos', view: 'equipamentos', nome: 'Equipamentos', icone: 'equipamentos' },
     { hash: '#/equipe', view: 'equipe', nome: 'Equipe', icone: 'equipe' },
     { hash: '#/configuracoes', view: 'config', nome: 'Configurações', icone: 'config' }
@@ -50,6 +52,8 @@
 
   function navegar() {
     var hash = location.hash || '#/dashboard';
+    // link de portal colado na mesma aba → recarrega no modo público
+    if (/^#\/p\?d=/.test(hash)) { location.reload(); return; }
     var rota = ROTAS.filter(function (r) { return hash.indexOf(r.hash) === 0; })[0] || ROTAS[0];
     rotaAtual = rota;
 
@@ -73,6 +77,13 @@
   };
 
   function iniciar() {
+    // modo público: link do portal do cliente (#/p?d=...) — sem painel da agência
+    var portal = (location.hash || '').match(/^#\/p\?d=(.+)$/);
+    if (portal) {
+      AH.portalPublico(portal[1]);
+      return;
+    }
+
     AH.carregar();
     AH.atualizarMarca();
 
