@@ -4,7 +4,12 @@ Sistema de gestão completo para **agências de marketing e produtoras audiovisu
 Clientes, projetos, gravações, propostas, financeiro e equipamentos — tudo em um só lugar.
 
 Funciona **100% no navegador**: sem instalação, sem servidor, sem mensalidade e até sem internet.
-Os dados ficam salvos no próprio navegador (localStorage).
+Os dados ficam salvos no próprio navegador (localStorage). É um **PWA**: dá para instalar
+no celular e no computador como aplicativo, com ícone próprio.
+
+O repositório também inclui o **site de apresentação da agência** em `site/`
+(estilo makershub.app.br, em azul-marinho/branco/preto), com botão de WhatsApp,
+pacotes, FAQ e uma vitrine do sistema e do portal do cliente.
 
 ## ✨ Módulos
 
@@ -43,6 +48,26 @@ Os dados ficam salvos no próprio navegador (localStorage).
 1. Vá em **Configurações** e preencha os dados da sua agência (nome, WhatsApp, PIX...) — eles saem no cabeçalho das propostas.
 2. Ainda em Configurações, quando quiser começar de verdade, use **Apagar todos os dados** para limpar a demonstração.
 3. Cadastre seus clientes, crie os projetos e arraste os cartões conforme o trabalho avança.
+
+## 📱 Instalar como aplicativo (celular e computador)
+
+Com o app publicado no GitHub Pages, abra o endereço no navegador e:
+
+- **Android (Chrome):** menu ⋮ → **Adicionar à tela inicial** (ou aceite o aviso "Instalar app").
+- **iPhone (Safari):** botão Compartilhar → **Adicionar à Tela de Início**.
+- **Computador (Chrome/Edge):** ícone de instalação na barra de endereço → **Instalar**.
+
+O AgênciaHub vira um aplicativo com ícone próprio, tela cheia e **funciona offline**
+(as alterações sincronizam com o site quando a internet volta — os dados são locais de cada aparelho;
+use o backup de Configurações para levar dados de um aparelho a outro).
+
+## 🌐 Site da agência (`site/`)
+
+A pasta `site/` tem a página de apresentação da agência — pronta para divulgar no
+link da bio do Instagram: `https://SEU-USUARIO.github.io/NOME-DO-REPO/site/`.
+
+Para personalizar, abra `site/index.html` e procure por **“EDITE”**: nome da agência,
+número do WhatsApp, Instagram, números de resultado e preços dos pacotes.
 
 ## 👥 Portal do cliente — como funciona
 

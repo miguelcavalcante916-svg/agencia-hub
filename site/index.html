@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Agência Cavalcante — Marketing &amp; Produtora Audiovisual</title>
+<meta name="description" content="Marketing estratégico e produção audiovisual em um único fluxo — do primeiro contato à campanha no ar. Agência Cavalcante.">
+<link rel="icon" href="../img/icone.svg" type="image/svg+xml">
+<meta name="theme-color" content="#04060d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap">
+<style>
+/*
+  ▸ PERSONALIZE AQUI: procure por "EDITE" neste arquivo para trocar
+    nome, WhatsApp, Instagram, números e preços.
+*/
+:root {
+  --fundo: #04060d;
+  --tinta: #f2f5fc;
+  --tinta-2: rgba(242, 245, 252, .62);
+  --tinta-3: rgba(242, 245, 252, .38);
+  --azul: #4361ee;
+  --azul-vivo: #5878ff;
+  --azul-claro: #8ea6ff;
+  --borda: rgba(255, 255, 255, .08);
+  --cartao: rgba(255, 255, 255, .025);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--fundo);
+  color: var(--tinta);
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+h1, h2, h3, .display { font-family: "Manrope", "Inter", system-ui, sans-serif; letter-spacing: -.02em; text-wrap: balance; }
+a { color: inherit; text-decoration: none; }
+img, svg { max-width: 100%; }
+::selection { background: rgba(67, 97, 238, .45); color: #fff; }
+
+.container { max-width: 1120px; margin: 0 auto; padding: 0 22px; }
+section { position: relative; padding: 88px 0; }
+
+/* fundos */
+.grade::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(67, 97, 238, .05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(67, 97, 238, .05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+}
+.brilho { position: absolute; border-radius: 999px; filter: blur(120px); pointer-events: none; }
+
+/* tipografia utilitária */
+.olho {
+  display: inline-block; font-size: 11.5px; font-weight: 600;
+  letter-spacing: .22em; text-transform: uppercase; color: var(--azul-claro);
+}
+.titulo { font-size: clamp(30px, 5vw, 52px); font-weight: 800; line-height: 1.06; margin-top: 14px; }
+.titulo .apagado { color: var(--tinta-3); }
+.gradiente {
+  background: linear-gradient(90deg, #6b8dff, #4361ee);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.sub { color: var(--tinta-2); font-size: 18px; margin-top: 18px; max-width: 640px; }
+
+/* botões */
+.btn {
+  display: inline-flex; align-items: center; gap: 9px; justify-content: center;
+  border-radius: 999px; padding: 14px 28px;
+  font-weight: 600; font-size: 15px; border: 1px solid transparent;
+  cursor: pointer; transition: transform .15s ease, background .15s ease, border-color .15s ease;
+  white-space: nowrap;
+}
+.btn:active { transform: translateY(1px); }
+.btn-azul { background: var(--azul); color: #fff; box-shadow: 0 18px 45px -14px rgba(67, 97, 238, .55); }
+.btn-azul:hover { background: var(--azul-vivo); }
+.btn-fantasma { color: var(--tinta-2); border-color: var(--borda); }
+.btn-fantasma:hover { color: var(--tinta); background: rgba(255, 255, 255, .05); }
+.btn svg { width: 17px; height: 17px; flex: none; }
+
+/* cartões */
+.cartao {
+  position: relative; border-radius: 18px;
+  background: var(--cartao); border: 1px solid var(--borda);
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.cartao:hover { transform: translateY(-3px); border-color: rgba(67, 97, 238, .45); box-shadow: 0 24px 60px -24px rgba(67, 97, 238, .35); }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 14px; border-radius: 999px;
+  background: rgba(255, 255, 255, .03); border: 1px solid var(--borda);
+  font-size: 12.5px; color: var(--tinta-2);
+}
+.chip svg { width: 12px; height: 12px; color: var(--azul-claro); }
+
+/* ---------- header ---------- */
+header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  transition: background .25s ease, border-color .25s ease;
+  border-bottom: 1px solid transparent;
+}
+header.rolou { background: rgba(4, 6, 13, .82); backdrop-filter: blur(14px); border-color: var(--borda); }
+.header-linha { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 16px; }
+.logo { display: flex; align-items: center; gap: 11px; }
+.logo-icone {
+  width: 38px; height: 38px; border-radius: 11px; flex: none;
+  background: linear-gradient(135deg, var(--azul), #1e3a8a);
+  display: grid; place-items: center;
+  box-shadow: 0 10px 25px -8px rgba(30, 58, 138, .7);
+}
+.logo-icone svg { width: 19px; height: 19px; color: #fff; }
+.logo strong { font-size: 15.5px; display: block; line-height: 1.15; }
+.logo strong span { color: var(--azul-claro); }
+.logo small { font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--tinta-3); }
+nav.principal { display: flex; gap: 28px; }
+nav.principal a { font-size: 14px; color: var(--tinta-2); }
+nav.principal a:hover { color: var(--tinta); }
+.header-acoes { display: flex; align-items: center; gap: 14px; }
+.header-acoes .entrar { font-size: 14px; color: var(--tinta-2); }
+.header-acoes .entrar:hover { color: var(--tinta); }
+.btn-menu { display: none; background: none; border: 0; color: var(--tinta); padding: 8px; cursor: pointer; }
+.btn-menu svg { width: 24px; height: 24px; }
+.menu-mobile { display: none; border-top: 1px solid var(--borda); background: rgba(4, 6, 13, .96); backdrop-filter: blur(14px); }
+.menu-mobile.aberto { display: block; }
+.menu-mobile .container { display: flex; flex-direction: column; gap: 4px; padding-top: 14px; padding-bottom: 20px; }
+.menu-mobile a { padding: 10px 2px; color: var(--tinta-2); font-size: 15px; }
+.menu-mobile .btn { margin-top: 10px; }
+
+/* ---------- hero ---------- */
+.hero { padding: 168px 0 96px; text-align: center; overflow: hidden; }
+.hero .brilho-central { top: -140px; left: 50%; transform: translateX(-50%); width: 820px; height: 460px; background: rgba(67, 97, 238, .22); }
+.selo {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 18px; border-radius: 999px;
+  border: 1px solid rgba(67, 97, 238, .45); background: rgba(67, 97, 238, .1);
+  color: var(--azul-claro); font-size: 12.5px; font-weight: 500;
+}
+.selo svg { width: 13px; height: 13px; }
+.hero h1 { font-size: clamp(38px, 7vw, 74px); font-weight: 800; line-height: 1.02; margin-top: 28px; }
+.hero .sub { margin-left: auto; margin-right: auto; font-size: clamp(16px, 2.4vw, 20px); }
+.hero-ctas { margin-top: 36px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.hero-nota { margin-top: 18px; display: flex; gap: 22px; justify-content: center; font-size: 12.5px; color: var(--tinta-3); flex-wrap: wrap; }
+.hero-nota span { display: inline-flex; align-items: center; gap: 8px; }
+.ponto-pulso { width: 7px; height: 7px; border-radius: 99px; background: var(--azul); animation: pulso 2s infinite; }
+@keyframes pulso {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, .7); }
+  50% { box-shadow: 0 0 0 8px rgba(67, 97, 238, 0); }
+}
+
+/* números */
+.numeros { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 64px; }
+.numeros .cartao { padding: 22px 16px; text-align: center; }
+.numeros b { font-family: "Manrope"; font-size: clamp(24px, 3.4vw, 34px); font-weight: 800; display: block; }
+.numeros span { font-size: 12.5px; color: var(--tinta-3); }
+
+/* ---------- moldura de dispositivo / mocks ---------- */
+.moldura {
+  border-radius: 20px; border: 1px solid rgba(255, 255, 255, .09);
+  background: linear-gradient(180deg, #0a1024, #050914);
+  box-shadow: 0 40px 90px -30px rgba(30, 58, 138, .5), inset 0 1px 0 rgba(255, 255, 255, .05);
+  padding: 12px;
+}
+.mock { border-radius: 12px; background: #070b1a; border: 1px solid rgba(255,255,255,.05); overflow: hidden; text-align: left; }
+.mock-topo { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,.06); }
+.mock-topo i { width: 9px; height: 9px; border-radius: 99px; background: rgba(255,255,255,.12); }
+.mock-topo i:first-child { background: rgba(67,97,238,.8); }
+.mock-corpo { display: flex; }
+.mock-menu { width: 46px; border-right: 1px solid rgba(255,255,255,.06); padding: 12px 0; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.mock-menu i { width: 26px; height: 26px; border-radius: 8px; background: rgba(255,255,255,.05); }
+.mock-menu i.ativo { background: rgba(67,97,238,.3); outline: 1px solid rgba(67,97,238,.5); }
+.mock-main { flex: 1; padding: 16px; min-width: 0; }
+.mock-ola { font-family: "Manrope"; font-weight: 700; font-size: 15px; }
+.mock-sub { font-size: 10px; color: var(--tinta-3); text-transform: uppercase; letter-spacing: .14em; }
+.mock-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.mock-tile { border: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.02); border-radius: 9px; padding: 9px 11px; }
+.mock-tile span { display: block; font-size: 8.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--tinta-3); }
+.mock-tile b { font-size: 14px; }
+.mock-lista { margin-top: 10px; display: flex; flex-direction: column; gap: 7px; }
+.mock-item { display: flex; align-items: center; gap: 9px; border: 1px solid rgba(255,255,255,.06); background: rgba(255,255,255,.015); border-radius: 9px; padding: 8px 11px; font-size: 11px; color: var(--tinta-2); }
+.mock-item i { width: 7px; height: 7px; border-radius: 99px; flex: none; }
+.mock-item .fim { margin-left: auto; font-size: 10px; color: var(--tinta-3); }
+.mock-barra { height: 7px; border-radius: 99px; background: rgba(255,255,255,.06); overflow: hidden; margin-top: 6px; }
+.mock-barra i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #1e3a8a, var(--azul)); }
+.tag-mock { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 9px; font-weight: 700; letter-spacing: .06em; }
+.tag-azul { background: rgba(67,97,238,.18); color: var(--azul-claro); border: 1px solid rgba(67,97,238,.4); }
+.tag-verde { background: rgba(74,222,128,.12); color: #4ade80; border: 1px solid rgba(74,222,128,.35); }
+
+/* ---------- problema ---------- */
+.grade-cartoes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 48px; }
+.problema-cartao { padding: 26px 22px; }
+.problema-cartao b { font-family: "Manrope"; font-size: 30px; color: rgba(67, 97, 238, .65); font-weight: 800; }
+.problema-cartao p { margin-top: 12px; font-size: 14.5px; color: var(--tinta-2); }
+
+/* ---------- serviços ---------- */
+.servicos-cab { display: grid; grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: end; }
+.servicos-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 46px; }
+.servico { padding: 30px 28px; }
+.servico-icone {
+  width: 52px; height: 52px; border-radius: 13px;
+  background: rgba(67, 97, 238, .1); border: 1px solid rgba(67, 97, 238, .35);
+  display: grid; place-items: center;
+}
+.servico-icone svg { width: 23px; height: 23px; color: var(--azul-claro); }
+.servico .olho { margin-top: 22px; }
+.servico h3 { font-size: 21px; margin-top: 8px; line-height: 1.3; }
+.servico p { margin-top: 10px; color: var(--tinta-2); font-size: 15px; }
+
+/* ---------- seções divididas ---------- */
+.dividida { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.dividida.invertida > :first-child { order: 2; }
+.dividida h3 { font-size: clamp(26px, 3.6vw, 38px); font-weight: 800; line-height: 1.1; margin-top: 14px; }
+.dividida .texto p { margin-top: 16px; color: var(--tinta-2); font-size: 16.5px; }
+.lista-check { margin-top: 20px; display: flex; flex-direction: column; gap: 11px; list-style: none; }
+.lista-check li { display: flex; gap: 11px; align-items: flex-start; color: rgba(242,245,252,.8); font-size: 15px; }
+.lista-check svg { width: 17px; height: 17px; color: var(--azul-claro); flex: none; margin-top: 3px; }
+.chips-linha { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+
+/* ---------- comparativo ---------- */
+.tabela-wrap { overflow-x: auto; border-radius: 18px; border: 1px solid var(--borda); margin-top: 44px; background: var(--cartao); }
+table.comparativo { width: 100%; border-collapse: collapse; min-width: 620px; }
+.comparativo th {
+  text-align: left; padding: 16px 22px; font-size: 11px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--tinta-3);
+  border-bottom: 1px solid var(--borda);
+}
+.comparativo th.destaque { background: rgba(67, 97, 238, .1); color: var(--azul-claro); }
+.comparativo td { padding: 15px 22px; font-size: 14.5px; border-bottom: 1px solid rgba(255, 255, 255, .05); }
+.comparativo tr:last-child td { border-bottom: 0; }
+.comparativo td.hoje { color: var(--tinta-3); }
+.comparativo td.destaque { background: rgba(67, 97, 238, .05); font-weight: 600; }
+.comparativo td svg { width: 14px; height: 14px; vertical-align: -2px; margin-right: 8px; }
+.comparativo td.hoje svg { color: rgba(255, 255, 255, .25); }
+.comparativo td.destaque svg { color: var(--azul-claro); }
+
+/* ---------- pacotes ---------- */
+.pacotes-grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 52px; align-items: stretch; }
+.pacote { padding: 32px 28px; display: flex; flex-direction: column; }
+.pacote.destaque { background: linear-gradient(180deg, rgba(67, 97, 238, .14), rgba(67, 97, 238, .02)); border-color: rgba(67, 97, 238, .5); }
+.pacote-selo {
+  position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+  background: var(--azul); color: #fff; font-size: 11px; font-weight: 700;
+  letter-spacing: .08em; padding: 5px 14px; border-radius: 999px; white-space: nowrap;
+}
+.pacote-nome { font-size: 12px; font-weight: 700; letter-spacing: .18em; color: var(--azul-claro); }
+.pacote-preco { margin-top: 18px; }
+.pacote-preco small { display: block; color: var(--tinta-3); font-size: 12.5px; }
+.pacote-preco b { font-family: "Manrope"; font-size: 42px; font-weight: 800; }
+.pacote-preco b i { font-style: normal; font-size: 17px; color: var(--tinta-2); font-weight: 600; }
+.pacote ul { list-style: none; margin: 22px 0; display: flex; flex-direction: column; gap: 11px; flex: 1; }
+.pacote li { display: flex; gap: 10px; font-size: 14.5px; color: rgba(242,245,252,.78); }
+.pacote li svg { width: 16px; height: 16px; color: var(--azul-claro); flex: none; margin-top: 3px; }
+.pacote .btn { width: 100%; }
+
+/* ---------- faq ---------- */
+.faq-grade { display: grid; grid-template-columns: .9fr 1.3fr; gap: 48px; margin-top: 10px; }
+.faq-item { border-bottom: 1px solid rgba(255, 255, 255, .07); }
+.faq-perg {
+  width: 100%; background: none; border: 0; color: var(--tinta);
+  font: inherit; font-weight: 600; font-size: 16px; text-align: left;
+  padding: 20px 0; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center; gap: 18px;
+}
+.faq-perg:hover { color: var(--azul-claro); }
+.faq-perg svg { width: 19px; height: 19px; color: var(--tinta-3); flex: none; transition: transform .25s ease; }
+.faq-item.aberto .faq-perg svg { transform: rotate(180deg); color: var(--azul-claro); }
+.faq-resp { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+.faq-item.aberto .faq-resp { max-height: 300px; }
+.faq-resp p { color: var(--tinta-2); font-size: 15px; padding-bottom: 20px; }
+
+/* ---------- cta final / rodapé ---------- */
+.cta-final { text-align: center; padding: 68px 34px; overflow: hidden; }
+.cta-final .brilho { bottom: -120px; left: 50%; transform: translateX(-50%); width: 640px; height: 280px; background: rgba(67, 97, 238, .3); }
+footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
+.rodape-linha { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.rodape-links { display: flex; gap: 22px; font-size: 13px; color: var(--tinta-3); flex-wrap: wrap; }
+.rodape-links a:hover { color: var(--tinta); }
+
+/* ---------- animação de entrada ---------- */
+.revelar { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
+.revelar.visivel { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .revelar { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+  .ponto-pulso { animation: none; }
+}
+
+/* ---------- responsivo ---------- */
+@media (max-width: 980px) {
+  .grade-cartoes, .numeros { grid-template-columns: repeat(2, 1fr); }
+  .servicos-cab, .dividida, .faq-grade { grid-template-columns: 1fr; }
+  .dividida { gap: 34px; }
+  .dividida.invertida > :first-child { order: 0; }
+  .pacotes-grade { grid-template-columns: 1fr; max-width: 460px; margin-left: auto; margin-right: auto; }
+  nav.principal, .header-acoes .entrar, .header-acoes .btn { display: none; }
+  .btn-menu { display: inline-flex; }
+}
+@media (max-width: 560px) {
+  section { padding: 64px 0; }
+  .hero { padding: 130px 0 72px; }
+  .grade-cartoes, .numeros { grid-template-columns: 1fr 1fr; }
+  .mock-tiles { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ======================= CABEÇALHO ======================= -->
+<header id="topo-header">
+  <div class="container header-linha">
+    <a class="logo" href="#inicio" aria-label="Agência Cavalcante">
+      <span class="logo-icone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"><path d="m15 8 4.5-2.5v13L15 16"/><rect x="2.5" y="6" width="12.5" height="12" rx="2.5"/></svg>
+      </span>
+      <span>
+        <!-- EDITE: nome da agência -->
+        <strong>Agência <span>Cavalcante</span></strong>
+        <small>Marketing · Produtora</small>
+      </span>
+    </a>
+    <nav class="principal" aria-label="Seções">
+      <a href="#servicos">Serviços</a>
+      <a href="#sistema">Sistema</a>
+      <a href="#portal">Portal do cliente</a>
+      <a href="#pacotes">Pacotes</a>
+      <a href="#faq">Dúvidas</a>
+    </nav>
+    <div class="header-acoes">
+      <a class="entrar" href="../index.html">Já sou cliente</a>
+      <a class="btn btn-azul" style="padding:10px 20px" href="#contato" data-whats>Falar com a gente</a>
+      <button class="btn-menu" id="btn-menu" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="menu-mobile" id="menu-mobile">
+    <div class="container">
+      <a href="#servicos">Serviços</a>
+      <a href="#sistema">Sistema</a>
+      <a href="#portal">Portal do cliente</a>
+      <a href="#pacotes">Pacotes</a>
+      <a href="#faq">Dúvidas</a>
+      <a href="../index.html">Acessar o sistema</a>
+      <a class="btn btn-azul" href="#contato" data-whats>Falar com a gente</a>
+    </div>
+  </div>
+</header>
+
+<!-- ======================= HERO ======================= -->
+<section class="hero grade" id="inicio">
+  <span class="brilho brilho-central"></span>
+  <div class="container">
+    <span class="selo">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5z"/></svg>
+      Feito para marcas que querem crescer com propósito
+    </span>
+    <h1>Sua marca merece mais<br><span class="gradiente">que apenas aparecer.</span></h1>
+    <p class="sub">A Agência Cavalcante une marketing estratégico e produção audiovisual num único fluxo — do primeiro contato à campanha no ar.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-azul" href="#contato" data-whats data-msg="Olá! Quero um diagnóstico gratuito para a minha marca.">
+        Quero um diagnóstico gratuito
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a>
+      <a class="btn btn-fantasma" href="#sistema">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+        Ver como trabalhamos
+      </a>
+    </div>
+    <div class="hero-nota">
+      <span><i class="ponto-pulso"></i>Resposta em até 24h</span>
+      <span>Sem compromisso</span>
+    </div>
+
+    <!-- EDITE: seus números reais -->
+    <div class="numeros revelar">
+      <div class="cartao"><b>+40</b><span>marcas atendidas</span></div>
+      <div class="cartao"><b>5 anos</b><span>de estrada</span></div>
+      <div class="cartao"><b>+2M</b><span>de views geradas</span></div>
+      <div class="cartao"><b>100%</b><span>foco em resultado</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PROBLEMA ======================= -->
+<section>
+  <div class="container" style="text-align:center">
+    <span class="olho">O custo invisível do improviso</span>
+    <h2 class="titulo">O caos não aparece só no feed.<br><span class="apagado">Ele aparece no faturamento.</span></h2>
+    <p class="sub" style="margin-left:auto;margin-right:auto">Quando estratégia, produção e mensuração ficam separadas, você perde audiência, oportunidade e receita — mesmo trabalhando cada vez mais.</p>
+    <div class="grade-cartoes revelar" style="text-align:left">
+      <div class="cartao problema-cartao"><b>01</b><p>Sua marca produz conteúdo, mas ninguém para. O engajamento cai e o retorno some.</p></div>
+      <div class="cartao problema-cartao"><b>02</b><p>O vídeo institucional ficou datado, sem estratégia e sem identidade real.</p></div>
+      <div class="cartao problema-cartao"><b>03</b><p>O tráfego pago consome orçamento sem conversão porque a comunicação não conecta.</p></div>
+      <div class="cartao problema-cartao"><b>04</b><p>Cada material sai de um lugar diferente e a marca perde consistência visual.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= SERVIÇOS ======================= -->
+<section id="servicos" class="grade">
+  <span class="brilho" style="top:20%;left:-180px;width:420px;height:420px;background:rgba(67,97,238,.12)"></span>
+  <div class="container">
+    <div class="servicos-cab">
+      <div>
+        <span class="olho">Tudo em um só lugar</span>
+        <h2 class="titulo">Menos fornecedor.<br><span class="gradiente">Mais resultado.</span></h2>
+      </div>
+      <p class="sub">Conectamos as áreas que mais geram retrabalho na comunicação de uma marca. A estratégia nasce uma vez e acompanha o projeto até o resultado.</p>
+    </div>
+    <div class="servicos-grade revelar">
+      <div class="cartao servico">
+        <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg></span>
+        <span class="olho">Marketing digital</span>
+        <h3>Estratégia que gera resultado, não só postagem bonita.</h3>
+        <p>Planejamento de conteúdo, gestão de redes e posicionamento com foco nas métricas que importam para o seu negócio.</p>
+      </div>
+      <div class="cartao servico">
+        <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m15 8 4.5-2.5v13L15 16"/><rect x="2.5" y="6" width="12.5" height="12" rx="2.5"/></svg></span>
+        <span class="olho">Produção audiovisual</span>
+        <h3>Filmes institucionais, publicitários e conteúdo com alma.</h3>
+        <p>Roteiro, direção, captação em 4K (inclusive com drone), edição e finalização — tudo pensado para comunicar o que sua marca representa.</p>
+      </div>
+      <div class="cartao servico">
+        <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9c0-1.1-.9-2-2-2h-2a2 2 0 0 1-2-2V6a2.9 2.9 0 0 0-3-3z"/><circle cx="8" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="7.5" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/></svg></span>
+        <span class="olho">Identidade visual</span>
+        <h3>Uma marca que se sustenta em qualquer canal.</h3>
+        <p>Logo, paleta, sistema visual e manual de marca. Uma identidade coerente vale mais que mil peças soltas.</p>
+      </div>
+      <div class="cartao servico">
+        <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span>
+        <span class="olho">Tráfego pago</span>
+        <h3>Campanhas que vendem enquanto você dorme.</h3>
+        <p>Anúncios em Meta (Facebook/Instagram), Google e TikTok com criativos próprios, otimização constante e relatórios que falam a sua língua.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= SISTEMA (SHOWCASE) ======================= -->
+<section id="sistema" class="grade">
+  <span class="brilho" style="top:30%;left:50%;transform:translateX(-50%);width:760px;height:420px;background:rgba(67,97,238,.16)"></span>
+  <div class="container" style="text-align:center">
+    <span class="olho">A Cavalcante por dentro</span>
+    <h2 class="titulo">Menos promessa.<br><span class="apagado">Mais entrega no ar.</span></h2>
+    <p class="sub" style="margin-left:auto;margin-right:auto">Toda a operação — projetos, gravações, propostas, tráfego e financeiro — roda no nosso sistema próprio, o <b style="color:var(--tinta)">AgênciaHub</b>. Nada se perde em conversa solta.</p>
+
+    <div class="moldura revelar" style="max-width:860px;margin:52px auto 0">
+      <div class="mock" aria-hidden="true">
+        <div class="mock-topo"><i></i><i></i><i></i></div>
+        <div class="mock-corpo">
+          <div class="mock-menu"><i class="ativo"></i><i></i><i></i><i></i><i></i></div>
+          <div class="mock-main">
+            <span class="mock-sub">terça-feira · painel da agência</span>
+            <div class="mock-ola">Boa tarde, Cavalcante.</div>
+            <div class="mock-tiles">
+              <div class="mock-tile"><span>Recebido no mês</span><b>R$ 24.150</b></div>
+              <div class="mock-tile"><span>Projetos ativos</span><b>7</b></div>
+              <div class="mock-tile"><span>Anúncios no mês</span><b>R$ 4.980</b></div>
+            </div>
+            <div class="mock-lista">
+              <div class="mock-item"><i style="background:#a78bfa"></i>Gravação — Clínica Vida <span class="fim">qui · 08:00</span></div>
+              <div class="mock-item"><i style="background:#fb923c"></i>Entrega — Aftermovie do evento <span class="fim">sex · 18:00</span></div>
+              <div class="mock-item"><i style="background:#4ade80"></i>Posts da semana — Supermercado <span class="fim">agendado</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chips-linha revelar" style="justify-content:center;margin-top:30px">
+      <span class="chip">Visão central</span>
+      <span class="chip">Agenda clara</span>
+      <span class="chip">Números reais</span>
+      <span class="chip">Equipe alinhada</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PORTAL DO CLIENTE ======================= -->
+<section id="portal">
+  <div class="container dividida">
+    <div class="texto revelar">
+      <span class="olho">Portal do cliente</span>
+      <h3>Você acompanha tudo.<br><span class="gradiente">Sem precisar perguntar.</span></h3>
+      <p>Cada cliente recebe um link exclusivo, direto no WhatsApp, com o andamento dos projetos em tempo de relatório: etapa por etapa, agenda de gravações, resultados dos anúncios e pagamentos.</p>
+      <ul class="lista-check">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Barra de progresso de cada projeto</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Investimento e resultado do tráfego pago, espelhados do Gerenciador</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Próximas gravações, entregas e reuniões</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Só os dados dele — cada cliente vê apenas o que é seu</li>
+      </ul>
+    </div>
+    <div class="revelar">
+      <div class="moldura">
+        <div class="mock" aria-hidden="true">
+          <div class="mock-main" style="padding:18px">
+            <span class="mock-sub">portal do cliente</span>
+            <div class="mock-ola">Olá, Supermercado Central!</div>
+            <div class="mock-lista" style="margin-top:12px">
+              <div class="mock-item" style="display:block">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <b style="font-size:11.5px">Social media — agosto</b>
+                  <span class="tag-mock tag-azul">Produção</span>
+                </div>
+                <div class="mock-barra"><i style="width:55%"></i></div>
+              </div>
+              <div class="mock-item" style="display:block">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <b style="font-size:11.5px">Vídeo da inauguração</b>
+                  <span class="tag-mock tag-verde">Entregue ✓</span>
+                </div>
+                <div class="mock-barra"><i style="width:100%;background:#4ade80"></i></div>
+              </div>
+            </div>
+            <div class="mock-tiles" style="margin-top:10px">
+              <div class="mock-tile"><span>Anúncios no mês</span><b>R$ 980</b></div>
+              <div class="mock-tile"><span>Conversas geradas</span><b>198</b></div>
+              <div class="mock-tile"><span>Custo por conversa</span><b>R$ 4,95</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TRÁFEGO ======================= -->
+<section class="grade">
+  <div class="container dividida invertida">
+    <div class="texto revelar">
+      <span class="olho">Tráfego pago transparente</span>
+      <h3>O número que você vê<br><span class="apagado">é o número que existe.</span></h3>
+      <p>Nada de print solto: cada campanha no Meta, Google ou TikTok tem investimento, alcance, cliques, resultados e custo por resultado registrados período a período — e o seu cliente vê no portal.</p>
+      <div class="chips-linha">
+        <span class="chip">Meta Ads</span>
+        <span class="chip">Google Ads</span>
+        <span class="chip">TikTok Ads</span>
+        <span class="chip">CTR · CPC · ROAS</span>
+      </div>
+    </div>
+    <div class="revelar">
+      <div class="moldura">
+        <div class="mock" aria-hidden="true">
+          <div class="mock-main" style="padding:18px">
+            <span class="mock-sub">tráfego pago · meta ads</span>
+            <div class="mock-ola">Ofertas da semana — WhatsApp</div>
+            <div class="mock-tiles" style="margin-top:12px">
+              <div class="mock-tile"><span>Investido</span><b>R$ 2.230</b></div>
+              <div class="mock-tile"><span>Alcance</span><b>135.600</b></div>
+              <div class="mock-tile"><span>Cliques</span><b>7.110</b></div>
+              <div class="mock-tile"><span>Conversas</span><b>594</b></div>
+              <div class="mock-tile"><span>Custo/conversa</span><b>R$ 3,75</b></div>
+              <div class="mock-tile"><span>CTR</span><b>2,5%</b></div>
+            </div>
+            <div class="mock-item" style="margin-top:10px"><i style="background:#4ade80"></i>Campanha ativa · atualizada semanalmente</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= COMPARATIVO ======================= -->
+<section>
+  <div class="container" style="text-align:center">
+    <span class="olho">A conta que ninguém faz</span>
+    <h2 class="titulo">Quanto custa continuar<br><span class="apagado">do jeito que está?</span></h2>
+    <div class="tabela-wrap revelar" style="text-align:left">
+      <table class="comparativo">
+        <thead>
+          <tr>
+            <th>Rotina</th>
+            <th>Hoje</th>
+            <th class="destaque">Com a Cavalcante</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Estratégia</td><td class="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M17 7 7 17M7 7l10 10"/></svg>Improviso e achismo</td><td class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Plano trimestral</td></tr>
+          <tr><td>Redes sociais</td><td class="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M17 7 7 17M7 7l10 10"/></svg>Postagem sem propósito</td><td class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Conteúdo com estratégia</td></tr>
+          <tr><td>Vídeo</td><td class="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M17 7 7 17M7 7l10 10"/></svg>Freelancer por demanda</td><td class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Produtora dedicada</td></tr>
+          <tr><td>Anúncios</td><td class="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M17 7 7 17M7 7l10 10"/></svg>Impulsionar no botão azul</td><td class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Tráfego otimizado</td></tr>
+          <tr><td>Acompanhamento</td><td class="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M17 7 7 17M7 7l10 10"/></svg>Prints soltos no grupo</td><td class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Portal do cliente</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PACOTES ======================= -->
+<section id="pacotes" class="grade">
+  <span class="brilho" style="top:20%;left:50%;transform:translateX(-50%);width:760px;height:420px;background:rgba(67,97,238,.14)"></span>
+  <div class="container" style="text-align:center">
+    <span class="olho">Planos mensais</span>
+    <h2 class="titulo">Escolha o tamanho<br><span class="apagado">do próximo passo.</span></h2>
+    <p class="sub" style="margin-left:auto;margin-right:auto">Valores de referência — cada marca recebe uma proposta sob medida depois do diagnóstico gratuito.</p>
+
+    <!-- EDITE: nomes, preços e itens dos pacotes -->
+    <div class="pacotes-grade revelar" style="text-align:left">
+      <div class="cartao pacote">
+        <span class="pacote-nome">ESSENCIAL</span>
+        <div class="pacote-preco"><small>a partir de</small><b><i>R$</i> 1.500<i>/mês</i></b></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Gestão de 2 redes sociais</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>12 posts + 8 stories por mês</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>1 vídeo curto mensal</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Relatório mensal no portal</li>
+        </ul>
+        <a class="btn btn-fantasma" href="#contato" data-whats data-msg="Olá! Tenho interesse no pacote Essencial.">Começar Essencial</a>
+      </div>
+
+      <div class="cartao pacote destaque">
+        <span class="pacote-selo">MAIS ESCOLHIDO</span>
+        <span class="pacote-nome">PROFISSIONAL</span>
+        <div class="pacote-preco"><small>a partir de</small><b><i>R$</i> 2.900<i>/mês</i></b></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Gestão completa de redes</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Posts + Reels toda semana</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>1 vídeo institucional por mês</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Gestão de tráfego pago</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Portal do cliente exclusivo</li>
+        </ul>
+        <a class="btn btn-azul" href="#contato" data-whats data-msg="Olá! Tenho interesse no pacote Profissional.">Começar Profissional</a>
+      </div>
+
+      <div class="cartao pacote">
+        <span class="pacote-nome">PREMIUM</span>
+        <div class="pacote-preco"><small>sob consulta</small><b>360º</b></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Estratégia completa da marca</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Produção audiovisual dedicada</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Cobertura de eventos e drone</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Identidade visual inclusa</li>
+        </ul>
+        <a class="btn btn-fantasma" href="#contato" data-whats data-msg="Olá! Quero saber mais sobre o pacote Premium.">Falar com o time</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FAQ ======================= -->
+<section id="faq">
+  <div class="container faq-grade">
+    <div class="revelar">
+      <span class="olho">Dúvidas frequentes</span>
+      <h2 class="titulo" style="font-size:clamp(28px,4vw,42px)">Antes de começar,<br>você pode querer saber.</h2>
+      <p class="sub">Se sobrar alguma dúvida, chama a gente no WhatsApp antes de fechar qualquer pacote. É de graça.</p>
+    </div>
+    <div class="revelar" id="faq-lista">
+      <div class="faq-item aberto">
+        <button class="faq-perg">Preciso ter equipe de marketing na minha empresa?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="faq-resp"><p>Não. A Agência Cavalcante funciona como o braço de marketing e produção da sua empresa: cuidamos de estratégia, execução e mensuração.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-perg">Serve para negócio pequeno ou só para marca grande?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="faq-resp"><p>Atendemos do negócio local à marca em expansão. O pacote Essencial foi desenhado para caber no orçamento de empresas menores sem abrir mão de qualidade.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-perg">Como funciona a produção de um vídeo institucional?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="faq-resp"><p>Começa com um briefing estratégico, depois roteiro, pré-produção, gravação com equipe e equipamentos próprios (inclusive drone) e finalização com edição, cor e som.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-perg">Vocês atendem fora da cidade?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="faq-resp"><p>Sim. Atendemos remotamente e nos deslocamos para gravações sempre que necessário — as diárias de deslocamento entram no orçamento, sem surpresa.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-perg">Consigo acompanhar o andamento do meu projeto?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="faq-resp"><p>Sim — esse é o nosso diferencial. Você recebe um link exclusivo do Portal do Cliente com o andamento dos projetos, agenda de gravações e resultados dos anúncios, direto no seu WhatsApp.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CTA FINAL ======================= -->
+<section id="contato">
+  <div class="container">
+    <div class="cartao cta-final revelar">
+      <span class="brilho"></span>
+      <span class="olho">Vamos conversar?</span>
+      <h2 class="titulo">Sua marca não precisa de mais um fornecedor.<br><span class="gradiente">Precisa de uma operação.</span></h2>
+      <p class="sub" style="margin-left:auto;margin-right:auto">Diagnóstico gratuito, sem compromisso. Conta pra gente onde sua marca está e onde quer chegar.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-azul" href="#" data-whats data-msg="Olá! Quero um diagnóstico gratuito para a minha marca.">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg>
+          Chamar no WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= RODAPÉ ======================= -->
+<footer>
+  <div class="container rodape-linha">
+    <a class="logo" href="#inicio">
+      <span class="logo-icone" style="width:32px;height:32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round" style="width:16px;height:16px"><path d="m15 8 4.5-2.5v13L15 16"/><rect x="2.5" y="6" width="12.5" height="12" rx="2.5"/></svg></span>
+      <span><strong style="font-size:14px">Agência <span>Cavalcante</span></strong></span>
+    </a>
+    <div class="rodape-links">
+      <!-- EDITE: @ do Instagram -->
+      <a href="https://instagram.com/agenciacavalcante" target="_blank" rel="noopener">Instagram</a>
+      <a href="../index.html">Acessar o sistema</a>
+      <span>© 2026 Agência Cavalcante</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* EDITE AQUI: número do WhatsApp da agência (só dígitos, com 55 + DDD) */
+  var WHATSAPP = '5588999999999';
+
+  var MSG_PADRAO = 'Olá! Vim pelo site da Agência Cavalcante e quero saber mais.';
+  document.querySelectorAll('[data-whats]').forEach(function (el) {
+    var msg = el.getAttribute('data-msg') || MSG_PADRAO;
+    el.setAttribute('href', 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg));
+    el.setAttribute('target', '_blank');
+    el.setAttribute('rel', 'noopener');
+  });
+
+  var header = document.getElementById('topo-header');
+  var aoRolar = function () { header.classList.toggle('rolou', window.scrollY > 24); };
+  window.addEventListener('scroll', aoRolar, { passive: true });
+  aoRolar();
+
+  var menu = document.getElementById('menu-mobile');
+  document.getElementById('btn-menu').addEventListener('click', function () {
+    menu.classList.toggle('aberto');
+  });
+  menu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () { menu.classList.remove('aberto'); });
+  });
+
+  document.querySelectorAll('.faq-item').forEach(function (item) {
+    item.querySelector('.faq-perg').addEventListener('click', function () {
+      var estavaAberto = item.classList.contains('aberto');
+      document.querySelectorAll('.faq-item').forEach(function (i) { i.classList.remove('aberto'); });
+      if (!estavaAberto) item.classList.add('aberto');
+    });
+  });
+
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('visivel'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.revelar').forEach(function (el) { obs.observe(el); });
+  } else {
+    document.querySelectorAll('.revelar').forEach(function (el) { el.classList.add('visivel'); });
+  }
+})();
+</script>
+</body>
+</html>

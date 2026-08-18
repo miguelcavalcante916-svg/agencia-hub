@@ -100,6 +100,11 @@
     window.addEventListener('hashchange', navegar);
     if (!location.hash) location.hash = '#/dashboard';
     navegar();
+
+    // app instalável (PWA) — só quando servido por http(s)
+    if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+      navigator.serviceWorker.register('sw.js').catch(function () { /* sem suporte, segue normal */ });
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
