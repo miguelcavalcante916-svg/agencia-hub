@@ -9,8 +9,11 @@
     { hash: '#/projetos', view: 'projetos', nome: 'Projetos', icone: 'projetos' },
     { hash: '#/tarefas', view: 'tarefas', nome: 'Tarefas', icone: 'tarefas' },
     { hash: '#/calendario', view: 'calendario', nome: 'Calendário', icone: 'calendario' },
+    { hash: '#/conteudo', view: 'conteudo', nome: 'Conteúdo', icone: 'conteudo' },
+    { hash: '#/aprovacoes', view: 'aprovacoes', nome: 'Aprovações', icone: 'aprovacao' },
     { hash: '#/propostas', view: 'propostas', nome: 'Propostas', icone: 'propostas' },
     { hash: '#/trafego', view: 'trafego', nome: 'Tráfego pago', icone: 'megafone' },
+    { hash: '#/leads', view: 'leads', nome: 'Leads', icone: 'leads' },
     { hash: '#/financeiro', view: 'financeiro', nome: 'Financeiro', icone: 'financeiro' },
     { hash: '#/portal', view: 'portal', nome: 'Portal do cliente', icone: 'portal' },
     { hash: '#/equipamentos', view: 'equipamentos', nome: 'Equipamentos', icone: 'equipamentos' },
@@ -23,7 +26,9 @@
   function contadores() {
     return {
       tarefas: AH.state.tarefas.filter(function (t) { return !t.feita; }).length,
-      projetos: AH.state.projetos.filter(function (p) { return p.status !== 'entregue'; }).length
+      projetos: AH.state.projetos.filter(function (p) { return p.status !== 'entregue'; }).length,
+      aprovacoes: AH.state.materiais.filter(function (m) { return m.status === 'aguardando'; }).length,
+      leads: AH.state.leads.filter(function (l) { return l.status === 'novo'; }).length
     };
   }
 
@@ -34,6 +39,8 @@
       var extra = '';
       if (r.view === 'tarefas' && cont.tarefas) extra = '<span class="nav-cont">' + cont.tarefas + '</span>';
       if (r.view === 'projetos' && cont.projetos) extra = '<span class="nav-cont">' + cont.projetos + '</span>';
+      if (r.view === 'aprovacoes' && cont.aprovacoes) extra = '<span class="nav-cont">' + cont.aprovacoes + '</span>';
+      if (r.view === 'leads' && cont.leads) extra = '<span class="nav-cont">' + cont.leads + '</span>';
       return '<a class="nav-item' + (rotaAtual && rotaAtual.view === r.view ? ' ativo' : '') + '" href="' + r.hash + '">' +
         AH.icons[r.icone] + '<span>' + r.nome + '</span>' + extra + '</a>';
     }).join('');

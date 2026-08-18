@@ -172,7 +172,42 @@
       { id: 'ativa', nome: 'Ativa' },
       { id: 'pausada', nome: 'Pausada' },
       { id: 'encerrada', nome: 'Encerrada' }
-    ]
+    ],
+    canaisPostagem: [
+      { id: 'instagram', nome: 'Instagram' },
+      { id: 'facebook', nome: 'Facebook' },
+      { id: 'tiktok', nome: 'TikTok' },
+      { id: 'youtube', nome: 'YouTube' },
+      { id: 'outro', nome: 'Outro' }
+    ],
+    formatosPostagem: ['Reels', 'Post estático', 'Carrossel', 'Story', 'Vídeo longo', 'Outro'],
+    statusPostagem: [
+      { id: 'ideia', nome: 'Ideia' },
+      { id: 'producao', nome: 'Em produção' },
+      { id: 'aprovacao', nome: 'Em aprovação' },
+      { id: 'agendada', nome: 'Agendada' },
+      { id: 'publicada', nome: 'Publicada' }
+    ],
+    tiposMaterial: ['Vídeo', 'Arte / Design', 'Roteiro', 'Foto', 'Outro'],
+    statusMaterial: [
+      { id: 'aguardando', nome: 'Aguardando cliente' },
+      { id: 'ajustes', nome: 'Em ajustes' },
+      { id: 'aprovado', nome: 'Aprovado' }
+    ],
+    statusLead: [
+      { id: 'novo', nome: 'Novo' },
+      { id: 'contato', nome: 'Em contato' },
+      { id: 'negociacao', nome: 'Negociação' },
+      { id: 'convertido', nome: 'Convertido' },
+      { id: 'perdido', nome: 'Perdido' }
+    ],
+    origensLead: ['Anúncio Meta', 'Anúncio Google', 'Anúncio TikTok', 'Orgânico / Perfil', 'Indicação', 'WhatsApp', 'Outro']
+  };
+
+  // Busca o nome de um item {id, nome} numa lista do domínio
+  AH.nomeDe = function (lista, id) {
+    var x = (lista || []).filter(function (i) { return i.id === id; })[0];
+    return x ? x.nome : id;
   };
 
   AH.nomeColuna = function (id) {
@@ -208,6 +243,9 @@
       equipamentos: [],
       equipe: [],
       campanhas: [],
+      postagens: [],
+      materiais: [],
+      leads: [],
       proximoNumeroProposta: 1
     };
   }
@@ -325,6 +363,20 @@
       });
     });
     return lista;
+  };
+
+  /* ---------- leads e conversões ---------- */
+
+  // Resumo do funil para uma lista de leads
+  AH.resumoLeads = function (leads) {
+    var r = { total: leads.length, novo: 0, contato: 0, negociacao: 0, convertido: 0, perdido: 0, valor: 0 };
+    leads.forEach(function (l) {
+      if (r[l.status] !== undefined) r[l.status]++;
+      if (l.status === 'convertido') r.valor += Number(l.valor) || 0;
+    });
+    r.emAndamento = r.novo + r.contato + r.negociacao;
+    r.taxa = r.total > 0 ? r.convertido / r.total : null;
+    return r;
   };
 
   /* ---------- dados de demonstração ---------- */
@@ -523,6 +575,57 @@
         ]
       }
     ];
+    var camp1 = s.campanhas[0], camp2 = s.campanhas[1], camp3 = s.campanhas[2];
+
+    var post = function (clienteId, titulo, canal, formato, data, status, projetoId) {
+      return {
+        id: AH.uid(), clienteId: clienteId, projetoId: projetoId || '', titulo: titulo,
+        canal: canal, formato: formato, data: data, status: status, legenda: '', linkPublicacao: ''
+      };
+    };
+    s.postagens = [
+      post(c2.id, 'Reels — Ofertas da semana', 'instagram', 'Reels', d(1), 'agendada', p3.id),
+      post(c2.id, 'Carrossel — Receitas com produtos da loja', 'instagram', 'Carrossel', d(3), 'aprovacao', p3.id),
+      post(c2.id, 'Post — Sorteio de aniversário da loja', 'instagram', 'Post estático', d(6), 'producao', p3.id),
+      post(c2.id, 'Story — Bastidores da gravação', 'instagram', 'Story', d(2), 'ideia', p3.id),
+      post(c2.id, 'Reels — Tour pela loja reformada', 'instagram', 'Reels', d(-2), 'publicada', p3.id),
+      post(c5.id, 'Reels — Teaser da nova coleção', 'tiktok', 'Reels', d(4), 'producao'),
+      post(c5.id, 'Carrossel — Lookbook agosto', 'instagram', 'Carrossel', d(7), 'ideia')
+    ];
+
+    var mat = function (clienteId, projetoId, titulo, tipo, status, enviadoEm, link) {
+      return {
+        id: AH.uid(), clienteId: clienteId, projetoId: projetoId || '', titulo: titulo,
+        tipo: tipo, status: status, enviadoEm: enviadoEm, link: link || '', notas: ''
+      };
+    };
+    s.materiais = [
+      mat(c4.id, p1.id, 'Corte 1 — Aftermovie da vaquejada', 'Vídeo', 'aguardando', d(-1)),
+      mat(c2.id, p3.id, 'Artes do carrossel de receitas', 'Arte / Design', 'aguardando', d(0)),
+      mat(c3.id, p2.id, 'Roteiro do vídeo institucional', 'Roteiro', 'aprovado', d(-3)),
+      mat(c5.id, p6.id, 'Logo — caminho criativo 2', 'Arte / Design', 'ajustes', d(-2))
+    ];
+
+    var lead = function (clienteId, campanhaId, nome, contato, origem, data, status, valor) {
+      return {
+        id: AH.uid(), clienteId: clienteId, campanhaId: campanhaId || '', nome: nome,
+        contato: contato || '', origem: origem, data: data, status: status,
+        valor: valor || 0, notas: ''
+      };
+    };
+    s.leads = [
+      lead(c2.id, camp1.id, 'Maria das Graças', '(88) 97777-0001', 'Anúncio Meta', d(-1), 'convertido', 180),
+      lead(c2.id, camp1.id, 'João Ferreira', '(88) 97777-0002', 'Anúncio Meta', d(-2), 'convertido', 220),
+      lead(c2.id, camp1.id, 'Rita Cavalcanti', '(88) 97777-0003', 'Anúncio Meta', d(0), 'contato'),
+      lead(c2.id, camp1.id, 'Severino Alves', '', 'Anúncio Meta', d(0), 'novo'),
+      lead(c2.id, '', 'Dona Lurdes (balcão)', '', 'Indicação', d(-4), 'convertido', 95),
+      lead(c5.id, camp2.id, 'Ana Beatriz', '(88) 97777-0005', 'Anúncio Meta', d(-1), 'convertido', 350),
+      lead(c5.id, camp2.id, 'Camila Rocha', '(88) 97777-0006', 'Anúncio Meta', d(-3), 'negociacao'),
+      lead(c5.id, camp2.id, 'Patrícia Nunes', '', 'Anúncio Meta', d(0), 'novo'),
+      lead(c5.id, camp2.id, 'Fernanda Melo', '', 'Anúncio Meta', d(-6), 'perdido'),
+      lead(c3.id, camp3.id, 'Carlos Andrade', '(88) 97777-0009', 'Anúncio Google', m(-1) + '-20', 'convertido', 900),
+      lead(c3.id, camp3.id, 'Helena Castro', '', 'Anúncio Google', d(-2), 'contato')
+    ];
 
     return s;
   };
@@ -568,6 +671,42 @@
         };
       });
 
+    var postagens = AH.state.postagens
+      .filter(function (pt) { return pt.clienteId === clienteId; })
+      .sort(function (a, b) { return String(a.data).localeCompare(String(b.data)); });
+    var pipeline = postagens.filter(function (pt) { return pt.status !== 'publicada'; }).slice(0, 8);
+    var publicadas = postagens.filter(function (pt) { return pt.status === 'publicada'; }).slice(-4).reverse();
+    var postagensPortal = pipeline.concat(publicadas).map(function (pt) {
+      return { titulo: pt.titulo, canal: pt.canal, formato: pt.formato, data: pt.data, status: pt.status, link: pt.linkPublicacao || '' };
+    });
+
+    var materiais = AH.state.materiais
+      .filter(function (mt) { return mt.clienteId === clienteId; })
+      .sort(function (a, b) { return String(b.enviadoEm).localeCompare(String(a.enviadoEm)); });
+    var pendentes = materiais.filter(function (mt) { return mt.status !== 'aprovado'; });
+    var aprovados = materiais.filter(function (mt) { return mt.status === 'aprovado'; }).slice(0, 3);
+    var materiaisPortal = pendentes.concat(aprovados).map(function (mt) {
+      var proj = AH.projetoPorId(mt.projetoId);
+      return {
+        titulo: mt.titulo, tipo: mt.tipo, status: mt.status, link: mt.link || '',
+        enviadoEm: mt.enviadoEm, projeto: proj ? proj.titulo : ''
+      };
+    });
+
+    var leadsCliente = AH.state.leads.filter(function (l) { return l.clienteId === clienteId; });
+    var mmAtual = hoje.slice(0, 7);
+    var leadsMes = leadsCliente.filter(function (l) { return String(l.data).slice(0, 7) === mmAtual; });
+    var resumoMes = AH.resumoLeads(leadsMes);
+    var resumoGeral = AH.resumoLeads(leadsCliente);
+    var leadsPortal = (leadsCliente.length || null) && {
+      mes: {
+        total: resumoMes.total, novo: resumoMes.novo, contato: resumoMes.contato,
+        negociacao: resumoMes.negociacao, convertido: resumoMes.convertido,
+        perdido: resumoMes.perdido, valor: resumoMes.valor, taxa: resumoMes.taxa
+      },
+      geral: { total: resumoGeral.total, convertido: resumoGeral.convertido, valor: resumoGeral.valor }
+    };
+
     var cobrancas = [];
     if (opcoes.incluirCobrancas) {
       cobrancas = AH.state.lancamentos
@@ -590,6 +729,9 @@
       projetos: projetos,
       eventos: eventos,
       campanhas: campanhas,
+      postagens: postagensPortal,
+      materiais: materiaisPortal,
+      leads: leadsPortal || null,
       cobrancas: cobrancas
     };
   };

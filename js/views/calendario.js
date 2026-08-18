@@ -56,8 +56,9 @@
   function abrirDia(iso) {
     var eventos = AH.state.eventos.filter(function (e) { return e.data === iso; })
       .sort(function (a, b) { return String(a.hora).localeCompare(String(b.hora)); });
+    var postagens = AH.state.postagens.filter(function (pt) { return pt.data === iso; });
     var corpo = '';
-    if (eventos.length) {
+    if (eventos.length || postagens.length) {
       corpo += '<div class="lista">';
       eventos.forEach(function (e) {
         var cor = AH.ui.corEvento[e.tipo] || 'cinza';
@@ -69,6 +70,13 @@
           (e.clienteId ? ' · ' + AH.esc(AH.nomeCliente(e.clienteId)) : '') +
           (e.local ? ' · ' + AH.esc(e.local) : '') + '</div></div>' +
           AH.icons.seta_dir + '</div>';
+      });
+      postagens.forEach(function (pt) {
+        corpo += '<div class="lista-item" style="cursor:pointer" data-post="' + pt.id + '">' +
+          '<span class="ponto ponto-verde"></span>' +
+          '<div class="principal"><div class="titulo">' + AH.esc(pt.titulo) + '</div>' +
+          '<div class="sub">Postagem · ' + AH.esc(AH.nomeCliente(pt.clienteId)) + '</div></div>' +
+          AH.ui.badgeStatusPostagem(pt.status) + '</div>';
       });
       corpo += '</div>';
     } else {
@@ -85,6 +93,11 @@
           item.addEventListener('click', function () {
             var e = AH.state.eventos.filter(function (x) { return x.id === item.getAttribute('data-ev'); })[0];
             abrirFormEvento(e);
+          });
+        });
+        modal.querySelectorAll('[data-post]').forEach(function (item) {
+          item.addEventListener('click', function () {
+            AH.views.conteudo.editarPostagem(item.getAttribute('data-post'));
           });
         });
       },
@@ -112,6 +125,13 @@
     var porDia = {};
     AH.state.eventos.forEach(function (e) {
       (porDia[e.data] = porDia[e.data] || []).push(e);
+    });
+    // postagens de conteúdo com data entram como compromissos do tipo "postagem"
+    AH.state.postagens.forEach(function (pt) {
+      if (!pt.data) return;
+      (porDia[pt.data] = porDia[pt.data] || []).push({
+        _postagemId: pt.id, titulo: pt.titulo, data: pt.data, hora: '', tipo: 'postagem'
+      });
     });
 
     var html = '<div class="cal-cab">' +

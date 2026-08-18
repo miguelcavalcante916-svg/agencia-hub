@@ -53,6 +53,38 @@
     }
     html += '<div class="grid grid-4 portal-tiles">' + tiles.join('') + '</div>';
 
+    /* materiais para aprovação (processo criativo) */
+    var pendentesMat = (d.materiais || []).filter(function (mt) { return mt.status !== 'aprovado'; });
+    var aprovadosMat = (d.materiais || []).filter(function (mt) { return mt.status === 'aprovado'; });
+    if ((d.materiais || []).length) {
+      html += secao('aprovacao', 'Materiais para você revisar');
+      html += '<div class="card" style="padding:8px 16px"><div class="lista">';
+      pendentesMat.forEach(function (mt) {
+        var rotulo = mt.titulo + (mt.projeto ? ' (projeto: ' + mt.projeto + ')' : '');
+        var msgAprovar = 'Olá! APROVO o material "' + rotulo + '". Pode seguir!';
+        var msgAjustes = 'Olá! Sobre o material "' + rotulo + '", quero pedir os seguintes ajustes: ';
+        html += '<div class="lista-item" style="flex-wrap:wrap">' +
+          '<div class="principal"><div class="titulo">' + AH.esc(mt.titulo) + '</div>' +
+          '<div class="sub">' + AH.esc(mt.tipo) + (mt.projeto ? ' · ' + AH.esc(mt.projeto) : '') +
+          ' · enviado em ' + AH.fmt.data(mt.enviadoEm) + '</div></div>' +
+          AH.ui.badgeStatusMaterial(mt.status);
+        var botoes = '';
+        if (mt.link) botoes += '<a class="btn btn-p btn-contorno" href="' + AH.esc(mt.link) + '" target="_blank" rel="noopener">' + AH.icons.olho + 'Ver material</a>';
+        if (ag.whatsapp && mt.status === 'aguardando') {
+          botoes += '<a class="btn btn-p btn-verde" href="' + AH.telLink(ag.whatsapp) + '?text=' + encodeURIComponent(msgAprovar) + '" target="_blank" rel="noopener">' + AH.icons.check + 'Aprovar</a>' +
+            '<a class="btn btn-p btn-contorno" href="' + AH.telLink(ag.whatsapp) + '?text=' + encodeURIComponent(msgAjustes) + '" target="_blank" rel="noopener">' + AH.icons.editar + 'Pedir ajustes</a>';
+        }
+        if (botoes) html += '<span style="display:flex;gap:7px;flex-wrap:wrap;width:100%;padding:4px 0 8px">' + botoes + '</span>';
+        html += '</div>';
+      });
+      aprovadosMat.forEach(function (mt) {
+        html += '<div class="lista-item"><div class="principal"><div class="titulo">' + AH.esc(mt.titulo) + '</div>' +
+          '<div class="sub">' + AH.esc(mt.tipo) + (mt.projeto ? ' · ' + AH.esc(mt.projeto) : '') + '</div></div>' +
+          AH.ui.badgeStatusMaterial(mt.status) + '</div>';
+      });
+      html += '</div></div>';
+    }
+
     /* projetos */
     html += secao('projetos', 'Seus projetos');
     if ((d.projetos || []).length) {
@@ -73,6 +105,23 @@
       html += '</div>';
     } else {
       html += '<p class="nota-rodape">Nenhum projeto em andamento no momento.</p>';
+    }
+
+    /* postagens */
+    if ((d.postagens || []).length) {
+      html += secao('conteudo', 'Suas postagens');
+      html += '<div class="card" style="padding:8px 16px"><div class="lista">';
+      d.postagens.forEach(function (pt) {
+        html += '<div class="lista-item">' +
+          '<div class="principal"><div class="titulo">' + AH.esc(pt.titulo) + '</div>' +
+          '<div class="sub">' + AH.esc(AH.nomeDe(AH.dominio.canaisPostagem, pt.canal)) +
+          (pt.formato ? ' · ' + AH.esc(pt.formato) : '') +
+          (pt.data ? ' · ' + AH.fmt.data(pt.data) : '') +
+          (pt.link ? ' · <a href="' + AH.esc(pt.link) + '" target="_blank" rel="noopener">ver publicação</a>' : '') +
+          '</div></div>' +
+          AH.ui.badgeStatusPostagem(pt.status) + '</div>';
+      });
+      html += '</div></div>';
     }
 
     /* agenda */
@@ -111,6 +160,25 @@
           (ultimo ? '<p class="nota-rodape" style="margin-top:10px">Último período registrado: ' + AH.fmt.data(ultimo.de) + ' a ' + AH.fmt.data(ultimo.ate) + '.</p>' : '') +
           '</div>';
       });
+    }
+
+    /* leads e conversões */
+    if (d.leads && d.leads.mes) {
+      var lm = d.leads.mes, lg = d.leads.geral;
+      html += secao('leads', 'Leads e conversões — este mês');
+      html += '<div class="card">' +
+        '<div class="metricas-grid">' +
+        metrica('Leads no mês', AH.fmt.num(lm.total)) +
+        metrica('Novos contatos', AH.fmt.num(lm.novo)) +
+        metrica('Em negociação', AH.fmt.num(lm.contato + lm.negociacao)) +
+        metrica('Convertidos', AH.fmt.num(lm.convertido)) +
+        metrica('Taxa de conversão', lm.taxa != null ? AH.fmt.pct(lm.taxa) : '—') +
+        metrica('Valor gerado', AH.fmt.moeda(lm.valor)) +
+        '</div>' +
+        (lg && lg.total
+          ? '<p class="nota-rodape" style="margin-top:10px">Desde o início do trabalho: ' + AH.fmt.num(lg.convertido) + ' conversões · ' + AH.fmt.moeda(lg.valor) + ' gerados.</p>'
+          : '') +
+        '</div>';
     }
 
     /* cobranças */
@@ -163,6 +231,8 @@
 
   AH.portalPublico = function (payload) {
     document.body.classList.add('modo-portal');
+    // se o endereço mudar (ex.: navegar para o painel), recarrega no modo certo
+    window.addEventListener('hashchange', function () { location.reload(); });
     var raiz = document.getElementById('portal-publico');
     if (!raiz) {
       raiz = document.createElement('div');

@@ -19,11 +19,14 @@ pacotes, FAQ e uma vitrine do sistema e do portal do cliente.
 | **Clientes** | CRM simples: leads, clientes ativos, contatos com link direto para WhatsApp e Instagram |
 | **Projetos** | Kanban com arrastar e soltar: Briefing → Planejamento → Produção → Edição → Revisão → Entregue |
 | **Tarefas** | Lista rápida com prazos, prioridades, responsáveis e filtros (hoje, semana, atrasadas) |
-| **Calendário** | Agenda mensal de gravações, entregas, reuniões e postagens |
+| **Calendário** | Agenda mensal de gravações, entregas, reuniões — as postagens de conteúdo entram automaticamente |
+| **Conteúdo** | Pipeline de postagens por cliente: ideia → produção → aprovação → agendada → publicada, por canal (Instagram, TikTok...) |
+| **Aprovações** | Materiais criativos (cortes, artes, roteiros) com link — o cliente aprova ou pede ajuste pelo WhatsApp direto do portal |
 | **Propostas** | Orçamentos com itens, desconto e total automático — imprima ou salve em PDF para enviar no WhatsApp |
 | **Tráfego pago** | Abas por plataforma (Meta/Facebook, Google, TikTok): espelhe os números do Gerenciador de Anúncios — investimento, alcance, cliques, resultados, custo por resultado, CTR e ROAS |
+| **Leads** | Funil de leads por cliente (novo → contato → negociação → convertido), ligado às campanhas, com taxa de conversão e valor gerado |
 | **Financeiro** | Receitas e despesas por mês, contas a receber, resultado do mês |
-| **Portal do cliente** | Link exclusivo por cliente para enviar no WhatsApp: ele acompanha o andamento dos projetos, a agenda, os resultados dos anúncios e as cobranças — sem acessar o seu painel |
+| **Portal do cliente** | Link exclusivo por cliente para enviar no WhatsApp: andamento dos projetos, materiais para aprovar (com resposta por WhatsApp em 1 toque), postagens, agenda, resultados dos anúncios, leads/conversões e cobranças — sem acessar o seu painel |
 | **Equipamentos** | Controle de câmeras, lentes, drones, áudio e iluminação (disponível / em uso / manutenção) |
 | **Equipe** | Pessoas fixas e freelas, com carga de trabalho de cada uma |
 | **Configurações** | Dados da agência (saem nas propostas), backup e restauração |

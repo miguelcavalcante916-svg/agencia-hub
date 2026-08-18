@@ -159,6 +159,7 @@ body.modal-aberto { overflow: hidden; }
 .btn-ghost:hover { background: var(--surface-2); color: var(--texto); }
 .btn-contorno { background: transparent; }
 .btn-perigo { background: rgba(248, 113, 113, .12); border-color: rgba(248, 113, 113, .4); color: var(--vermelho); }
+.btn-verde { background: rgba(74, 222, 128, .12); border-color: rgba(74, 222, 128, .4); color: var(--verde); }
 .btn-icon { padding: 8px; }
 .btn-p { padding: 5px 10px; font-size: 12.5px; border-radius: 8px; }
 .btn-p svg { width: 15px; height: 15px; }
@@ -207,6 +208,7 @@ body.modal-aberto { overflow: hidden; }
 .badge-laranja { background: rgba(251, 146, 60, .12); color: var(--accent); border-color: rgba(251, 146, 60, .35); }
 .badge-cinza { background: rgba(148, 163, 184, .1); color: var(--texto-2); border-color: rgba(148, 163, 184, .25); }
 .badge-rosa { background: rgba(244, 114, 182, .12); color: var(--rosa); border-color: rgba(244, 114, 182, .35); }
+.badge-ciano { background: rgba(34, 211, 238, .1); color: var(--ciano); border-color: rgba(34, 211, 238, .3); }
 
 .chip {
   display: inline-flex; align-items: center; gap: 6px;

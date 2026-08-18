@@ -54,6 +54,9 @@
     upload: svg('<path d="M12 15V3m0 0 4 4m-4-4-4 4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>'),
     filme: svg('<rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="M7 4v16M17 4v16M2.5 9h4.5M2.5 15h4.5M17 9h4.5M17 15h4.5"/>'),
     megafone: svg('<path d="m3 11 18-6v14L3 13z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>'),
+    conteudo: svg('<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L6 21"/>'),
+    leads: svg('<path d="M3 4h18l-6.5 8v6l-5 3v-9z"/>'),
+    aprovacao: svg('<path d="M15 3h4a1.5 1.5 0 0 1 1.5 1.5V20a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 20V4.5A1.5 1.5 0 0 1 5 3h4"/><rect x="9" y="1.5" width="6" height="4" rx="1.5"/><path d="m8.5 13.5 2.5 2.5 5-5"/>'),
     portal: svg('<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 3.9 5.7 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.7-3.9-9S9.4 5.6 12 3z"/>'),
     olho: svg('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>'),
     externo: svg('<path d="M14 4h6v6"/><path d="m20 4-9 9"/><path d="M20 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5"/>')
@@ -96,6 +99,35 @@
 
   ui.badgeStatusCampanha = function (st) {
     var map = { ativa: ['Ativa', 'verde'], pausada: ['Pausada', 'amarelo'], encerrada: ['Encerrada', 'cinza'] };
+    var b = map[st] || [st, 'cinza'];
+    return '<span class="badge badge-' + b[1] + '">' + AH.esc(b[0]) + '</span>';
+  };
+
+  ui.badgeStatusPostagem = function (st) {
+    var map = {
+      ideia: ['Ideia', 'cinza'], producao: ['Em produção', 'azul'], aprovacao: ['Em aprovação', 'amarelo'],
+      agendada: ['Agendada', 'roxo'], publicada: ['Publicada', 'verde']
+    };
+    var b = map[st] || [st, 'cinza'];
+    return '<span class="badge badge-' + b[1] + '">' + AH.esc(b[0]) + '</span>';
+  };
+
+  ui.badgeCanal = function (canal) {
+    var map = { instagram: 'rosa', facebook: 'azul', tiktok: 'ciano', youtube: 'vermelho', outro: 'cinza' };
+    return '<span class="badge badge-' + (map[canal] || 'cinza') + '">' + AH.esc(AH.nomeDe(AH.dominio.canaisPostagem, canal)) + '</span>';
+  };
+
+  ui.badgeStatusMaterial = function (st) {
+    var map = { aguardando: ['Aguardando cliente', 'amarelo'], ajustes: ['Em ajustes', 'laranja'], aprovado: ['Aprovado', 'verde'] };
+    var b = map[st] || [st, 'cinza'];
+    return '<span class="badge badge-' + b[1] + '">' + AH.esc(b[0]) + '</span>';
+  };
+
+  ui.badgeStatusLead = function (st) {
+    var map = {
+      novo: ['Novo', 'azul'], contato: ['Em contato', 'ciano'], negociacao: ['Negociação', 'amarelo'],
+      convertido: ['Convertido', 'verde'], perdido: ['Perdido', 'cinza']
+    };
     var b = map[st] || [st, 'cinza'];
     return '<span class="badge badge-' + b[1] + '">' + AH.esc(b[0]) + '</span>';
   };
