@@ -396,7 +396,7 @@
     var eq = function (nome, funcao, whatsapp, cor) {
       return { id: AH.uid(), nome: nome, funcao: funcao, email: '', whatsapp: whatsapp || '', cor: cor };
     };
-    var m1 = eq('Você', 'Direção', '', '#fb923c');
+    var m1 = eq('Você', 'Direção', '', '#5878ff');
     var m2 = eq('Ana Souza', 'Edição de vídeo', '(88) 99999-0002', '#a78bfa');
     var m3 = eq('Pedro Lima', 'Filmmaker', '(88) 99999-0003', '#60a5fa');
     var m4 = eq('Carla Dias', 'Social media', '(88) 99999-0004', '#f472b6');

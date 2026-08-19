@@ -3,7 +3,7 @@
   'use strict';
   var AH = window.AH;
 
-  var CORES = ['#fb923c', '#a78bfa', '#60a5fa', '#f472b6', '#4ade80', '#22d3ee', '#facc15', '#f87171'];
+  var CORES = ['#5878ff', '#a78bfa', '#60a5fa', '#f472b6', '#4ade80', '#22d3ee', '#facc15', '#f87171'];
 
   function abrirForm(membro) {
     var m = membro || {};

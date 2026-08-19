@@ -332,7 +332,7 @@
       var y = padT + plotH - h;
       s += '<g class="barra" data-i="' + i + '">';
       if (d.total > 0) {
-        s += '<rect class="barra-visual" clip-path="url(#' + clipId + ')" x="' + x + '" y="' + y + '" width="' + larguraBarra + '" height="' + (h + 6) + '" rx="4" fill="#fb923c"/>';
+        s += '<rect class="barra-visual" clip-path="url(#' + clipId + ')" x="' + x + '" y="' + y + '" width="' + larguraBarra + '" height="' + (h + 6) + '" rx="4" fill="#5878ff"/>';
       } else {
         s += '<rect x="' + x + '" y="' + (padT + plotH - 2) + '" width="' + larguraBarra + '" height="2" rx="1" fill="#34405f"/>';
       }
