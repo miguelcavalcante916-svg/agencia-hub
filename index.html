@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
 <title>Agência Cavalcante — Marketing &amp; Produtora Audiovisual</title>
 <meta name="description" content="Marketing estratégico e produção audiovisual em um único fluxo — do primeiro contato à campanha no ar. Agência Cavalcante.">
@@ -50,6 +50,7 @@ body {
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
   overflow-x: hidden;
 }
 h1, h2, h3 { font-family: var(--fonte-titulo); letter-spacing: -.02em; text-wrap: balance; }
@@ -178,7 +179,8 @@ header.rolou { background: rgba(3, 4, 9, .78); backdrop-filter: blur(16px) satur
 .logo-icone svg { width: 19px; height: 19px; color: #fff; }
 .logo strong { font-size: 15.5px; display: block; line-height: 1.15; }
 .logo strong span { color: var(--azul-claro); }
-.logo small { font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--tinta-3); }
+.logo small { font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--tinta-3); white-space: nowrap; }
+@media (max-width: 399px) { .logo small { display: none; } }
 nav.principal { display: flex; gap: 28px; }
 nav.principal a { font-size: 14px; color: var(--tinta-2); position: relative; padding: 4px 0; transition: color .2s ease; }
 nav.principal a::after {
@@ -193,9 +195,10 @@ nav.principal a:hover { color: var(--tinta); }
 nav.principal a.ativa { color: var(--tinta); }
 nav.principal a.ativa::after { width: 100%; }
 .header-acoes { display: flex; align-items: center; gap: 14px; }
+.rotulo-curto { display: none; }
 .header-acoes .entrar { font-size: 14px; color: var(--tinta-2); transition: color .2s ease; }
 .header-acoes .entrar:hover { color: var(--tinta); }
-.btn-menu { display: none; background: none; border: 0; color: var(--tinta); padding: 10px; cursor: pointer; }
+.btn-menu { display: none; background: none; border: 0; color: var(--tinta); padding: 10px; cursor: pointer; flex: none; }
 .btn-menu svg { width: 24px; height: 24px; }
 .menu-mobile {
   position: absolute; top: 100%; left: 0; right: 0;
@@ -205,7 +208,15 @@ nav.principal a.ativa::after { width: 100%; }
   pointer-events: none;
 }
 .menu-mobile.aberto { visibility: visible; opacity: 1; transform: none; transition-delay: 0s; pointer-events: auto; }
-.menu-mobile .container { display: flex; flex-direction: column; gap: 4px; padding-top: 14px; padding-bottom: 20px; }
+.menu-mobile .container { display: flex; flex-direction: column; gap: 4px; padding-top: 14px; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
+.menu-mobile .container > * { opacity: 0; transform: translateY(-9px); transition: opacity .3s var(--ease), transform .3s var(--ease); }
+.menu-mobile.aberto .container > * { opacity: 1; transform: none; }
+.menu-mobile.aberto .container > :nth-child(2) { transition-delay: .035s; }
+.menu-mobile.aberto .container > :nth-child(3) { transition-delay: .07s; }
+.menu-mobile.aberto .container > :nth-child(4) { transition-delay: .105s; }
+.menu-mobile.aberto .container > :nth-child(5) { transition-delay: .14s; }
+.menu-mobile.aberto .container > :nth-child(6) { transition-delay: .175s; }
+.menu-mobile.aberto .container > :nth-child(7) { transition-delay: .21s; }
 .menu-mobile a { padding: 10px 2px; color: var(--tinta-2); font-size: 15px; }
 .menu-mobile .btn { margin-top: 10px; }
 
@@ -358,11 +369,16 @@ nav.principal a.ativa::after { width: 100%; }
   opacity: 0; transition: opacity .3s ease;
 }
 .vidro:hover .brilho-mouse { opacity: 1; }
+@media (hover: none) {
+  .vidro .brilho-mouse { opacity: .85; } /* no celular o vidro brilha como no desktop */
+  .vidro { border-color: rgba(142, 166, 255, .3); }
+}
 
 .resultados-grade { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; margin-top: 46px; align-items: stretch; }
 .resultados-coluna { display: grid; gap: 18px; }
 .vidro-corpo { padding: 28px; position: relative; z-index: 2; }
-.vidro-topo { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; color: var(--tinta-3); }
+.vidro-topo { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12.5px; color: var(--tinta-3); }
+.vidro-topo .chip { white-space: nowrap; }
 .vidro-topo .chip { pointer-events: none; }
 .vidro-numero { text-align: center; padding: 10px 0 6px; }
 .vidro-numero .rotulo { font-size: 13px; color: var(--tinta-2); letter-spacing: .04em; }
@@ -469,7 +485,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 .rodape-links a:hover { color: var(--tinta); }
 
 .whats-flutuante {
-  position: fixed; right: 20px; bottom: 20px; z-index: 90;
+  position: fixed; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 90;
   width: 58px; height: 58px; border-radius: 999px;
   background: #22c55e; display: grid; place-items: center;
   box-shadow: 0 14px 34px -8px rgba(34, 197, 94, .55);
@@ -533,6 +549,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   .revelar-itens:not(.visivel) > * { opacity: 1; }
   .revelar-itens.visivel > * { animation: none; }
   .faixa-trilho { animation: none; }
+  .menu-mobile .container > * { transition: none; opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
   .ponto-pulso, .whats-flutuante, .tv-textura::after { animation: none; }
 }
@@ -549,8 +566,15 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   .dividida.invertida > :first-child { order: 0; }
   .pacotes-grade { grid-template-columns: 1fr; max-width: 460px; margin-left: auto; margin-right: auto; }
   .portfolio-grade { grid-template-columns: repeat(2, 1fr); }
-  nav.principal, .header-acoes .entrar, .header-acoes .btn { display: none; }
+  nav.principal, .header-acoes .entrar { display: none; }
   .btn-menu { display: inline-flex; }
+  .logo strong { white-space: nowrap; font-size: 14px; }
+  .logo small { letter-spacing: .14em; }
+  .logo-icone { width: 34px; height: 34px; }
+  .header-acoes { gap: 6px; }
+  .header-acoes .btn { padding: 9px 16px !important; font-size: 13.5px; }
+  .rotulo-longo { display: none; }
+  .rotulo-curto { display: inline; }
   .hero-painel { margin-top: -120px; }
   .resultados-grade { grid-template-columns: 1fr; }
   .resultados-coluna { grid-template-columns: 1fr 1fr; }
@@ -558,6 +582,10 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 @media (max-width: 560px) {
   section { padding: 64px 0; }
   .hero { padding: 124px 0 0; }
+  .selo { font-size: 11.5px; }
+  .header-linha { gap: 8px; }
+  .logo strong { font-size: 13px; }
+  .header-acoes .btn { padding: 8px 13px !important; font-size: 13px; }
   .grade-cartoes, .numeros { grid-template-columns: 1fr 1fr; }
   .servicos-grade { grid-template-columns: 1fr; }
   .mock-tiles { grid-template-columns: 1fr 1fr; }
@@ -596,7 +624,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     </nav>
     <div class="header-acoes">
       <a class="entrar" href="app/">Já sou cliente</a>
-      <a class="btn btn-azul" style="padding:10px 20px" href="#contato" data-whats>Falar com a gente</a>
+      <a class="btn btn-azul" style="padding:10px 20px" href="#contato" data-whats><span class="rotulo-longo">Falar com a gente</span><span class="rotulo-curto">Falar</span></a>
       <button class="btn-menu" id="btn-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-mobile">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
