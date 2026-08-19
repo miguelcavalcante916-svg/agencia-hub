@@ -28,6 +28,22 @@
       '<p class="nota-rodape" style="margin-top:8px">Esses dados aparecem no cabeçalho das propostas impressas e no menu lateral.</p>' +
       '</div>';
 
+    html += '<div class="card"><div class="card-titulo">' + AH.icons.faisca + 'Assistente Claude (IA)</div>' +
+      '<p class="nota-rodape" style="margin-bottom:12px">Converse com o Claude dentro do painel (menu <a href="#/assistente">Assistente IA</a>) — ele responde usando os dados da agência. ' +
+      'Crie a sua chave em <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>. ' +
+      'A chave fica salva <b>somente neste navegador</b> e o uso é cobrado na sua conta Anthropic. Não compartilhe a chave com ninguém.</p>' +
+      '<form id="form-claude"><div class="form-grid">' +
+      ui.campo('Chave da API (sk-ant-...)', ui.input('claudeApiKey', cfg.claudeApiKey, 'type="password" autocomplete="off" placeholder="sk-ant-..."')) +
+      ui.campo('Modelo', ui.select('claudeModelo', [
+        { id: 'claude-opus-5', nome: 'Claude Opus 5 — padrão, mais inteligente' },
+        { id: 'claude-sonnet-5', nome: 'Claude Sonnet 5 — equilíbrio' },
+        { id: 'claude-haiku-4-5', nome: 'Claude Haiku 4.5 — mais econômico' }
+      ], cfg.claudeModelo || 'claude-opus-5')) +
+      '</div>' +
+      '<div style="margin-top:14px;display:flex;justify-content:flex-end">' +
+      '<button class="btn btn-primario" type="submit">Salvar assistente</button></div></form>' +
+      '</div>';
+
     html += '<div class="card"><div class="card-titulo">' + AH.icons.download + 'Backup dos dados</div>' +
       '<p class="nota-rodape" style="margin-bottom:12px">Tudo fica salvo <b>somente neste navegador</b>. Exporte um backup com frequência e guarde no seu Drive — assim você não perde nada se trocar de computador ou limpar o navegador.</p>' +
       '<div class="config-acoes">' +
@@ -57,6 +73,15 @@
       AH.salvar();
       AH.atualizarMarca();
       AH.ui.toast('Dados da agência salvos.');
+    });
+
+    el.querySelector('#form-claude').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = new FormData(e.target);
+      cfg.claudeApiKey = String(f.get('claudeApiKey') || '').trim();
+      cfg.claudeModelo = f.get('claudeModelo') || 'claude-opus-5';
+      AH.salvar();
+      AH.ui.toast(cfg.claudeApiKey ? 'Assistente configurado! Abra o menu Assistente IA.' : 'Chave removida.');
     });
 
     el.querySelector('#btn-exportar').addEventListener('click', function () {

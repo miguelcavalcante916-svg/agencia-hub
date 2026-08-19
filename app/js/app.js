@@ -5,6 +5,7 @@
 
   var ROTAS = [
     { hash: '#/dashboard', view: 'dashboard', nome: 'Visão geral', icone: 'dashboard' },
+    { hash: '#/assistente', view: 'assistente', nome: 'Assistente IA', icone: 'faisca' },
     { hash: '#/clientes', view: 'clientes', nome: 'Clientes', icone: 'clientes' },
     { hash: '#/projetos', view: 'projetos', nome: 'Projetos', icone: 'projetos' },
     { hash: '#/tarefas', view: 'tarefas', nome: 'Tarefas', icone: 'tarefas' },
@@ -16,6 +17,7 @@
     { hash: '#/leads', view: 'leads', nome: 'Leads', icone: 'leads' },
     { hash: '#/financeiro', view: 'financeiro', nome: 'Financeiro', icone: 'financeiro' },
     { hash: '#/portal', view: 'portal', nome: 'Portal do cliente', icone: 'portal' },
+    { hash: '#/meusite', view: 'meusite', nome: 'Meu site', icone: 'monitor' },
     { hash: '#/equipamentos', view: 'equipamentos', nome: 'Equipamentos', icone: 'equipamentos' },
     { hash: '#/equipe', view: 'equipe', nome: 'Equipe', icone: 'equipe' },
     { hash: '#/configuracoes', view: 'config', nome: 'Configurações', icone: 'config' }

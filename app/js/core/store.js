@@ -232,6 +232,8 @@
         cnpj: '',
         pix: '',
         urlPublica: '',
+        claudeApiKey: '',
+        claudeModelo: 'claude-opus-5',
         condicoesPadrao: '50% na aprovação e 50% na entrega. Valores válidos conforme prazo da proposta.'
       },
       clientes: [],
@@ -246,6 +248,8 @@
       postagens: [],
       materiais: [],
       leads: [],
+      portfolio: [],
+      chatAssistente: [],
       proximoNumeroProposta: 1
     };
   }
@@ -628,6 +632,82 @@
     ];
 
     return s;
+  };
+
+  /* ---------- resumo do negócio (contexto do assistente Claude) ---------- */
+
+  AH.resumoNegocio = function () {
+    var s = AH.state;
+    var hoje = AH.hojeISO();
+    var mm = hoje.slice(0, 7);
+    var linhas = [];
+
+    linhas.push('Data de hoje: ' + AH.fmt.data(hoje));
+    linhas.push('Agência: ' + (s.configuracoes.nomeAgencia || 'Agência') + ' — ' + (s.configuracoes.slogan || ''));
+
+    var ativos = s.clientes.filter(function (c) { return c.status === 'ativo'; });
+    linhas.push('Clientes: ' + s.clientes.length + ' no total, ' + ativos.length + ' ativos (' +
+      ativos.map(function (c) { return c.nome; }).join(', ') + ').');
+
+    var emAndamento = s.projetos.filter(function (p) { return p.status !== 'entregue'; });
+    if (emAndamento.length) {
+      linhas.push('Projetos em andamento: ' + emAndamento.map(function (p) {
+        return p.titulo + ' [' + AH.nomeCliente(p.clienteId) + ' · ' + AH.nomeColuna(p.status) +
+          (p.prazo ? ' · prazo ' + AH.fmt.data(p.prazo) : '') + ']';
+      }).join('; '));
+    }
+
+    var pendentes = s.tarefas.filter(function (t) { return !t.feita; });
+    var atrasadas = pendentes.filter(function (t) { return t.prazo && AH.diasAte(t.prazo) < 0; });
+    linhas.push('Tarefas pendentes: ' + pendentes.length + (atrasadas.length ? ' (ATRASADAS: ' +
+      atrasadas.map(function (t) { return t.titulo; }).join('; ') + ')' : ''));
+
+    var eventosProx = s.eventos.filter(function (e) { return e.data >= hoje; })
+      .sort(function (a, b) { return (a.data + a.hora).localeCompare(b.data + b.hora); }).slice(0, 6);
+    if (eventosProx.length) {
+      linhas.push('Próximos compromissos: ' + eventosProx.map(function (e) {
+        return AH.fmt.data(e.data) + (e.hora ? ' ' + e.hora : '') + ' — ' + e.titulo;
+      }).join('; '));
+    }
+
+    var recebido = 0, aReceber = 0, despesas = 0;
+    s.lancamentos.forEach(function (l) {
+      var v = Number(l.valor) || 0;
+      if (l.tipo === 'receita' && String(l.data).slice(0, 7) === mm && l.status === 'pago') recebido += v;
+      if (l.tipo === 'receita' && l.status === 'pendente') aReceber += v;
+      if (l.tipo === 'despesa' && String(l.data).slice(0, 7) === mm && l.status === 'pago') despesas += v;
+    });
+    linhas.push('Financeiro do mês: recebido ' + AH.fmt.moeda(recebido) + ', despesas ' + AH.fmt.moeda(despesas) +
+      ', a receber (pendente, total) ' + AH.fmt.moeda(aReceber) + '.');
+
+    var enviadas = s.propostas.filter(function (p) { return p.status === 'enviada'; });
+    if (enviadas.length) {
+      linhas.push('Propostas em negociação: ' + enviadas.map(function (p) {
+        return '#' + p.numero + ' ' + p.titulo + ' (' + AH.nomeCliente(p.clienteId) + ', ' + AH.fmt.moeda(AH.totalProposta(p)) + ')';
+      }).join('; '));
+    }
+
+    var campAtivas = s.campanhas.filter(function (c) { return c.status === 'ativa'; });
+    if (campAtivas.length) {
+      var mMes = AH.metricasTrafego(AH.registrosDoMes(s.campanhas, mm));
+      linhas.push('Tráfego pago no mês: investido ' + AH.fmt.moeda(mMes.investimento) + ', ' + AH.fmt.num(mMes.resultados) +
+        ' resultados' + (mMes.custoResultado != null ? ', custo por resultado ' + AH.fmt.moeda(mMes.custoResultado) : '') +
+        '. Campanhas ativas: ' + campAtivas.map(function (c) { return c.nome + ' (' + AH.nomeCliente(c.clienteId) + ')'; }).join('; '));
+    }
+
+    if (s.leads.length) {
+      var rl = AH.resumoLeads(s.leads.filter(function (l) { return String(l.data).slice(0, 7) === mm; }));
+      linhas.push('Leads no mês: ' + rl.total + ' (' + rl.convertido + ' convertidos, valor gerado ' + AH.fmt.moeda(rl.valor) + ').');
+    }
+
+    var aguardando = s.materiais.filter(function (m) { return m.status === 'aguardando'; });
+    if (aguardando.length) {
+      linhas.push('Materiais aguardando aprovação do cliente: ' + aguardando.map(function (m) {
+        return m.titulo + ' (' + AH.nomeCliente(m.clienteId) + ')';
+      }).join('; '));
+    }
+
+    return linhas.join('\n');
   };
 
   /* ---------- portal do cliente: retrato dos dados + codificação para link ---------- */

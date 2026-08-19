@@ -802,6 +802,47 @@ body.modo-portal { scroll-behavior: smooth; }
 .portal-cta h3 { font-size: 20px; letter-spacing: -.02em; margin-bottom: 6px; }
 .portal-cta p { color: var(--texto-2); font-size: 14px; margin-bottom: 18px; }
 
+/* ============================================================
+   Assistente Claude (chat)
+   ============================================================ */
+
+.chat { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; height: calc(100vh - 150px); min-height: 420px; }
+.chat-mensagens { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding: 8px 4px 16px; }
+.chat-boasvindas { text-align: center; margin: auto; padding: 20px; }
+.chat-boasvindas strong { display: block; font-size: 17px; margin: 12px 0 4px; }
+.chat-sugestoes { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px; max-width: 520px; }
+.chat-sugestoes .chip { cursor: pointer; font: inherit; font-size: 12.5px; transition: border-color .2s ease, transform .2s var(--ease); }
+.chat-sugestoes .chip:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+.chat-msg { display: flex; gap: 10px; align-items: flex-end; }
+.chat-usuario { justify-content: flex-end; }
+.chat-avatar {
+  width: 30px; height: 30px; border-radius: 10px; flex: none;
+  background: linear-gradient(135deg, rgba(249, 115, 22, .25), rgba(139, 92, 246, .2));
+  border: 1px solid rgba(251, 146, 60, .4);
+  display: grid; place-items: center;
+}
+.chat-avatar svg { width: 15px; height: 15px; color: var(--accent); }
+.chat-balao {
+  max-width: 78%;
+  padding: 11px 15px;
+  border-radius: 16px;
+  font-size: 14.5px; line-height: 1.6;
+  animation: toast-entrar .35s var(--ease-mola);
+  overflow-wrap: break-word;
+}
+.chat-usuario .chat-balao { background: linear-gradient(135deg, var(--accent-forte), #ea580c); color: #16100b; border-bottom-right-radius: 5px; font-weight: 500; }
+.chat-claude .chat-balao { background: var(--surface); border: 1px solid var(--border); border-bottom-left-radius: 5px; }
+
+.chat-digitando { display: flex; gap: 5px; align-items: center; padding: 15px 17px; }
+.chat-digitando i { width: 7px; height: 7px; border-radius: 99px; background: var(--texto-3); animation: digitando 1.2s infinite; }
+.chat-digitando i:nth-child(2) { animation-delay: .18s; }
+.chat-digitando i:nth-child(3) { animation-delay: .36s; }
+@keyframes digitando { 0%, 60%, 100% { transform: translateY(0); opacity: .4; } 30% { transform: translateY(-4px); opacity: 1; } }
+
+.chat-entrada { display: flex; gap: 9px; padding-top: 12px; border-top: 1px solid var(--border); align-items: center; }
+.chat-entrada input { flex: 1; }
+
 /* movimento reduzido: respeita a preferência do usuário */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }

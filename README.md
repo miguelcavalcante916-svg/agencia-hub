@@ -1,114 +1,75 @@
-# 🎬 AgênciaHub
+# 🎬 Agência Cavalcante — Site + AgênciaHub
 
-Sistema de gestão completo para **agências de marketing e produtoras audiovisuais**.
-Clientes, projetos, gravações, propostas, financeiro e equipamentos — tudo em um só lugar.
+Tudo da agência em um único projeto, pronto para publicar na Vercel com seu domínio:
 
-Funciona **100% no navegador**: sem instalação, sem servidor, sem mensalidade e até sem internet.
-Os dados ficam salvos no próprio navegador (localStorage). É um **PWA**: dá para instalar
-no celular e no computador como aplicativo, com ícone próprio.
+| Pasta | O que é | Endereço depois de publicado |
+|---|---|---|
+| `/` (raiz) | **Site da agência** — eclipse azul, textura de TV, portfólio do Instagram, pacotes e WhatsApp | `https://seudominio.com.br/` |
+| `/app` | **AgênciaHub** — sistema de gestão completo (PWA instalável no celular) | `https://seudominio.com.br/app/` |
+| `portfolio.json` | Lista de reels/posts que aparecem no portfólio do site (gerada no app, em **Meu site**) | — |
 
-O repositório também inclui o **site de apresentação da agência** em `site/`
-(estilo makershub.app.br, em azul-marinho/branco/preto), com botão de WhatsApp,
-pacotes, FAQ e uma vitrine do sistema e do portal do cliente.
+## 🚀 Publicar na Vercel (com o seu domínio)
 
-## ✨ Módulos
+1. Entre em [vercel.com](https://vercel.com) com a conta do GitHub e clique em **Add New → Project**;
+2. Importe o repositório `agencia-hub`;
+3. Em *Framework Preset* deixe **Other** — não precisa de build. Clique em **Deploy**;
+4. Depois do deploy, vá em **Settings → Domains** e adicione o seu domínio (a Vercel mostra o registro DNS para apontar);
+5. No app (`/app` → Configurações), preencha **Endereço público do app** com `https://seudominio.com.br/app/` — é ele que gera os links do portal do cliente.
+
+A partir daí, **todo commit no GitHub republica o site sozinho**.
+
+## ✨ Módulos do AgênciaHub
 
 | Módulo | O que faz |
 |---|---|
-| **Visão geral** | Indicadores do mês, gráfico de receita dos últimos 6 meses, prazos e próximos compromissos |
-| **Clientes** | CRM simples: leads, clientes ativos, contatos com link direto para WhatsApp e Instagram |
+| **Visão geral** | Indicadores do mês com números animados, gráfico de receita, prazos e agenda |
+| **Assistente IA** | Converse com o Claude dentro do painel — ele responde usando os dados reais da agência (configure a chave em Configurações) |
+| **Clientes** | CRM com leads/ativos e link direto para WhatsApp e Instagram |
 | **Projetos** | Kanban com arrastar e soltar: Briefing → Planejamento → Produção → Edição → Revisão → Entregue |
-| **Tarefas** | Lista rápida com prazos, prioridades, responsáveis e filtros (hoje, semana, atrasadas) |
-| **Calendário** | Agenda mensal de gravações, entregas, reuniões — as postagens de conteúdo entram automaticamente |
-| **Conteúdo** | Pipeline de postagens por cliente: ideia → produção → aprovação → agendada → publicada, por canal (Instagram, TikTok...) |
-| **Aprovações** | Materiais criativos (cortes, artes, roteiros) com link — o cliente aprova ou pede ajuste pelo WhatsApp direto do portal |
-| **Propostas** | Orçamentos com itens, desconto e total automático — imprima ou salve em PDF para enviar no WhatsApp |
-| **Tráfego pago** | Abas por plataforma (Meta/Facebook, Google, TikTok): espelhe os números do Gerenciador de Anúncios — investimento, alcance, cliques, resultados, custo por resultado, CTR e ROAS |
-| **Leads** | Funil de leads por cliente (novo → contato → negociação → convertido), ligado às campanhas, com taxa de conversão e valor gerado |
-| **Financeiro** | Receitas e despesas por mês, contas a receber, resultado do mês |
-| **Portal do cliente** | Link exclusivo por cliente para enviar no WhatsApp: andamento dos projetos, materiais para aprovar (com resposta por WhatsApp em 1 toque), postagens, agenda, resultados dos anúncios, leads/conversões e cobranças — sem acessar o seu painel |
-| **Equipamentos** | Controle de câmeras, lentes, drones, áudio e iluminação (disponível / em uso / manutenção) |
-| **Equipe** | Pessoas fixas e freelas, com carga de trabalho de cada uma |
-| **Configurações** | Dados da agência (saem nas propostas), backup e restauração |
+| **Tarefas** | Prazos, prioridades, responsáveis e filtro de atrasadas |
+| **Calendário** | Gravações, entregas, reuniões — postagens de conteúdo entram sozinhas |
+| **Conteúdo** | Pipeline de postagens por cliente e canal: ideia → produção → aprovação → agendada → publicada |
+| **Aprovações** | Materiais criativos com link — o cliente aprova ou pede ajuste pelo WhatsApp direto do portal |
+| **Propostas** | Orçamentos com total automático e impressão em PDF |
+| **Tráfego pago** | Abas Meta/Google/TikTok espelhando o Gerenciador: investimento, alcance, resultados, CTR, CPC, ROAS |
+| **Leads** | Funil por cliente ligado às campanhas, com taxa de conversão e valor gerado |
+| **Financeiro** | Receitas, despesas e contas a receber por mês |
+| **Portal do cliente** | Link exclusivo por cliente: projetos com progresso, aprovações em 1 toque, postagens, anúncios, leads e cobranças |
+| **Meu site** | Controle do portfólio do site: cole links do Instagram, gere o `portfolio.json` e publique |
+| **Configurações** | Dados da agência, chave do assistente Claude, backup e restauração |
 
-## 🚀 Como usar
+## 🤖 Assistente Claude
 
-### Opção 1 — Abrir direto (mais simples)
+1. Crie uma chave em [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys);
+2. No app: **Configurações → Assistente Claude**, cole a chave e salve;
+3. Abra o menu **Assistente IA** e converse: "como está o mês?", "escreva uma legenda para...", "o que está atrasado?".
 
-1. Baixe este repositório: botão verde **Code → Download ZIP** (ou `git clone`).
-2. Extraia e dê **dois cliques em `index.html`**.
-3. Pronto — o app abre com dados de demonstração para você explorar.
+> A chave fica salva **somente no navegador em que foi colada** e as conversas são cobradas direto na sua conta Anthropic. Não coloque a chave em nenhum arquivo do repositório.
 
-### Opção 2 — Publicar na internet (GitHub Pages)
+## 📸 Portfólio do site (integração site ⇄ app)
 
-1. No repositório, vá em **Settings → Pages**.
-2. Em *Source*, escolha **Deploy from a branch**, branch **`main`**, pasta **`/ (root)`** e salve.
-3. Em ~1 minuto o app estará no ar em `https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/`.
-   > Atenção: no plano gratuito do GitHub, o Pages exige repositório **público**.
+1. No app, abra **Meu site** e cole os links dos seus reels/posts (⋯ → Copiar link no Instagram — o post precisa ser público);
+2. Clique em **Copiar JSON** e depois em **Abrir no GitHub para colar**;
+3. Apague o conteúdo antigo do `portfolio.json`, cole o novo e salve (*Commit changes*) — a Vercel republica o site em ~1 minuto com as prévias incorporadas do Instagram.
 
-### Primeiros passos dentro do app
+## 📱 Instalar o app no celular
 
-1. Vá em **Configurações** e preencha os dados da sua agência (nome, WhatsApp, PIX...) — eles saem no cabeçalho das propostas.
-2. Ainda em Configurações, quando quiser começar de verdade, use **Apagar todos os dados** para limpar a demonstração.
-3. Cadastre seus clientes, crie os projetos e arraste os cartões conforme o trabalho avança.
+Com o endereço `https://seudominio.com.br/app/` aberto no navegador:
 
-## 📱 Instalar como aplicativo (celular e computador)
+- **Android (Chrome):** menu ⋮ → **Adicionar à tela inicial**;
+- **iPhone (Safari):** Compartilhar → **Adicionar à Tela de Início**;
+- **Computador (Chrome/Edge):** ícone de instalação na barra de endereço.
 
-Com o app publicado no GitHub Pages, abra o endereço no navegador e:
+Vira um aplicativo com ícone próprio e funciona offline. Os dados ficam no aparelho — use o backup (Configurações) para levar de um aparelho a outro.
 
-- **Android (Chrome):** menu ⋮ → **Adicionar à tela inicial** (ou aceite o aviso "Instalar app").
-- **iPhone (Safari):** botão Compartilhar → **Adicionar à Tela de Início**.
-- **Computador (Chrome/Edge):** ícone de instalação na barra de endereço → **Instalar**.
+## 👥 Portal do cliente
 
-O AgênciaHub vira um aplicativo com ícone próprio, tela cheia e **funciona offline**
-(as alterações sincronizam com o site quando a internet volta — os dados são locais de cada aparelho;
-use o backup de Configurações para levar dados de um aparelho a outro).
+Gere um link exclusivo por cliente em **Portal do cliente** e envie no WhatsApp: ele vê projetos com barra de progresso, materiais para aprovar (com botões de WhatsApp), postagens, anúncios, leads e cobranças — só dele. O link é um retrato do momento: atualizou os dados, gere e envie um novo (perfeito como relatório semanal).
 
-## 🌐 Site da agência (`site/`)
+## ✏️ Personalizar o site
 
-A pasta `site/` tem a página de apresentação da agência — pronta para divulgar no
-link da bio do Instagram: `https://SEU-USUARIO.github.io/NOME-DO-REPO/site/`.
-
-Para personalizar, abra `site/index.html` e procure por **“EDITE”**: nome da agência,
-número do WhatsApp, Instagram, números de resultado e preços dos pacotes.
-
-## 👥 Portal do cliente — como funciona
-
-1. Publique o app na internet (GitHub Pages, veja acima) e informe o endereço em **Configurações → Endereço público do app**.
-2. Vá em **Portal do cliente**, escolha o cliente e clique em **Copiar link do portal**.
-3. Envie o link no WhatsApp do cliente. Ele abre uma página limpa, com a marca da sua agência, mostrando **apenas os dados dele**: andamento dos projetos (com barra de progresso), próximos compromissos, resultados de tráfego pago e pagamentos em aberto (opcional).
-
-> **Importante:** o link carrega um *retrato* dos dados no momento em que foi gerado — os dados do cliente viajam dentro do próprio link, nada fica em servidor. Atualizou o kanban ou registrou novos números de anúncio? Gere um novo link e envie de novo (perfeito como relatório semanal). Compartilhe cada link somente com o respectivo cliente.
-
-## 📣 Tráfego pago — como funciona
-
-O módulo **Tráfego pago** é o espelho do Gerenciador de Anúncios: crie a campanha (Meta, Google ou TikTok), e a cada semana ou mês registre o período com investimento, alcance, impressões, cliques, resultados e receita. O app calcula CTR, CPC, custo por resultado e ROAS, mostra o gráfico de investimento dos últimos 6 meses e leva tudo para o portal do cliente.
-
-> Esta versão funciona sem servidor, então os números são digitados por você (2 minutos por semana com o Gerenciador aberto do lado). Uma integração automática com a API do Meta exigiria um servidor com login — dá para evoluir depois.
-
-## 💾 Seus dados
-
-- Tudo é salvo **somente no navegador que você está usando** (nada vai para a internet).
-- Trocou de computador ou vai limpar o navegador? **Exporte o backup** em *Configurações → Backup* e importe no outro aparelho.
-- Recomendação: exporte um backup por semana e guarde no seu Drive.
+Abra `index.html` (raiz) e procure por **“EDITE”**: número do WhatsApp, nome, Instagram, números de resultado e preços dos pacotes.
 
 ## 🛠️ Tecnologia
 
-- HTML + CSS + JavaScript puros (sem frameworks, sem build, sem dependências).
-- Persistência via `localStorage`.
-- Interface escura, responsiva (funciona no celular) e em português.
-
-### Estrutura
-
-```
-index.html          → página única do app
-css/styles.css      → tema e componentes visuais
-js/core/store.js    → dados, persistência e utilitários
-js/core/ui.js       → modais, toasts, ícones e badges
-js/views/*.js       → uma tela por arquivo
-js/app.js           → rotas e inicialização
-```
-
-## 📄 Licença
-
-Uso livre pela agência. Personalize à vontade.
+HTML + CSS + JavaScript puros — sem build, sem dependências, sem mensalidade. Dados do app em `localStorage`. PWA com service worker (funciona offline). O assistente usa a API da Anthropic direto do navegador.
