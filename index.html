@@ -46,9 +46,20 @@ h1, h2, h3 { font-family: "Manrope", "Inter", system-ui, sans-serif; letter-spac
 a { color: inherit; text-decoration: none; }
 img, svg { max-width: 100%; }
 ::selection { background: rgba(67, 97, 238, .45); color: #fff; }
+:focus-visible { outline: 2px solid var(--azul-claro); outline-offset: 3px; border-radius: 6px; }
+
+.pular {
+  position: fixed; top: 10px; left: 10px; z-index: 120;
+  background: var(--azul); color: #fff;
+  padding: 10px 18px; border-radius: 999px; font-weight: 600; font-size: 14px;
+  transform: translateY(-64px);
+  transition: transform .2s var(--ease);
+}
+.pular:focus-visible { transform: none; }
 
 .container { max-width: 1120px; margin: 0 auto; padding: 0 22px; }
 section { position: relative; padding: 88px 0; }
+section.grade { overflow: hidden; } /* os brilhos decorativos de 760px não podem criar rolagem lateral */
 
 /* ---------- textura de TV (scanlines + ruído) ---------- */
 .tv-textura { position: fixed; inset: 0; pointer-events: none; z-index: 95; }
@@ -98,10 +109,12 @@ section { position: relative; padding: 88px 0; }
   cursor: pointer; transition: transform .18s var(--ease), background .18s ease, box-shadow .25s ease, border-color .2s ease;
   white-space: nowrap;
 }
-.btn:hover { transform: translateY(-1px); }
-.btn:active { transform: translateY(1px) scale(.98); }
+.btn:active { transform: translateY(1px) scale(.97); }
 .btn svg { width: 17px; height: 17px; flex: none; transition: transform .22s var(--ease); }
-.btn:hover svg { transform: translateX(3px) scale(1.05); }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { transform: translateY(-1px); }
+  .btn:hover svg { transform: translateX(3px) scale(1.05); }
+}
 .btn-azul { background: var(--azul); color: #fff; box-shadow: 0 18px 45px -14px rgba(67, 97, 238, .6); }
 .btn-azul:hover { background: var(--azul-vivo); box-shadow: 0 22px 55px -14px rgba(67, 97, 238, .75); }
 .btn-fantasma { color: var(--tinta-2); border-color: var(--borda); }
@@ -113,7 +126,9 @@ section { position: relative; padding: 88px 0; }
   background: var(--cartao); border: 1px solid var(--borda);
   transition: transform .25s var(--ease), border-color .25s ease, box-shadow .3s ease;
 }
-.cartao:hover { transform: translateY(-3px); border-color: rgba(67, 97, 238, .45); box-shadow: 0 24px 60px -24px rgba(67, 97, 238, .35); }
+@media (hover: hover) and (pointer: fine) {
+  .cartao:hover { transform: translateY(-3px); border-color: rgba(67, 97, 238, .45); box-shadow: 0 24px 60px -24px rgba(67, 97, 238, .35); }
+}
 .chip {
   display: inline-flex; align-items: center; gap: 7px;
   padding: 7px 14px; border-radius: 999px;
@@ -121,7 +136,9 @@ section { position: relative; padding: 88px 0; }
   font-size: 12.5px; color: var(--tinta-2);
   transition: border-color .2s ease, transform .2s var(--ease), color .2s ease;
 }
-.chip:hover { border-color: rgba(67, 97, 238, .55); transform: translateY(-2px); color: var(--tinta); }
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover { border-color: rgba(67, 97, 238, .55); transform: translateY(-2px); color: var(--tinta); }
+}
 .chip svg { width: 12px; height: 12px; color: var(--azul-claro); }
 
 /* ---------- header ---------- */
@@ -147,14 +164,24 @@ nav.principal a::after {
   transition: width .28s var(--ease);
 }
 nav.principal a:hover { color: var(--tinta); }
-nav.principal a:hover::after { width: 100%; }
+@media (hover: hover) and (pointer: fine) {
+  nav.principal a:hover::after { width: 100%; }
+}
+nav.principal a.ativa { color: var(--tinta); }
+nav.principal a.ativa::after { width: 100%; }
 .header-acoes { display: flex; align-items: center; gap: 14px; }
 .header-acoes .entrar { font-size: 14px; color: var(--tinta-2); transition: color .2s ease; }
 .header-acoes .entrar:hover { color: var(--tinta); }
-.btn-menu { display: none; background: none; border: 0; color: var(--tinta); padding: 8px; cursor: pointer; }
+.btn-menu { display: none; background: none; border: 0; color: var(--tinta); padding: 10px; cursor: pointer; }
 .btn-menu svg { width: 24px; height: 24px; }
-.menu-mobile { display: none; border-top: 1px solid var(--borda); background: rgba(3, 4, 9, .96); backdrop-filter: blur(14px); }
-.menu-mobile.aberto { display: block; }
+.menu-mobile {
+  position: absolute; top: 100%; left: 0; right: 0;
+  border-top: 1px solid var(--borda); background: rgba(3, 4, 9, .96); backdrop-filter: blur(14px);
+  visibility: hidden; opacity: 0; transform: translateY(-8px);
+  transition: opacity .22s var(--ease), transform .22s var(--ease), visibility 0s linear .22s;
+  pointer-events: none;
+}
+.menu-mobile.aberto { visibility: visible; opacity: 1; transform: none; transition-delay: 0s; pointer-events: auto; }
 .menu-mobile .container { display: flex; flex-direction: column; gap: 4px; padding-top: 14px; padding-bottom: 20px; }
 .menu-mobile a { padding: 10px 2px; color: var(--tinta-2); font-size: 15px; }
 .menu-mobile .btn { margin-top: 10px; }
@@ -172,7 +199,7 @@ nav.principal a:hover::after { width: 100%; }
 .selo:hover { border-color: rgba(142, 166, 255, .7); transform: translateY(-1px); }
 .selo .selo-tag { background: var(--azul); color: #fff; font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; letter-spacing: .04em; }
 .selo svg { width: 13px; height: 13px; color: var(--azul-claro); }
-.hero h1 { font-size: clamp(38px, 7vw, 76px); font-weight: 800; line-height: 1.02; margin-top: 26px; }
+.hero h1 { font-size: clamp(38px, 7vw, 76px); font-weight: 800; line-height: 1.02; margin-top: 26px; letter-spacing: -.028em; font-optical-sizing: auto; }
 .hero .sub { margin-left: auto; margin-right: auto; font-size: clamp(16px, 2.4vw, 20px); }
 .hero-ctas { margin-top: 34px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 5; }
 .hero-nota { margin-top: 16px; display: flex; gap: 22px; justify-content: center; font-size: 12.5px; color: var(--tinta-3); flex-wrap: wrap; position: relative; z-index: 5; }
@@ -355,7 +382,9 @@ nav.principal a:hover::after { width: 100%; }
 .dividida .texto p { margin-top: 16px; color: var(--tinta-2); font-size: 16.5px; }
 .lista-check { margin-top: 20px; display: flex; flex-direction: column; gap: 11px; list-style: none; }
 .lista-check li { display: flex; gap: 11px; align-items: flex-start; color: rgba(242,245,252,.8); font-size: 15px; transition: transform .25s var(--ease), color .2s ease; }
-.lista-check li:hover { transform: translateX(5px); color: #fff; }
+@media (hover: hover) and (pointer: fine) {
+  .lista-check li:hover { transform: translateX(5px); color: #fff; }
+}
 .lista-check svg { width: 17px; height: 17px; color: var(--azul-claro); flex: none; margin-top: 3px; }
 .chips-linha { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
 
@@ -414,7 +443,10 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   transition: transform .25s var(--ease);
   animation: pulso-whats 2.6s infinite;
 }
-.whats-flutuante:hover { transform: scale(1.1); }
+.whats-flutuante:active { transform: scale(.94); }
+@media (hover: hover) and (pointer: fine) {
+  .whats-flutuante:hover { transform: scale(1.1); }
+}
 .whats-flutuante svg { width: 28px; height: 28px; color: #fff; }
 @keyframes pulso-whats { 0%, 100% { box-shadow: 0 14px 34px -8px rgba(34,197,94,.55), 0 0 0 0 rgba(34,197,94,.5); } 50% { box-shadow: 0 14px 34px -8px rgba(34,197,94,.55), 0 0 0 14px rgba(34,197,94,0); } }
 
@@ -445,6 +477,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   section { padding: 64px 0; }
   .hero { padding: 124px 0 0; }
   .grade-cartoes, .numeros { grid-template-columns: 1fr 1fr; }
+  .servicos-grade { grid-template-columns: 1fr; }
   .mock-tiles { grid-template-columns: 1fr 1fr; }
   .portfolio-grade { grid-template-columns: 1fr; }
   .horizonte { height: 220px; }
@@ -456,6 +489,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 </head>
 <body>
 
+<a class="pular" href="#inicio">Pular para o conteúdo</a>
 <div class="tv-textura" aria-hidden="true"></div>
 
 <!-- ======================= CABEÇALHO ======================= -->
@@ -481,7 +515,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     <div class="header-acoes">
       <a class="entrar" href="app/">Já sou cliente</a>
       <a class="btn btn-azul" style="padding:10px 20px" href="#contato" data-whats>Falar com a gente</a>
-      <button class="btn-menu" id="btn-menu" aria-label="Abrir menu">
+      <button class="btn-menu" id="btn-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-mobile">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
     </div>
@@ -959,23 +993,64 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   aoRolar();
 
   var menu = document.getElementById('menu-mobile');
-  document.getElementById('btn-menu').addEventListener('click', function () {
-    menu.classList.toggle('aberto');
+  var btnMenu = document.getElementById('btn-menu');
+  btnMenu.addEventListener('click', function () {
+    var aberto = menu.classList.toggle('aberto');
+    btnMenu.setAttribute('aria-expanded', aberto ? 'true' : 'false');
   });
   menu.querySelectorAll('a').forEach(function (a) {
-    a.addEventListener('click', function () { menu.classList.remove('aberto'); });
-  });
-
-  document.querySelectorAll('.faq-item').forEach(function (item) {
-    item.querySelector('.faq-perg').addEventListener('click', function () {
-      var estavaAberto = item.classList.contains('aberto');
-      document.querySelectorAll('.faq-item').forEach(function (i) { i.classList.remove('aberto'); });
-      if (!estavaAberto) item.classList.add('aberto');
+    a.addEventListener('click', function () {
+      menu.classList.remove('aberto');
+      btnMenu.setAttribute('aria-expanded', 'false');
     });
   });
 
+  /* FAQ acessível: aria-expanded + região controlada */
+  var itensFaq = document.querySelectorAll('.faq-item');
+  itensFaq.forEach(function (item, i) {
+    var perg = item.querySelector('.faq-perg');
+    var resp = item.querySelector('.faq-resp');
+    resp.id = 'faq-resp-' + i;
+    perg.setAttribute('aria-controls', resp.id);
+    perg.setAttribute('aria-expanded', item.classList.contains('aberto') ? 'true' : 'false');
+    perg.addEventListener('click', function () {
+      var estavaAberto = item.classList.contains('aberto');
+      itensFaq.forEach(function (o) {
+        o.classList.remove('aberto');
+        o.querySelector('.faq-perg').setAttribute('aria-expanded', 'false');
+      });
+      if (!estavaAberto) {
+        item.classList.add('aberto');
+        perg.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  /* seção ativa destacada no menu (scrollspy) */
+  (function () {
+    var links = document.querySelectorAll('nav.principal a[href^="#"]');
+    if (!links.length || !('IntersectionObserver' in window)) return;
+    var mapa = {};
+    links.forEach(function (a) { mapa[a.getAttribute('href').slice(1)] = a; });
+    var ativo = null;
+    var ioNav = new IntersectionObserver(function (ents) {
+      ents.forEach(function (en) {
+        if (en.isIntersecting && mapa[en.target.id]) {
+          if (ativo) ativo.classList.remove('ativa');
+          ativo = mapa[en.target.id];
+          ativo.classList.add('ativa');
+        }
+      });
+    }, { rootMargin: '-35% 0px -55% 0px' });
+    Object.keys(mapa).forEach(function (id) {
+      var sec = document.getElementById(id);
+      if (sec) ioNav.observe(sec);
+    });
+  })();
+
   var podeMover = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (podeMover) {
+  var temHoverFino = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (podeMover && temHoverFino) {
     document.querySelectorAll('.moldura, .vidro').forEach(function (m) {
       var forca = m.classList.contains('vidro') ? 3 : 4;
       m.addEventListener('mousemove', function (e) {
@@ -1018,6 +1093,61 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     }
   }
   ligarContadores();
+
+  /* o motion.js carrega com defer — espera ele estar disponível */
+  function comMotion(fn) {
+    if (window.Motion) { fn(window.Motion); return; }
+    window.addEventListener('DOMContentLoaded', function () {
+      if (window.Motion) fn(window.Motion);
+    });
+  }
+
+  /* ---------- entrada orquestrada do herói (springs do Motion) ---------- */
+  comMotion(function (Motion) {
+    if (!podeMover) return;
+    var animate = Motion.animate;
+    var passos = [
+      ['.hero .selo', 0],
+      ['.hero h1', 0.07],
+      ['.hero .sub', 0.15],
+      ['.hero-ctas', 0.22],
+      ['.hero-nota', 0.3],
+      ['.hero-painel .moldura', 0.36]
+    ];
+    passos.forEach(function (p) {
+      var el = document.querySelector(p[0]);
+      if (!el) return;
+      var transicaoOriginal = el.style.transition;
+      el.style.transition = 'none';
+      el.style.opacity = '0';
+      var controle = animate(el,
+        { opacity: [0, 1], transform: ['translateY(26px)', 'translateY(0px)'] },
+        { type: 'spring', duration: 0.8, bounce: 0, delay: p[1] }
+      );
+      if (controle && controle.finished && controle.finished.then) {
+        controle.finished.then(function () { el.style.transition = transicaoOriginal; });
+      }
+    });
+  });
+
+  /* ---------- botão magnético (CTA principal) ---------- */
+  comMotion(function (Motion) {
+    if (!podeMover || !temHoverFino) return;
+    var animate = Motion.animate;
+    document.querySelectorAll('.hero-ctas .btn-azul').forEach(function (btn) {
+      btn.addEventListener('pointermove', function (e) {
+        var r = btn.getBoundingClientRect();
+        var dx = e.clientX - (r.left + r.width / 2);
+        var dy = e.clientY - (r.top + r.height / 2);
+        animate(btn,
+          { transform: 'translate(' + (dx * 0.14).toFixed(1) + 'px,' + (dy * 0.22).toFixed(1) + 'px)' },
+          { type: 'spring', duration: 0.35, bounce: 0 });
+      });
+      btn.addEventListener('pointerleave', function () {
+        animate(btn, { transform: 'translate(0px, 0px)' }, { type: 'spring', duration: 0.55, bounce: 0.25 });
+      });
+    });
+  });
 
   /* ---------- ondas 3D em WebGL (shader próprio, sem bibliotecas) ---------- */
   (function () {
