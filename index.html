@@ -178,14 +178,28 @@ nav.principal a:hover::after { width: 100%; }
 .ponto-pulso { width: 7px; height: 7px; border-radius: 99px; background: var(--azul); animation: pulso 2s infinite; }
 @keyframes pulso { 0%, 100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, .7); } 50% { box-shadow: 0 0 0 8px rgba(67, 97, 238, 0); } }
 
-/* o eclipse: arco de luz azul no horizonte */
+/* horizonte do herói: ondas 3D (WebGL) com eclipse de reserva */
+.horizonte { position: relative; height: 300px; margin-top: -30px; pointer-events: none; }
+.ondas3d {
+  position: absolute; left: 0; right: 0; top: -300px; bottom: -90px;
+  width: 100%; height: calc(100% + 390px);
+  display: block;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 34%, black 84%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 34%, black 84%, transparent 100%);
+}
+.ondas3d.ligada { opacity: 1; }
+.hero { position: relative; }
+.hero .conteudo-hero { position: relative; z-index: 4; }
+
+/* o eclipse: arco de luz azul no horizonte (reserva sem WebGL) */
 .eclipse {
-  position: relative;
-  height: 300px;
-  margin-top: -30px;
+  position: absolute; inset: 0;
   overflow: hidden;
   pointer-events: none;
 }
+.eclipse.escondido { visibility: hidden; }
 .eclipse .planeta {
   position: absolute; top: 120px; left: 50%; transform: translateX(-50%);
   width: 1700px; height: 1700px; border-radius: 50%;
@@ -261,6 +275,66 @@ nav.principal a:hover::after { width: 100%; }
 .servico h3 { font-size: 21px; margin-top: 8px; line-height: 1.3; transition: color .25s ease; }
 .servico:hover h3 { color: var(--azul-claro); }
 .servico p { margin-top: 10px; color: var(--tinta-2); font-size: 15px; }
+
+/* ---------- cartões de vidro com brilho (resultados) ---------- */
+.vidro {
+  position: relative; overflow: hidden;
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(88, 120, 255, .1) 0%, rgba(8, 13, 30, .6) 55%, rgba(5, 8, 18, .7) 100%);
+  border: 1px solid rgba(142, 166, 255, .22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .14),
+    inset 0 -40px 80px -40px rgba(67, 97, 238, .5),
+    0 30px 80px -30px rgba(67, 97, 238, .3);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform .35s var(--ease), border-color .3s ease, box-shadow .35s ease;
+  transform-style: preserve-3d; will-change: transform;
+}
+.vidro:hover { border-color: rgba(142, 166, 255, .45); }
+.vidro::before {
+  content: ""; position: absolute; left: 10%; right: 10%; bottom: -44px; height: 90px;
+  background: radial-gradient(ellipse at center, rgba(142, 166, 255, .5), transparent 70%);
+  filter: blur(20px); pointer-events: none;
+}
+.vidro .brilho-mouse {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(420px circle at var(--gx, 50%) var(--gy, 0%), rgba(142, 166, 255, .14), transparent 60%);
+  opacity: 0; transition: opacity .3s ease;
+}
+.vidro:hover .brilho-mouse { opacity: 1; }
+
+.resultados-grade { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; margin-top: 46px; align-items: stretch; }
+.resultados-coluna { display: grid; gap: 18px; }
+.vidro-corpo { padding: 28px; position: relative; z-index: 2; }
+.vidro-topo { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; color: var(--tinta-3); }
+.vidro-topo .chip { pointer-events: none; }
+.vidro-numero { text-align: center; padding: 10px 0 6px; }
+.vidro-numero .rotulo { font-size: 13px; color: var(--tinta-2); letter-spacing: .04em; }
+.vidro-numero b { display: block; font-family: "Manrope"; font-size: clamp(44px, 6vw, 68px); font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+.vidro-numero b .sup { color: #4ade80; font-size: 18px; vertical-align: super; }
+.vidro-numero small { font-size: 11.5px; color: var(--tinta-3); }
+.vidro-stat { text-align: left; }
+.vidro-stat .rotulo { display: block; font-size: 12px; color: var(--tinta-2); letter-spacing: .04em; text-transform: uppercase; }
+.vidro-stat b { display: block; font-family: "Manrope"; font-size: clamp(30px, 4vw, 42px); font-weight: 800; margin-top: 4px; }
+.vidro-stat .legenda { display: block; font-size: 12.5px; color: var(--tinta-3); margin-top: 4px; }
+
+.grafico-vidro { position: relative; margin: 6px 0 4px; }
+.grafico-vidro svg { width: 100%; height: auto; display: block; overflow: visible; }
+.grafico-vidro .linha {
+  fill: none; stroke: #9db2ff; stroke-width: 3; stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(142, 166, 255, .8)) drop-shadow(0 0 18px rgba(67, 97, 238, .5));
+  stroke-dasharray: 1200; stroke-dashoffset: 1200;
+}
+.visivel .grafico-vidro .linha { animation: desenhar-linha 2.2s var(--ease) .3s forwards; }
+@keyframes desenhar-linha { to { stroke-dashoffset: 0; } }
+.grafico-vidro .grade-g line { stroke: rgba(142, 166, 255, .09); stroke-width: 1; }
+.grafico-vidro .ponto { fill: #dbe4ff; filter: drop-shadow(0 0 8px rgba(160, 180, 255, 1)); opacity: 0; }
+.grafico-vidro .ponto-halo { fill: none; stroke: rgba(160, 180, 255, .5); opacity: 0; }
+.visivel .grafico-vidro .ponto { animation: surgir-ponto .5s ease 2.3s forwards; }
+.visivel .grafico-vidro .ponto-halo { animation: halo-pulso 2.4s ease 2.5s infinite; }
+@keyframes surgir-ponto { to { opacity: 1; } }
+@keyframes halo-pulso { 0% { opacity: .7; r: 8; } 70% { opacity: 0; r: 26; } 100% { opacity: 0; r: 26; } }
 
 /* ---------- portfólio (Instagram) ---------- */
 .portfolio-grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 46px; }
@@ -362,6 +436,8 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   nav.principal, .header-acoes .entrar, .header-acoes .btn { display: none; }
   .btn-menu { display: inline-flex; }
   .hero-painel { margin-top: -120px; }
+  .resultados-grade { grid-template-columns: 1fr; }
+  .resultados-coluna { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 560px) {
   section { padding: 64px 0; }
@@ -369,8 +445,10 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   .grade-cartoes, .numeros { grid-template-columns: 1fr 1fr; }
   .mock-tiles { grid-template-columns: 1fr 1fr; }
   .portfolio-grade { grid-template-columns: 1fr; }
-  .eclipse { height: 220px; }
+  .horizonte { height: 220px; }
+  .ondas3d { top: -220px; height: calc(100% + 300px); bottom: -80px; }
   .hero-painel { margin-top: -90px; }
+  .resultados-grade { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -421,7 +499,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 
 <!-- ======================= HERO (eclipse) ======================= -->
 <section class="hero grade" id="inicio">
-  <div class="container">
+  <div class="container conteudo-hero">
     <a class="selo" href="#portal-secao">
       <span class="selo-tag">NOVO</span>
       Portal do Cliente — acompanhe tudo pelo celular
@@ -445,9 +523,12 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     </div>
   </div>
 
-  <div class="eclipse" aria-hidden="true">
-    <div class="halo"></div>
-    <div class="planeta"></div>
+  <div class="horizonte" aria-hidden="true">
+    <canvas class="ondas3d" id="ondas3d"></canvas>
+    <div class="eclipse">
+      <div class="halo"></div>
+      <div class="planeta"></div>
+    </div>
   </div>
 
   <div class="hero-painel">
@@ -552,6 +633,61 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     <div class="portfolio-grade revelar" id="portfolio-grade"></div>
     <!-- EDITE: @ do Instagram -->
     <p style="text-align:center;margin-top:26px"><a class="btn btn-fantasma" href="https://instagram.com/agenciacavalcante" target="_blank" rel="noopener">Ver mais no Instagram</a></p>
+  </div>
+</section>
+
+<!-- ======================= RESULTADOS (vidro) ======================= -->
+<section id="resultados">
+  <div class="container">
+    <div class="servicos-cab">
+      <div>
+        <span class="olho">Resultado que aparece</span>
+        <h2 class="titulo">Campanha boa<br><span class="gradiente">se mede assim.</span></h2>
+      </div>
+      <p class="sub">Números de campanhas reais que rodam no nosso sistema — investimento, conversas e custo, acompanhados semana a semana. <!-- EDITE: troque pelos números de um case seu --></p>
+    </div>
+    <div class="resultados-grade revelar">
+      <div class="vidro">
+        <span class="brilho-mouse"></span>
+        <div class="vidro-corpo">
+          <div class="vidro-topo"><span>Conversas geradas no WhatsApp</span><span class="chip">Últimos 6 meses</span></div>
+          <div class="grafico-vidro">
+            <svg viewBox="0 0 560 240" role="img" aria-label="Crescimento de conversas geradas">
+              <g class="grade-g">
+                <line x1="0" y1="60" x2="560" y2="60"/><line x1="0" y1="120" x2="560" y2="120"/><line x1="0" y1="180" x2="560" y2="180"/>
+                <line x1="112" y1="20" x2="112" y2="228"/><line x1="224" y1="20" x2="224" y2="228"/><line x1="336" y1="20" x2="336" y2="228"/><line x1="448" y1="20" x2="448" y2="228"/>
+              </g>
+              <path class="linha" id="linha-conversas" d="M8,196 C60,190 96,186 132,178 C176,168 208,150 244,118 C270,94 292,64 320,52 C350,40 380,66 410,96 C440,126 470,138 500,120 C522,108 540,88 552,72"/>
+              <circle class="ponto-halo" id="ponto-halo" r="8" cx="552" cy="72"/>
+              <circle class="ponto" id="ponto-final" r="6" cx="552" cy="72"/>
+            </svg>
+          </div>
+          <div class="vidro-numero">
+            <span class="rotulo">Conversas no WhatsApp</span>
+            <b>+<span data-contar-site="212">0</span>%<span class="sup">↗</span></b>
+            <small>crescimento no semestre · campanha de cliente</small>
+          </div>
+        </div>
+      </div>
+      <div class="resultados-coluna">
+        <div class="vidro">
+          <span class="brilho-mouse"></span>
+          <div class="vidro-corpo vidro-stat">
+            <span class="rotulo">Custo por conversa</span>
+            <b>− <span data-contar-site="38">0</span>%</b>
+            <span class="legenda">otimização contínua dos criativos</span>
+          </div>
+        </div>
+        <div class="vidro">
+          <span class="brilho-mouse"></span>
+          <div class="vidro-corpo vidro-stat">
+            <span class="rotulo">Alcance no semestre</span>
+            <b><span data-contar-site="486">0</span> mil</b>
+            <span class="legenda">pessoas alcançadas nas campanhas</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -838,16 +974,178 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 
   var podeMover = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (podeMover) {
-    document.querySelectorAll('.moldura').forEach(function (m) {
+    document.querySelectorAll('.moldura, .vidro').forEach(function (m) {
+      var forca = m.classList.contains('vidro') ? 3 : 4;
       m.addEventListener('mousemove', function (e) {
         var r = m.getBoundingClientRect();
         var x = (e.clientX - r.left) / r.width - 0.5;
         var y = (e.clientY - r.top) / r.height - 0.5;
-        m.style.transform = 'perspective(900px) rotateY(' + (x * 4) + 'deg) rotateX(' + (-y * 4) + 'deg) translateY(-2px)';
+        m.style.transform = 'perspective(900px) rotateY(' + (x * forca) + 'deg) rotateX(' + (-y * forca) + 'deg) translateY(-2px)';
+        m.style.setProperty('--gx', ((x + 0.5) * 100) + '%');
+        m.style.setProperty('--gy', ((y + 0.5) * 100) + '%');
       });
       m.addEventListener('mouseleave', function () { m.style.transform = ''; });
     });
   }
+
+  /* ---------- contadores do site (sobem até o valor ao aparecer) ---------- */
+  function ligarContadores() {
+    var els = document.querySelectorAll('[data-contar-site]');
+    if (!els.length) return;
+    function animar(el) {
+      var alvo = parseInt(el.getAttribute('data-contar-site'), 10) || 0;
+      if (!podeMover) { el.textContent = alvo; return; }
+      var inicio = null, dur = 1400;
+      function passo(t) {
+        if (inicio === null) inicio = t;
+        var p = Math.min(1, (t - inicio) / dur);
+        el.textContent = Math.round(alvo * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(passo);
+      }
+      requestAnimationFrame(passo);
+    }
+    if ('IntersectionObserver' in window) {
+      var ioC = new IntersectionObserver(function (ents) {
+        ents.forEach(function (en) {
+          if (en.isIntersecting) { animar(en.target); ioC.unobserve(en.target); }
+        });
+      }, { threshold: 0.5 });
+      els.forEach(function (el) { ioC.observe(el); });
+    } else {
+      els.forEach(animar);
+    }
+  }
+  ligarContadores();
+
+  /* ---------- ondas 3D em WebGL (shader próprio, sem bibliotecas) ---------- */
+  (function () {
+    var canvas = document.getElementById('ondas3d');
+    if (!canvas) return;
+    var gl = canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true });
+    if (!gl) return; // sem WebGL: o eclipse continua no lugar
+
+    var VERT = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+    var FRAG =
+      'precision highp float;' +
+      'uniform vec2 u_res;uniform float u_time;uniform vec2 u_mouse;' +
+      'float onda(vec2 p,float t){' +
+      '  float v=0.;float a=1.;vec2 q=p;mat2 rot=mat2(.54,-.84,.84,.54);' +
+      '  for(int i=0;i<5;i++){' +
+      '    v+=a*sin(q.x*1.7+t+sin(q.y*1.35+t*.68)*1.25);' +
+      '    q=rot*q*1.33+vec2(.7,.28);a*=.55;}' +
+      '  return v;}' +
+      'void main(){' +
+      '  vec2 uv=(gl_FragCoord.xy-.5*u_res)/u_res.y;' +
+      '  float t=u_time*.22;' +
+      '  vec2 m=(u_mouse-.5)*.5;' +
+      '  vec2 p=uv*vec2(1.5,2.3)+vec2(m.x*.6,.55-m.y*.3);' +
+      '  float h=onda(p,t);' +
+      '  float e=.018;' +
+      '  float hx=onda(p+vec2(e,0.),t)-h;' +
+      '  float hy=onda(p+vec2(0.,e),t)-h;' +
+      '  vec3 n=normalize(vec3(-hx,-hy,e*2.4));' +
+      '  vec3 L1=normalize(vec3(-.35,.75,.5));' +
+      '  vec3 L2=normalize(vec3(.65,-.15,.35));' +
+      '  float d1=max(dot(n,L1),0.);' +
+      '  float d2=max(dot(n,L2),0.);' +
+      '  float spec=pow(max(dot(reflect(-L1,n),vec3(0.,0.,1.)),0.),26.);' +
+      '  vec3 fundo=vec3(.008,.014,.045);' +
+      '  vec3 azul=vec3(.26,.38,.93);' +
+      '  vec3 claro=vec3(.6,.68,1.);' +
+      '  vec3 cor=fundo+azul*d1*.5+azul*d2*.16+claro*spec*.85;' +
+      '  cor+=azul*.06*h;' +
+      '  float faixa=smoothstep(.8,.05,uv.y)*smoothstep(-1.15,-.35,uv.y);' +
+      '  float alpha=faixa*.95;' +
+      '  gl_FragColor=vec4(cor*alpha,alpha);}';
+
+    function compilar(tipo, src) {
+      var s = gl.createShader(tipo);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) return null;
+      return s;
+    }
+    var vs = compilar(gl.VERTEX_SHADER, VERT);
+    var fs = compilar(gl.FRAGMENT_SHADER, FRAG);
+    if (!vs || !fs) return;
+    var prog = gl.createProgram();
+    gl.attachShader(prog, vs); gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    gl.useProgram(prog);
+
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    var loc = gl.getAttribLocation(prog, 'a');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+    var uRes = gl.getUniformLocation(prog, 'u_res');
+    var uTime = gl.getUniformLocation(prog, 'u_time');
+    var uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+    function redimensionar() {
+      var escala = Math.min(window.devicePixelRatio || 1, 1.6) * 0.62;
+      var w = Math.max(2, Math.floor(canvas.clientWidth * escala));
+      var h = Math.max(2, Math.floor(canvas.clientHeight * escala));
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w; canvas.height = h;
+        gl.viewport(0, 0, w, h);
+      }
+    }
+    redimensionar();
+    window.addEventListener('resize', redimensionar);
+
+    var alvoMx = 0.5, alvoMy = 0.5, mx = 0.5, my = 0.5;
+    window.addEventListener('mousemove', function (e) {
+      alvoMx = e.clientX / window.innerWidth;
+      alvoMy = e.clientY / window.innerHeight;
+    }, { passive: true });
+
+    var visivelNaTela = true, rodando = false;
+    function quadro(tms) {
+      if (!rodando) return;
+      mx += (alvoMx - mx) * 0.04;
+      my += (alvoMy - my) * 0.04;
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.uniform1f(uTime, tms * 0.001);
+      gl.uniform2f(uMouse, mx, my);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      requestAnimationFrame(quadro);
+    }
+    function ligar() {
+      if (rodando || !visivelNaTela || document.hidden) return;
+      rodando = true;
+      requestAnimationFrame(quadro);
+    }
+    function desligar() { rodando = false; }
+
+    canvas.classList.add('ligada');
+    var eclipse = document.querySelector('.eclipse');
+    if (eclipse) eclipse.classList.add('escondido');
+
+    if (!podeMover) {
+      // movimento reduzido: um único quadro parado
+      redimensionar();
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.uniform1f(uTime, 7.0);
+      gl.uniform2f(uMouse, 0.5, 0.5);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      return;
+    }
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (ents) {
+        visivelNaTela = ents[0].isIntersecting;
+        if (visivelNaTela) ligar(); else desligar();
+      }).observe(canvas);
+    }
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) desligar(); else ligar();
+    });
+    ligar();
+  })();
 
   if ('IntersectionObserver' in window) {
     var obs = new IntersectionObserver(function (entradas) {
