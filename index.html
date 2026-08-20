@@ -69,7 +69,7 @@ img, svg { max-width: 100%; }
 .pular:focus-visible { transform: none; }
 
 .container { max-width: 1120px; margin: 0 auto; padding: 0 22px; }
-section { position: relative; padding: 88px 0; }
+section { position: relative; padding: 102px 0; }
 section.grade { overflow: hidden; } /* os brilhos decorativos de 760px não podem criar rolagem lateral */
 
 /* ---------- textura de TV (scanlines + ruído) ---------- */
@@ -112,17 +112,7 @@ section.grade { overflow: hidden; } /* os brilhos decorativos de 760px não pode
 .gradiente { background: linear-gradient(90deg, #a9bbff, #4361ee); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .sub { color: var(--tinta-2); font-size: 18px; margin-top: 18px; max-width: 640px; line-height: 1.55; text-wrap: pretty; }
 /* números que animam não podem "tremer" de largura */
-.numeros b, .vidro-numero b, .vidro-stat b, .mock-tile b { font-variant-numeric: tabular-nums; }
-/* brilho lento no gradiente do herói (o único texto com movimento próprio) */
-@media (prefers-reduced-motion: no-preference) {
-  .hero .gradiente {
-    background: linear-gradient(100deg, #a9bbff, #4361ee 42%, #8ea6ff 68%, #a9bbff);
-    background-size: 220% 100%;
-    -webkit-background-clip: text; background-clip: text;
-    animation: brilho-texto 8s linear infinite;
-  }
-  @keyframes brilho-texto { to { background-position: -220% 0; } }
-}
+.vidro-numero b, .vidro-stat b, .mock-tile b { font-variant-numeric: tabular-nums; }
 
 /* botões */
 .btn {
@@ -234,7 +224,6 @@ nav.principal a.ativa::after { width: 100%; }
 @media (hover: hover) and (pointer: fine) {
   .selo:hover { transform: translateY(-1px); }
 }
-.selo .selo-tag { background: var(--azul); color: #fff; font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; letter-spacing: .04em; }
 .selo svg { width: 13px; height: 13px; color: var(--azul-claro); }
 .hero h1 { font-size: clamp(38px, 7vw, 76px); font-weight: 800; line-height: 1.02; margin-top: 26px; letter-spacing: -.028em; font-optical-sizing: auto; }
 .hero .sub { margin-left: auto; margin-right: auto; font-size: clamp(16px, 2.4vw, 20px); }
@@ -318,19 +307,8 @@ nav.principal a.ativa::after { width: 100%; }
 .tag-azul { background: rgba(67,97,238,.18); color: var(--azul-claro); border: 1px solid rgba(67,97,238,.4); }
 .tag-verde { background: rgba(74,222,128,.12); color: #4ade80; border: 1px solid rgba(74,222,128,.35); }
 
-/* números */
-.numeros { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 56px; }
-.numeros .cartao { padding: 22px 16px; text-align: center; }
-.numeros b { font-family: var(--fonte-titulo); font-size: clamp(24px, 3.4vw, 34px); font-weight: 800; display: block; transition: color .25s ease; }
-.numeros .cartao:hover b { color: var(--azul-claro); }
-.numeros span { font-size: 12.5px; color: var(--tinta-3); }
-
-/* ---------- problema / serviços (herdados) ---------- */
-.grade-cartoes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 48px; }
-.problema-cartao { padding: 26px 22px; }
-.problema-cartao b { font-family: var(--fonte-titulo); font-size: 30px; color: rgba(67, 97, 238, .65); font-weight: 800; }
-.problema-cartao p { margin-top: 12px; font-size: 14.5px; color: var(--tinta-2); transition: color .25s ease; }
-.problema-cartao:hover p { color: var(--tinta); }
+/* linha discreta de prova social sob o painel */
+.prova { text-align: center; margin-top: 44px; font-size: 13.5px; color: var(--tinta-3); letter-spacing: .02em; }
 
 .servicos-cab { display: grid; grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: end; }
 .servicos-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 46px; }
@@ -429,20 +407,6 @@ nav.principal a.ativa::after { width: 100%; }
   .lista-check li:hover { transform: translateX(5px); color: #fff; }
 }
 .lista-check svg { width: 17px; height: 17px; color: var(--azul-claro); flex: none; margin-top: 3px; }
-.chips-linha { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
-
-/* ---------- comparativo ---------- */
-.tabela-wrap { overflow-x: auto; border-radius: 18px; border: 1px solid var(--borda); margin-top: 44px; background: var(--cartao); }
-table.comparativo { width: 100%; border-collapse: collapse; min-width: 620px; }
-.comparativo th { text-align: left; padding: 16px 22px; font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--tinta-3); border-bottom: 1px solid var(--borda); }
-.comparativo th.destaque { background: rgba(67, 97, 238, .1); color: var(--azul-claro); }
-.comparativo td { padding: 15px 22px; font-size: 14.5px; border-bottom: 1px solid rgba(255, 255, 255, .05); }
-.comparativo tr:last-child td { border-bottom: 0; }
-.comparativo td.hoje { color: var(--tinta-3); }
-.comparativo td.destaque { background: rgba(67, 97, 238, .05); font-weight: 600; }
-.comparativo td svg { width: 14px; height: 14px; vertical-align: -2px; margin-right: 8px; }
-.comparativo td.hoje svg { color: rgba(255, 255, 255, .25); }
-.comparativo td.destaque svg { color: var(--azul-claro); }
 
 /* ---------- pacotes ---------- */
 .pacotes-grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 52px; align-items: stretch; }
@@ -549,7 +513,6 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   .revelar-itens:not(.visivel) > * { opacity: 1; }
   .revelar-itens.visivel > * { animation: none; }
   .faixa-trilho { animation: none; }
-  .viga-borda::before, .btn-azul::after, .hero-painel .moldura { animation: none; }
   .menu-mobile .container > * { transition: none; opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
   .ponto-pulso, .whats-flutuante, .tv-textura::after { animation: none; }
@@ -585,32 +548,6 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 }
 @keyframes girar-viga { to { --ang: 1turn; } }
 
-/* botão shiny — brilho varre o CTA azul de tempos em tempos */
-.btn-azul { position: relative; overflow: hidden; }
-.btn-azul::after {
-  content: ""; position: absolute; top: -2px; bottom: -2px; left: 0; width: 34%;
-  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, .38), transparent);
-  transform: translateX(-140%) skewX(-16deg);
-  pointer-events: none;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .btn-azul::after { animation: brilho-varrer 4.6s var(--ease) infinite; }
-}
-@keyframes brilho-varrer {
-  0%, 58% { transform: translateX(-140%) skewX(-16deg); }
-  100% { transform: translateX(480%) skewX(-16deg); }
-}
-
-/* spotlight — holofote azul segue o mouse em todos os cartões */
-@media (hover: hover) and (pointer: fine) {
-  .cartao::after {
-    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-    opacity: 0; transition: opacity .35s ease;
-    background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 40%), rgba(88, 120, 255, .13), transparent 62%);
-  }
-  .cartao:hover::after { opacity: 1; }
-}
-
 /* profundidade 3D real: o mock vive à frente da moldura */
 .hero-painel { perspective: 1100px; }
 .hero-painel .mock { transform: translateZ(26px); }
@@ -630,7 +567,6 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 
 /* ---------- responsivo ---------- */
 @media (max-width: 980px) {
-  .grade-cartoes, .numeros { grid-template-columns: repeat(2, 1fr); }
   .servicos-cab, .dividida, .faq-grade { grid-template-columns: 1fr; }
   .dividida { gap: 34px; }
   .dividida.invertida > :first-child { order: 0; }
@@ -650,13 +586,12 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   .resultados-coluna { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 560px) {
-  section { padding: 64px 0; }
+  section { padding: 74px 0; }
   .hero { padding: 124px 0 0; }
   .selo { font-size: 11.5px; }
   .header-linha { gap: 8px; }
   .logo strong { font-size: 13px; }
   .header-acoes .btn { padding: 8px 13px !important; font-size: 13px; }
-  .grade-cartoes, .numeros { grid-template-columns: 1fr 1fr; }
   .servicos-grade { grid-template-columns: 1fr; }
   .mock-tiles { grid-template-columns: 1fr 1fr; }
   .portfolio-grade { grid-template-columns: 1fr; }
@@ -688,7 +623,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     <nav class="principal" aria-label="Seções">
       <a href="#servicos">Serviços</a>
       <a href="#portfolio">Portfólio</a>
-      <a href="#sistema">Sistema</a>
+      <a href="#portal-secao">Portal</a>
       <a href="#pacotes">Pacotes</a>
       <a href="#faq">Dúvidas</a>
     </nav>
@@ -704,7 +639,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     <div class="container">
       <a href="#servicos">Serviços</a>
       <a href="#portfolio">Portfólio</a>
-      <a href="#sistema">Sistema</a>
+      <a href="#portal-secao">Portal</a>
       <a href="#pacotes">Pacotes</a>
       <a href="#faq">Dúvidas</a>
       <a href="app/">Acessar o sistema</a>
@@ -717,7 +652,6 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 <section class="hero grade" id="inicio">
   <div class="container conteudo-hero">
     <a class="selo" href="#portal-secao">
-      <span class="selo-tag">NOVO</span>
       Portal do Cliente — acompanhe tudo pelo celular
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
     </a>
@@ -772,12 +706,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     </div>
 
     <!-- EDITE: seus números reais -->
-    <div class="numeros revelar revelar-itens">
-      <div class="cartao"><b>+40</b><span>marcas atendidas</span></div>
-      <div class="cartao"><b>5 anos</b><span>de estrada</span></div>
-      <div class="cartao"><b>+2M</b><span>de views geradas</span></div>
-      <div class="cartao"><b>100%</b><span>foco em resultado</span></div>
-    </div>
+    <p class="prova revelar">+40 marcas atendidas &middot; 5 anos de estrada &middot; mais de 2 milhões de views</p>
   </div>
 
   <div class="faixa" aria-hidden="true">
@@ -788,29 +717,13 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   </div>
 </section>
 
-<!-- ======================= PROBLEMA ======================= -->
-<section>
-  <div class="container" style="text-align:center">
-    <span class="olho">O custo invisível do improviso</span>
-    <h2 class="titulo">O caos não aparece só no feed.<br><span class="apagado">Ele aparece no faturamento.</span></h2>
-    <p class="sub" style="margin-left:auto;margin-right:auto">Quando estratégia, produção e mensuração ficam separadas, você perde audiência, oportunidade e receita — mesmo trabalhando cada vez mais.</p>
-    <div class="grade-cartoes revelar revelar-itens" style="text-align:left">
-      <div class="cartao problema-cartao"><b>01</b><p>Sua marca produz conteúdo, mas ninguém para. O engajamento cai e o retorno some.</p></div>
-      <div class="cartao problema-cartao"><b>02</b><p>O vídeo institucional ficou datado, sem estratégia e sem identidade real.</p></div>
-      <div class="cartao problema-cartao"><b>03</b><p>O tráfego pago consome orçamento sem conversão porque a comunicação não conecta.</p></div>
-      <div class="cartao problema-cartao"><b>04</b><p>Cada material sai de um lugar diferente e a marca perde consistência visual.</p></div>
-    </div>
-  </div>
-</section>
-
 <!-- ======================= SERVIÇOS ======================= -->
 <section id="servicos" class="grade">
   <span class="brilho" style="top:20%;left:-180px;width:420px;height:420px;background:rgba(67,97,238,.12)"></span>
   <div class="container">
     <div class="servicos-cab">
       <div>
-        <span class="olho">Tudo em um só lugar</span>
-        <h2 class="titulo">Menos fornecedor.<br><span class="gradiente">Mais resultado.</span></h2>
+        <h2 class="titulo">Tudo que sua marca precisa,<br>com um time só.</h2>
       </div>
       <p class="sub">Conectamos as áreas que mais geram retrabalho na comunicação de uma marca. A estratégia nasce uma vez e acompanha o projeto até o resultado.</p>
     </div>
@@ -848,8 +761,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   <div class="container">
     <div class="servicos-cab">
       <div>
-        <span class="olho">Trabalhos no ar</span>
-        <h2 class="titulo">O que fazemos,<br><span class="apagado">quando acreditam na gente.</span></h2>
+        <h2 class="titulo">Alguns trabalhos<br>que estão no ar.</h2>
       </div>
       <p class="sub">Criativos, reels e campanhas publicados direto do nosso Instagram. Toque para assistir.</p>
     </div>
@@ -864,8 +776,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   <div class="container">
     <div class="servicos-cab">
       <div>
-        <span class="olho">Resultado que aparece</span>
-        <h2 class="titulo">Campanha boa<br><span class="gradiente">se mede assim.</span></h2>
+        <h2 class="titulo">Números de uma<br>campanha real.</h2>
       </div>
       <p class="sub">Números de campanhas reais que rodam no nosso sistema — investimento, conversas e custo, acompanhados semana a semana. <!-- EDITE: troque pelos números de um case seu --></p>
     </div>
@@ -914,28 +825,12 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   </div>
 </section>
 
-<!-- ======================= SISTEMA ======================= -->
-<section id="sistema" class="grade">
-  <span class="brilho" style="top:30%;left:50%;transform:translateX(-50%);width:760px;height:420px;background:rgba(67,97,238,.16)"></span>
-  <div class="container" style="text-align:center">
-    <span class="olho">A Cavalcante por dentro</span>
-    <h2 class="titulo">Menos promessa.<br><span class="apagado">Mais entrega no ar.</span></h2>
-    <p class="sub" style="margin-left:auto;margin-right:auto">Toda a operação — projetos, gravações, propostas, tráfego e financeiro — roda no nosso sistema próprio, o <b style="color:var(--tinta)">AgênciaHub</b>. Nada se perde em conversa solta.</p>
-    <div class="chips-linha revelar revelar-itens" style="justify-content:center;margin-top:30px">
-      <span class="chip">Visão central</span>
-      <span class="chip">Agenda clara</span>
-      <span class="chip">Números reais</span>
-      <span class="chip">Equipe alinhada</span>
-    </div>
-  </div>
-</section>
-
 <!-- ======================= PORTAL DO CLIENTE ======================= -->
 <section id="portal-secao">
   <div class="container dividida">
     <div class="texto revelar">
       <span class="olho">Portal do cliente</span>
-      <h3>Você acompanha tudo.<br><span class="gradiente">Sem precisar perguntar.</span></h3>
+      <h3>Você acompanha tudo,<br>sem precisar perguntar.</h3>
       <p>Cada cliente recebe um link exclusivo, direto no WhatsApp, com o andamento dos projetos em tempo de relatório: etapa por etapa, agenda de gravações, resultados dos anúncios e pagamentos.</p>
       <ul class="lista-check">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Barra de progresso de cada projeto</li>
@@ -979,70 +874,11 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   </div>
 </section>
 
-<!-- ======================= TRÁFEGO ======================= -->
-<section class="grade">
-  <div class="container dividida invertida">
-    <div class="texto revelar">
-      <span class="olho">Tráfego pago transparente</span>
-      <h3>O número que você vê<br><span class="apagado">é o número que existe.</span></h3>
-      <p>Nada de print solto: cada campanha no Meta, Google ou TikTok tem investimento, alcance, cliques, resultados e custo por resultado registrados período a período — e o seu cliente vê no portal.</p>
-      <div class="chips-linha">
-        <span class="chip">Meta Ads</span>
-        <span class="chip">Google Ads</span>
-        <span class="chip">TikTok Ads</span>
-        <span class="chip">CTR · CPC · ROAS</span>
-      </div>
-    </div>
-    <div class="revelar">
-      <div class="moldura">
-        <div class="mock" aria-hidden="true">
-          <div class="mock-main" style="padding:18px">
-            <span class="mock-sub">tráfego pago · meta ads</span>
-            <div class="mock-ola">Ofertas da semana — WhatsApp</div>
-            <div class="mock-tiles" style="margin-top:12px">
-              <div class="mock-tile"><span>Investido</span><b>R$ 2.230</b></div>
-              <div class="mock-tile"><span>Alcance</span><b>135.600</b></div>
-              <div class="mock-tile"><span>Cliques</span><b>7.110</b></div>
-              <div class="mock-tile"><span>Conversas</span><b>594</b></div>
-              <div class="mock-tile"><span>Custo/conversa</span><b>R$ 3,75</b></div>
-              <div class="mock-tile"><span>CTR</span><b>2,5%</b></div>
-            </div>
-            <div class="mock-item" style="margin-top:10px"><i style="background:#4ade80"></i>Campanha ativa · atualizada semanalmente</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ======================= COMPARATIVO ======================= -->
-<section>
-  <div class="container" style="text-align:center">
-    <span class="olho">A conta que ninguém faz</span>
-    <h2 class="titulo">Quanto custa continuar<br><span class="apagado">do jeito que está?</span></h2>
-    <div class="tabela-wrap revelar" style="text-align:left">
-      <table class="comparativo">
-        <thead>
-          <tr><th>Rotina</th><th>Hoje</th><th class="destaque">Com a Cavalcante</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Estratégia</td><td class="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M17 7 7 17M7 7l10 10"/></svg>Improviso e achismo</td><td class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Plano trimestral</td></tr>
-          <tr><td>Redes sociais</td><td class="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M17 7 7 17M7 7l10 10"/></svg>Postagem sem propósito</td><td class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Conteúdo com estratégia</td></tr>
-          <tr><td>Vídeo</td><td class="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M17 7 7 17M7 7l10 10"/></svg>Freelancer por demanda</td><td class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Produtora dedicada</td></tr>
-          <tr><td>Anúncios</td><td class="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M17 7 7 17M7 7l10 10"/></svg>Impulsionar no botão azul</td><td class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Tráfego otimizado</td></tr>
-          <tr><td>Acompanhamento</td><td class="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M17 7 7 17M7 7l10 10"/></svg>Prints soltos no grupo</td><td class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Portal do cliente</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
 <!-- ======================= PACOTES ======================= -->
 <section id="pacotes" class="grade">
   <span class="brilho" style="top:20%;left:50%;transform:translateX(-50%);width:760px;height:420px;background:rgba(67,97,238,.14)"></span>
   <div class="container" style="text-align:center">
-    <span class="olho">Planos mensais</span>
-    <h2 class="titulo">Escolha o tamanho<br><span class="apagado">do próximo passo.</span></h2>
+    <h2 class="titulo">Planos para cada momento<br>do seu negócio.</h2>
     <p class="sub" style="margin-left:auto;margin-right:auto">Valores de referência — cada marca recebe uma proposta sob medida depois do diagnóstico gratuito.</p>
 
     <!-- EDITE: nomes, preços e itens dos pacotes -->
@@ -1059,7 +895,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
         <a class="btn btn-fantasma" href="#contato" data-whats data-msg="Olá! Tenho interesse no pacote Essencial.">Começar Essencial</a>
       </div>
 
-      <div class="cartao pacote destaque viga-borda">
+      <div class="cartao pacote destaque">
         <span class="pacote-selo">MAIS ESCOLHIDO</span>
         <span class="pacote-nome">PROFISSIONAL</span>
         <div class="pacote-preco"><small>a partir de</small><b><i>R$</i> 2.900<i>/mês</i></b></div>
@@ -1092,8 +928,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 <section id="faq">
   <div class="container faq-grade">
     <div class="revelar">
-      <span class="olho">Dúvidas frequentes</span>
-      <h2 class="titulo" style="font-size:clamp(28px,4vw,42px)">Antes de começar,<br>você pode querer saber.</h2>
+      <h2 class="titulo" style="font-size:clamp(28px,4vw,42px)">O que costumam perguntar<br>antes de começar.</h2>
       <p class="sub">Se sobrar alguma dúvida, chama a gente no WhatsApp antes de fechar qualquer pacote. É de graça.</p>
     </div>
     <div class="revelar revelar-itens" id="faq-lista">
@@ -1126,8 +961,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   <div class="container">
     <div class="cartao cta-final revelar">
       <span class="brilho"></span>
-      <span class="olho">Vamos conversar?</span>
-      <h2 class="titulo">Sua marca não precisa de mais um fornecedor.<br><span class="gradiente">Precisa de uma operação.</span></h2>
+      <h2 class="titulo">Bora conversar<br>sobre a sua marca?</h2>
       <p class="sub" style="margin-left:auto;margin-right:auto">Diagnóstico gratuito, sem compromisso. Conta pra gente onde sua marca está e onde quer chegar.</p>
       <div class="hero-ctas">
         <a class="btn btn-azul" href="#" data-whats data-msg="Olá! Quero um diagnóstico gratuito para a minha marca.">
@@ -1257,17 +1091,6 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
         if (!quadroPendente) { quadroPendente = true; requestAnimationFrame(aplicarTilt); }
       });
       m.addEventListener('mouseleave', function () { ultimoEv = null; m.style.transform = ''; });
-    });
-  }
-
-  /* spotlight dos cartões: o holofote segue o mouse (só ponteiro fino) */
-  if (podeMover && temHoverFino) {
-    document.querySelectorAll('.cartao').forEach(function (c) {
-      c.addEventListener('mousemove', function (e) {
-        var r = c.getBoundingClientRect();
-        c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-        c.style.setProperty('--my', (e.clientY - r.top) + 'px');
-      });
     });
   }
 
