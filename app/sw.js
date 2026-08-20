@@ -2,7 +2,7 @@
    Estratégia: rede primeiro, cache como reserva — atualizações chegam na hora
    e o app continua abrindo sem internet. */
 
-var CACHE = 'agenciahub-v5';
+var CACHE = 'agenciahub-v6';
 
 var ARQUIVOS = [
   './',
