@@ -549,6 +549,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   .revelar-itens:not(.visivel) > * { opacity: 1; }
   .revelar-itens.visivel > * { animation: none; }
   .faixa-trilho { animation: none; }
+  .viga-borda::before, .btn-azul::after, .hero-painel .moldura { animation: none; }
   .menu-mobile .container > * { transition: none; opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
   .ponto-pulso, .whats-flutuante, .tv-textura::after { animation: none; }
@@ -556,6 +557,75 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 @media (prefers-reduced-transparency: reduce) {
   header.rolou, .menu-mobile { background: #05070f; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .vidro, .selo { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+
+/* ============================================================
+   Componentes prontos (catálogo 21st.dev, feitos à mão)
+   ============================================================ */
+
+/* viga de luz na borda (border beam) — painel do herói e plano destaque */
+@property --ang { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.viga-borda { position: relative; }
+.viga-borda::before {
+  content: ""; position: absolute; inset: -1.5px; border-radius: inherit;
+  padding: 1.5px; pointer-events: none;
+  background: conic-gradient(from var(--ang, 0deg),
+    transparent 0turn .6turn,
+    rgba(142, 166, 255, .3) .74turn,
+    #dbe4ff .82turn,
+    rgba(142, 166, 255, .3) .9turn,
+    transparent .98turn);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .viga-borda::before { animation: girar-viga 5.5s linear infinite; }
+}
+@keyframes girar-viga { to { --ang: 1turn; } }
+
+/* botão shiny — brilho varre o CTA azul de tempos em tempos */
+.btn-azul { position: relative; overflow: hidden; }
+.btn-azul::after {
+  content: ""; position: absolute; top: -2px; bottom: -2px; left: 0; width: 34%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, .38), transparent);
+  transform: translateX(-140%) skewX(-16deg);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .btn-azul::after { animation: brilho-varrer 4.6s var(--ease) infinite; }
+}
+@keyframes brilho-varrer {
+  0%, 58% { transform: translateX(-140%) skewX(-16deg); }
+  100% { transform: translateX(480%) skewX(-16deg); }
+}
+
+/* spotlight — holofote azul segue o mouse em todos os cartões */
+@media (hover: hover) and (pointer: fine) {
+  .cartao::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    opacity: 0; transition: opacity .35s ease;
+    background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 40%), rgba(88, 120, 255, .13), transparent 62%);
+  }
+  .cartao:hover::after { opacity: 1; }
+}
+
+/* profundidade 3D real: o mock vive à frente da moldura */
+.hero-painel { perspective: 1100px; }
+.hero-painel .mock { transform: translateZ(26px); }
+.dividida > .revelar { perspective: 1000px; }
+.dividida .mock { transform: translateZ(18px); }
+
+/* o painel do herói levita (translate compõe com o tilt do mouse) */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-painel .moldura { animation: flutuar 7s ease-in-out infinite alternate; }
+  @keyframes flutuar { from { translate: 0 0; } to { translate: 0 -9px; } }
+}
+
+/* plano destaque sobe do trilho (pricing clássico) */
+@media (min-width: 981px) {
+  .pacote.destaque { margin-top: -12px; margin-bottom: 12px; }
 }
 
 /* ---------- responsivo ---------- */
@@ -678,7 +748,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   </div>
 
   <div class="hero-painel">
-    <div class="moldura revelar visivel">
+    <div class="moldura viga-borda revelar visivel">
       <div class="mock" aria-hidden="true">
         <div class="mock-topo"><i></i><i></i><i></i></div>
         <div class="mock-corpo">
@@ -989,7 +1059,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
         <a class="btn btn-fantasma" href="#contato" data-whats data-msg="Olá! Tenho interesse no pacote Essencial.">Começar Essencial</a>
       </div>
 
-      <div class="cartao pacote destaque">
+      <div class="cartao pacote destaque viga-borda">
         <span class="pacote-selo">MAIS ESCOLHIDO</span>
         <span class="pacote-nome">PROFISSIONAL</span>
         <div class="pacote-preco"><small>a partir de</small><b><i>R$</i> 2.900<i>/mês</i></b></div>
@@ -1169,7 +1239,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   var temHoverFino = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   if (podeMover && temHoverFino) {
     document.querySelectorAll('.moldura, .vidro').forEach(function (m) {
-      var forca = m.classList.contains('vidro') ? 3 : 4;
+      var forca = m.classList.contains('vidro') ? 3 : 5;
       var ultimoEv = null, quadroPendente = false;
       function aplicarTilt() {
         quadroPendente = false;
@@ -1187,6 +1257,17 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
         if (!quadroPendente) { quadroPendente = true; requestAnimationFrame(aplicarTilt); }
       });
       m.addEventListener('mouseleave', function () { ultimoEv = null; m.style.transform = ''; });
+    });
+  }
+
+  /* spotlight dos cartões: o holofote segue o mouse (só ponteiro fino) */
+  if (podeMover && temHoverFino) {
+    document.querySelectorAll('.cartao').forEach(function (c) {
+      c.addEventListener('mousemove', function (e) {
+        var r = c.getBoundingClientRect();
+        c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
     });
   }
 
