@@ -123,7 +123,7 @@ section.grade { overflow: hidden; } /* os brilhos decorativos de 760px não pode
 .gradiente { background: linear-gradient(90deg, #a9bbff, #4361ee); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .sub { color: var(--tinta-2); font-size: 18px; margin-top: 18px; max-width: 640px; line-height: 1.55; text-wrap: pretty; }
 /* números que animam não podem "tremer" de largura */
-.vidro-numero b, .vidro-stat b, .mock-tile b { font-variant-numeric: tabular-nums; }
+.mock-tile b { font-variant-numeric: tabular-nums; }
 
 /* botões */
 .btn {
@@ -177,7 +177,7 @@ header.rolou { background: rgba(3, 4, 9, .78); backdrop-filter: blur(16px) satur
   display: grid; place-items: center;
   box-shadow: 0 10px 25px -8px rgba(22, 37, 95, .8);
 }
-.logo-icone svg { width: 19px; height: 19px; color: #fff; }
+.logo-icone svg { width: 21px; height: 21px; color: #fff; }
 .logo strong { font-size: 15.5px; display: block; line-height: 1.15; }
 .logo strong span { color: var(--azul-claro); }
 .logo small { font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--tinta-3); white-space: nowrap; }
@@ -319,7 +319,7 @@ nav.principal a.ativa::after { width: 100%; }
 .tag-verde { background: rgba(74,222,128,.12); color: #4ade80; border: 1px solid rgba(74,222,128,.35); }
 
 /* linha discreta de prova social sob o painel */
-.prova { text-align: center; margin-top: 44px; font-size: 13.5px; color: var(--tinta-3); letter-spacing: .02em; }
+.prova { text-align: center; margin-top: 44px; font-size: 12.5px; color: var(--tinta-3); letter-spacing: .18em; text-transform: uppercase; font-weight: 600; }
 
 .servicos-cab { display: grid; grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: end; }
 .servicos-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 46px; }
@@ -334,71 +334,6 @@ nav.principal a.ativa::after { width: 100%; }
 .servico h3 { font-size: 21px; margin-top: 8px; line-height: 1.3; transition: color .25s ease; }
 .servico:hover h3 { color: var(--azul-claro); }
 .servico p { margin-top: 10px; color: var(--tinta-2); font-size: 15px; }
-
-/* ---------- cartões de vidro com brilho (resultados) ---------- */
-.vidro {
-  position: relative; overflow: hidden;
-  border-radius: 26px;
-  background: linear-gradient(180deg, rgba(88, 120, 255, .1) 0%, rgba(8, 13, 30, .6) 55%, rgba(5, 8, 18, .7) 100%);
-  border: 1px solid rgba(142, 166, 255, .22);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .14),
-    inset 0 -40px 80px -40px rgba(67, 97, 238, .5),
-    0 30px 80px -30px rgba(67, 97, 238, .3);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  transition: transform .35s var(--ease), border-color .3s ease, box-shadow .35s ease;
-  transform-style: preserve-3d; will-change: transform;
-}
-.vidro:hover { border-color: rgba(142, 166, 255, .45); }
-.vidro::before {
-  content: ""; position: absolute; left: 10%; right: 10%; bottom: -44px; height: 90px;
-  background: radial-gradient(ellipse at center, rgba(142, 166, 255, .5), transparent 70%);
-  filter: blur(20px); pointer-events: none;
-}
-.vidro .brilho-mouse {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(420px circle at var(--gx, 50%) var(--gy, 0%), rgba(142, 166, 255, .14), transparent 60%);
-  opacity: 0; transition: opacity .3s ease;
-}
-.vidro:hover .brilho-mouse { opacity: 1; }
-@media (hover: none) {
-  .vidro .brilho-mouse { opacity: .85; } /* no celular o vidro brilha como no desktop */
-  .vidro { border-color: rgba(142, 166, 255, .3); }
-}
-
-.resultados-grade { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; margin-top: 46px; align-items: stretch; }
-.resultados-coluna { display: grid; gap: 18px; }
-.vidro-corpo { padding: 28px; position: relative; z-index: 2; }
-.vidro-topo { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12.5px; color: var(--tinta-3); }
-.vidro-topo .chip { white-space: nowrap; }
-.vidro-topo .chip { pointer-events: none; }
-.vidro-numero { text-align: center; padding: 10px 0 6px; }
-.vidro-numero .rotulo { font-size: 13px; color: var(--tinta-2); letter-spacing: .04em; }
-.vidro-numero b { display: block; font-family: var(--fonte-titulo); font-size: clamp(44px, 6vw, 68px); font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
-.vidro-numero b .sup { color: #4ade80; font-size: 18px; vertical-align: super; }
-.vidro-numero small { font-size: 11.5px; color: var(--tinta-3); }
-.vidro-stat { text-align: left; }
-.vidro-stat .rotulo { display: block; font-size: 12px; color: var(--tinta-2); letter-spacing: .04em; text-transform: uppercase; }
-.vidro-stat b { display: block; font-family: var(--fonte-titulo); font-size: clamp(30px, 4vw, 42px); font-weight: 800; margin-top: 4px; }
-.vidro-stat .legenda { display: block; font-size: 12.5px; color: var(--tinta-3); margin-top: 4px; }
-
-.grafico-vidro { position: relative; margin: 6px 0 4px; }
-.grafico-vidro svg { width: 100%; height: auto; display: block; overflow: visible; }
-.grafico-vidro .linha {
-  fill: none; stroke: #9db2ff; stroke-width: 3; stroke-linecap: round;
-  filter: drop-shadow(0 0 6px rgba(142, 166, 255, .8)) drop-shadow(0 0 18px rgba(67, 97, 238, .5));
-  stroke-dasharray: 1200; stroke-dashoffset: 1200;
-}
-.visivel .grafico-vidro .linha { animation: desenhar-linha 2.2s var(--ease) .3s forwards; }
-@keyframes desenhar-linha { to { stroke-dashoffset: 0; } }
-.grafico-vidro .grade-g line { stroke: rgba(142, 166, 255, .09); stroke-width: 1; }
-.grafico-vidro .ponto { fill: #dbe4ff; filter: drop-shadow(0 0 8px rgba(160, 180, 255, 1)); opacity: 0; }
-.grafico-vidro .ponto-halo { fill: none; stroke: rgba(160, 180, 255, .5); opacity: 0; }
-.visivel .grafico-vidro .ponto { animation: surgir-ponto .5s ease 2.3s forwards; }
-.visivel .grafico-vidro .ponto-halo { animation: halo-pulso 2.4s ease 2.5s infinite; }
-@keyframes surgir-ponto { to { opacity: 1; } }
-@keyframes halo-pulso { 0% { opacity: .7; r: 8; } 70% { opacity: 0; r: 26; } 100% { opacity: 0; r: 26; } }
 
 /* ---------- portfólio (Instagram) ---------- */
 .portfolio-grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 46px; }
@@ -431,7 +366,7 @@ nav.principal a.ativa::after { width: 100%; }
 .pacote-nome { font-size: 12px; font-weight: 700; letter-spacing: .18em; color: var(--azul-claro); }
 .pacote-preco { margin-top: 18px; }
 .pacote-preco small { display: block; color: var(--tinta-3); font-size: 12.5px; }
-.pacote-preco b { font-family: var(--fonte-titulo); font-size: 42px; font-weight: 800; }
+.pacote-preco b { font-family: var(--fonte-titulo); font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
 .pacote-preco b i { font-style: normal; font-size: 17px; color: var(--tinta-2); font-weight: 600; }
 .pacote ul { list-style: none; margin: 22px 0; display: flex; flex-direction: column; gap: 11px; flex: 1; }
 .pacote li { display: flex; gap: 10px; font-size: 14.5px; color: rgba(242,245,252,.78); }
@@ -539,7 +474,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 }
 @media (prefers-reduced-transparency: reduce) {
   header.rolou, .menu-mobile { background: #05070f; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .vidro, .selo { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .selo { backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 
 /* ============================================================
@@ -602,8 +537,6 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   .rotulo-longo { display: none; }
   .rotulo-curto { display: inline; }
   .hero-painel { margin-top: -120px; }
-  .resultados-grade { grid-template-columns: 1fr; }
-  .resultados-coluna { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 560px) {
   section { padding: 74px 0; }
@@ -618,7 +551,6 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   .horizonte { height: 220px; }
   .ondas3d { top: -220px; height: calc(100% + 300px); bottom: -80px; }
   .hero-painel { margin-top: -90px; }
-  .resultados-grade { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -632,7 +564,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   <div class="container header-linha">
     <a class="logo" href="#inicio" aria-label="Agência Cavalcante">
       <span class="logo-icone">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"><path d="m15 8 4.5-2.5v13L15 16"/><rect x="2.5" y="6" width="12.5" height="12" rx="2.5"/></svg>
+        <svg viewBox="0 0 104 124" fill="none" aria-hidden="true"><g stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M62 12C40 12 24 30 22 54c-2 22-2 36 6 48"/><path d="M58 21c9 1 14 6 18 13 3 6 9 10 9 17 0 8-6 13-13 14"/><path d="M48 42c5-7 11-10 18-9"/><path d="M74 65c-9-2-17 1-23 7-6 6-9 14-9 24"/></g><g fill="currentColor"><path d="M34 96h30a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H34a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3z"/><path d="M26 112h54a4 4 0 0 1 4 4v5H22v-5a4 4 0 0 1 4-4z"/></g></svg>
       </span>
       <span>
         <!-- EDITE: nome da agência -->
@@ -726,7 +658,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     </div>
 
     <!-- EDITE: seus números reais -->
-    <p class="prova revelar">+40 marcas atendidas &middot; 5 anos de estrada &middot; mais de 2 milhões de views</p>
+    <p class="prova revelar">Criatividade é estratégia. Estratégia é Cavalcante.</p>
   </div>
 
   <div class="faixa" aria-hidden="true">
@@ -782,61 +714,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     </div>
     <div class="portfolio-grade revelar" id="portfolio-grade"></div>
     <!-- EDITE: @ do Instagram -->
-    <p style="text-align:center;margin-top:26px"><a class="btn btn-fantasma" href="https://instagram.com/agenciacavalcante" target="_blank" rel="noopener">Ver mais no Instagram</a></p>
-  </div>
-</section>
-
-<!-- ======================= RESULTADOS (vidro) ======================= -->
-<section id="resultados">
-  <div class="container">
-    <div class="servicos-cab">
-      <div>
-        <h2 class="titulo">Números de uma<br>campanha real.</h2>
-      </div>
-      <p class="sub">De uma campanha que roda no nosso sistema. <!-- EDITE: troque pelos números de um case seu --></p>
-    </div>
-    <div class="resultados-grade revelar revelar-itens">
-      <div class="vidro">
-        <span class="brilho-mouse"></span>
-        <div class="vidro-corpo">
-          <div class="vidro-topo"><span>Conversas geradas no WhatsApp</span><span class="chip">Últimos 6 meses</span></div>
-          <div class="grafico-vidro">
-            <svg viewBox="0 0 560 240" role="img" aria-label="Crescimento de conversas geradas">
-              <g class="grade-g">
-                <line x1="0" y1="60" x2="560" y2="60"/><line x1="0" y1="120" x2="560" y2="120"/><line x1="0" y1="180" x2="560" y2="180"/>
-                <line x1="112" y1="20" x2="112" y2="228"/><line x1="224" y1="20" x2="224" y2="228"/><line x1="336" y1="20" x2="336" y2="228"/><line x1="448" y1="20" x2="448" y2="228"/>
-              </g>
-              <path class="linha" id="linha-conversas" d="M8,196 C60,190 96,186 132,178 C176,168 208,150 244,118 C270,94 292,64 320,52 C350,40 380,66 410,96 C440,126 470,138 500,120 C522,108 540,88 552,72"/>
-              <circle class="ponto-halo" id="ponto-halo" r="8" cx="552" cy="72"/>
-              <circle class="ponto" id="ponto-final" r="6" cx="552" cy="72"/>
-            </svg>
-          </div>
-          <div class="vidro-numero">
-            <span class="rotulo">Conversas no WhatsApp</span>
-            <b>+<span data-contar-site="212">0</span>%<span class="sup">↗</span></b>
-            <small>crescimento no semestre · campanha de cliente</small>
-          </div>
-        </div>
-      </div>
-      <div class="resultados-coluna">
-        <div class="vidro">
-          <span class="brilho-mouse"></span>
-          <div class="vidro-corpo vidro-stat">
-            <span class="rotulo">Custo por conversa</span>
-            <b>− <span data-contar-site="38">0</span>%</b>
-            <span class="legenda">otimização contínua dos criativos</span>
-          </div>
-        </div>
-        <div class="vidro">
-          <span class="brilho-mouse"></span>
-          <div class="vidro-corpo vidro-stat">
-            <span class="rotulo">Alcance no semestre</span>
-            <b><span data-contar-site="486">0</span> mil</b>
-            <span class="legenda">pessoas alcançadas nas campanhas</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <p style="text-align:center;margin-top:26px"><a class="btn btn-fantasma" href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener">Ver mais no Instagram</a></p>
   </div>
 </section>
 
@@ -892,13 +770,13 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   <span class="brilho" style="top:20%;left:50%;transform:translateX(-50%);width:760px;height:420px;background:rgba(67,97,238,.14)"></span>
   <div class="container" style="text-align:center">
     <h2 class="titulo">Planos para cada momento<br>do seu negócio.</h2>
-    <p class="sub" style="margin-left:auto;margin-right:auto">Valores de referência — cada marca recebe uma proposta sob medida depois do diagnóstico gratuito.</p>
+    <p class="sub" style="margin-left:auto;margin-right:auto">Cada marca tem uma necessidade. O valor sai depois do diagnóstico gratuito, sem pacote engessado.</p>
 
     <!-- EDITE: nomes, preços e itens dos pacotes -->
     <div class="pacotes-grade revelar revelar-itens" style="text-align:left">
       <div class="cartao pacote">
         <span class="pacote-nome">ESSENCIAL</span>
-        <div class="pacote-preco"><small>a partir de</small><b><i>R$</i> 1.500<i>/mês</i></b></div>
+        <div class="pacote-preco"><small>plano mensal</small><b>Sob medida</b></div>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Gestão de 2 redes sociais</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>12 posts + 8 stories por mês</li>
@@ -911,7 +789,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       <div class="cartao pacote destaque">
         <span class="pacote-selo">MAIS ESCOLHIDO</span>
         <span class="pacote-nome">PROFISSIONAL</span>
-        <div class="pacote-preco"><small>a partir de</small><b><i>R$</i> 2.900<i>/mês</i></b></div>
+        <div class="pacote-preco"><small>plano mensal</small><b>Sob medida</b></div>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Gestão completa de redes</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Posts + Reels toda semana</li>
@@ -924,7 +802,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 
       <div class="cartao pacote">
         <span class="pacote-nome">PREMIUM</span>
-        <div class="pacote-preco"><small>sob consulta</small><b>360º</b></div>
+        <div class="pacote-preco"><small>projeto completo</small><b>360º</b></div>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Estratégia completa da marca</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Produção audiovisual dedicada</li>
@@ -986,12 +864,12 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 <footer>
   <div class="container rodape-linha">
     <a class="logo" href="#inicio">
-      <span class="logo-icone" style="width:32px;height:32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round" style="width:16px;height:16px"><path d="m15 8 4.5-2.5v13L15 16"/><rect x="2.5" y="6" width="12.5" height="12" rx="2.5"/></svg></span>
+      <span class="logo-icone" style="width:32px;height:32px"><svg viewBox="0 0 104 124" fill="none" aria-hidden="true" style="width:17px;height:17px"><g stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M62 12C40 12 24 30 22 54c-2 22-2 36 6 48"/><path d="M58 21c9 1 14 6 18 13 3 6 9 10 9 17 0 8-6 13-13 14"/><path d="M48 42c5-7 11-10 18-9"/><path d="M74 65c-9-2-17 1-23 7-6 6-9 14-9 24"/></g><g fill="currentColor"><path d="M34 96h30a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H34a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3z"/><path d="M26 112h54a4 4 0 0 1 4 4v5H22v-5a4 4 0 0 1 4-4z"/></g></svg></span>
       <span><strong style="font-size:14px">Agência <span>Cavalcante</span></strong></span>
     </a>
     <div class="rodape-links">
       <!-- EDITE: @ do Instagram -->
-      <a href="https://instagram.com/agenciacavalcante" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener">Instagram</a>
       <a href="app/">Acessar o sistema</a>
       <span>© 2026 Agência Cavalcante</span>
     </div>
@@ -1081,8 +959,8 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   var podeMover = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var temHoverFino = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   if (podeMover && temHoverFino) {
-    document.querySelectorAll('.moldura, .vidro').forEach(function (m) {
-      var forca = m.classList.contains('vidro') ? 3 : 5;
+    document.querySelectorAll('.moldura').forEach(function (m) {
+      var forca = 5;
       var ultimoEv = null, quadroPendente = false;
       function aplicarTilt() {
         quadroPendente = false;
@@ -1102,35 +980,6 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       m.addEventListener('mouseleave', function () { ultimoEv = null; m.style.transform = ''; });
     });
   }
-
-  /* ---------- contadores do site (sobem até o valor ao aparecer) ---------- */
-  function ligarContadores() {
-    var els = document.querySelectorAll('[data-contar-site]');
-    if (!els.length) return;
-    function animar(el) {
-      var alvo = parseInt(el.getAttribute('data-contar-site'), 10) || 0;
-      if (!podeMover) { el.textContent = alvo; return; }
-      var inicio = null, dur = 1400;
-      function passo(t) {
-        if (inicio === null) inicio = t;
-        var p = Math.min(1, (t - inicio) / dur);
-        el.textContent = Math.round(alvo * (1 - Math.pow(1 - p, 3)));
-        if (p < 1) requestAnimationFrame(passo);
-      }
-      requestAnimationFrame(passo);
-    }
-    if ('IntersectionObserver' in window) {
-      var ioC = new IntersectionObserver(function (ents) {
-        ents.forEach(function (en) {
-          if (en.isIntersecting) { animar(en.target); ioC.unobserve(en.target); }
-        });
-      }, { threshold: 0.5 });
-      els.forEach(function (el) { ioC.observe(el); });
-    } else {
-      els.forEach(animar);
-    }
-  }
-  ligarContadores();
 
   /* o motion.js carrega com defer — espera ele estar disponível */
   function comMotion(fn) {
