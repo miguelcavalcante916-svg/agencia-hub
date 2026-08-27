@@ -1,22 +1,38 @@
 # 🎬 Agência Cavalcante — Site + AgênciaHub
 
-Tudo da agência em um único projeto, pronto para publicar na Vercel com seu domínio:
+**No ar em [agenciacavalcante.com](https://agenciacavalcante.com)** — site e sistema no mesmo projeto, hospedados de graça na Vercel.
 
-| Pasta | O que é | Endereço depois de publicado |
-|---|---|---|
-| `/` (raiz) | **Site da agência** — eclipse azul, textura de TV, portfólio do Instagram, pacotes e WhatsApp | `https://seudominio.com.br/` |
-| `/app` | **AgênciaHub** — sistema de gestão completo (PWA instalável no celular) | `https://seudominio.com.br/app/` |
-| `portfolio.json` | Lista de reels/posts que aparecem no portfólio do site (gerada no app, em **Meu site**) | — |
+| Endereço | O que é |
+|---|---|
+| [agenciacavalcante.com](https://agenciacavalcante.com) | **Site da agência** — herói com ondas 3D, portfólio do Instagram, planos e WhatsApp |
+| [agenciacavalcante.com/app/](https://agenciacavalcante.com/app/) | **AgênciaHub** — sistema de gestão (instala no celular como aplicativo) |
 
-## 🚀 Publicar na Vercel (com o seu domínio)
+| Arquivo | Para que serve |
+|---|---|
+| `index.html` | O site inteiro (HTML, CSS e JS num arquivo só, sem build) |
+| `app/` | O sistema: `js/views/` tem uma tela por arquivo |
+| `portfolio.json` | Os reels que aparecem no site — gere no app, em **Meu site** |
+| `robots.txt`, `sitemap.xml` | Indexação no Google (o `/app/` fica fora das buscas) |
+| `og.png` | A imagem que aparece ao compartilhar o link no WhatsApp |
 
-1. Entre em [vercel.com](https://vercel.com) com a conta do GitHub e clique em **Add New → Project**;
-2. Importe o repositório `agencia-hub`;
-3. Em *Framework Preset* deixe **Other** — não precisa de build. Clique em **Deploy**;
-4. Depois do deploy, vá em **Settings → Domains** e adicione o seu domínio (a Vercel mostra o registro DNS para apontar);
-5. No app (`/app` → Configurações), preencha **Endereço público do app** com `https://seudominio.com.br/app/` — é ele que gera os links do portal do cliente.
+## 🚀 Como atualizar o site
 
-A partir daí, **todo commit no GitHub republica o site sozinho**.
+**Todo commit neste repositório republica o site sozinho, em segundos.** Não precisa mexer na Vercel.
+
+Para mudar um texto: abra o arquivo aqui no GitHub, clique no lápis, edite e clique em *Commit changes*.
+
+| O que mudar | Onde |
+|---|---|
+| Texto, títulos, perguntas do FAQ | `index.html` |
+| WhatsApp | `index.html`, procure por `var WHATSAPP` |
+| Reels do portfólio | `portfolio.json` (gere a lista no app, em **Meu site**) |
+| Logo | `app/img/logo.svg` — mas ela também está embutida no `index.html` e no ícone |
+
+### Como está configurado
+
+- **Vercel**: projeto `agencia-cavalcante`, ligado a este repositório, branch `main`, sem build (framework *Other*).
+- **DNS (Hostinger)**: registro `A` do `@` → `76.76.21.21` e `CNAME` do `www` → `cname.vercel-dns.com`. O `www` redireciona para o domínio principal (redirect 308).
+- **HTTPS**: automático pela Vercel, renovado sozinho.
 
 ## ✨ Módulos do AgênciaHub
 
@@ -54,7 +70,7 @@ A partir daí, **todo commit no GitHub republica o site sozinho**.
 
 ## 📱 Instalar o app no celular
 
-Com o endereço `https://seudominio.com.br/app/` aberto no navegador:
+Com o endereço `https://agenciacavalcante.com/app/` aberto no navegador:
 
 - **Android (Chrome):** menu ⋮ → **Adicionar à tela inicial**;
 - **iPhone (Safari):** Compartilhar → **Adicionar à Tela de Início**;
@@ -73,3 +89,12 @@ Abra `index.html` (raiz) e procure por **“EDITE”**: número do WhatsApp, nom
 ## 🛠️ Tecnologia
 
 HTML + CSS + JavaScript puros — sem build, sem dependências, sem mensalidade. Dados do app em `localStorage`. PWA com service worker (funciona offline). O assistente usa a API da Anthropic direto do navegador.
+
+## ⚠️ Regra de conteúdo do site
+
+O site **não traz número de resultado, preço fixo, depoimento ou case** — porque ainda não há
+números reais para mostrar. Isso é proposital: prometer resultado que não aconteceu queima a
+confiança no primeiro cliente que perguntar de onde veio o dado.
+
+Quando houver um case fechado com números de verdade (investimento, conversas geradas, custo por
+conversa), é só pedir que a seção de resultados volta — com gráfico e tudo.
