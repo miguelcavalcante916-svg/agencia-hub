@@ -341,10 +341,15 @@
       raiz.innerHTML = AH.renderPortalHTML(dados);
       AH.ligarPortal(raiz);
     }).catch(function (e) {
-      console.warn('Portal: link inválido.', e);
+      console.warn('Portal: não foi possível abrir o link.', e);
+      var antigo = e && e.message === 'NAVEGADOR_ANTIGO';
+      var titulo = antigo ? 'Atualize o navegador para abrir' : 'Link inválido ou incompleto';
+      var texto = antigo
+        ? 'Este link precisa de uma versão mais recente do navegador. Atualize o app do seu celular (ou abra o link no Chrome) e tente de novo — se preferir, peça à agência um link novo.'
+        : 'Confira se o endereço foi copiado por inteiro e, se precisar, peça um novo link para a agência.';
       raiz.innerHTML = '<div class="portal"><div class="card" style="margin-top:48px;text-align:center;padding:32px">' +
-        '<h2 style="margin-bottom:8px">Link inválido ou incompleto</h2>' +
-        '<p class="nota-rodape">Confira se o endereço foi copiado por inteiro e, se precisar, peça um novo link para a agência.</p>' +
+        '<h2 style="margin-bottom:8px">' + titulo + '</h2>' +
+        '<p class="nota-rodape">' + texto + '</p>' +
         '</div></div>';
     });
   };

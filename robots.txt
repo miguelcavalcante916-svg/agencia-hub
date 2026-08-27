@@ -1,7 +1,10 @@
 # Agência Cavalcante
 User-agent: *
 Allow: /
-# o sistema de gestão é ferramenta interna, não deve aparecer em buscas
-Disallow: /app/
+
+# O sistema em /app/ não é bloqueado aqui de propósito: ele tem
+# <meta name="robots" content="noindex"> na própria página, e o Google só
+# consegue ler essa tag se puder acessar a página. Bloquear aqui faria a URL
+# aparecer na busca sem título nem descrição.
 
 Sitemap: https://agenciacavalcante.com/sitemap.xml

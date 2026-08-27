@@ -836,31 +836,56 @@
     return bytes;
   }
 
-  // Codifica um objeto para o pedaço final do link (#/p?d=...). Usa compressão
-  // quando o navegador suporta; senão, vai sem compressão (prefixo indica o modo).
+  /* Codifica um objeto para o pedaço final do link (#/p?d=...).
+     Quem ABRE o link é o cliente, e não dá para saber que navegador ele usa —
+     então preferimos o modo sem compressão ('j'), que funciona em qualquer
+     celular, inclusive iPhone antigo. Só quando o link ficaria grande demais
+     usamos compressão ('d'), que exige navegador de 2023 para cima. */
+  var LIMITE_SEM_COMPRESSAO = 8000; // caracteres — acima disso o link fica feio no WhatsApp
+
   AH.codificarPortal = function (obj) {
-    var texto = JSON.stringify(obj);
-    var bytes = new TextEncoder().encode(texto);
-    if (typeof CompressionStream === 'undefined') {
-      return Promise.resolve('j.' + bytesParaB64url(bytes));
+    var bytes;
+    try {
+      bytes = new TextEncoder().encode(JSON.stringify(obj));
+    } catch (e) {
+      return Promise.reject(e);
     }
-    var comprimido = new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'));
-    return new Response(comprimido).arrayBuffer().then(function (buf) {
-      return 'd.' + bytesParaB64url(new Uint8Array(buf));
-    });
+    var semCompressao = 'j.' + bytesParaB64url(bytes);
+    if (semCompressao.length <= LIMITE_SEM_COMPRESSAO || typeof CompressionStream === 'undefined') {
+      return Promise.resolve(semCompressao);
+    }
+    try {
+      var comprimido = new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+      return new Response(comprimido).arrayBuffer().then(function (buf) {
+        return 'd.' + bytesParaB64url(new Uint8Array(buf));
+      }).catch(function () { return semCompressao; });
+    } catch (e) {
+      return Promise.resolve(semCompressao);
+    }
   };
 
+  /* Decodifica o link no navegador do CLIENTE. Tudo aqui dentro pode estourar
+     de forma síncrona (atob com link cortado, JSON quebrado, DecompressionStream
+     inexistente); sem este try/catch a exceção escapava do .catch() de quem
+     chamou e a tela ficava travada em "Carregando…" para sempre. */
   AH.decodificarPortal = function (payload) {
-    var i = String(payload).indexOf('.');
-    if (i < 0) return Promise.reject(new Error('link inválido'));
-    var modo = payload.slice(0, i);
-    var bytes = b64urlParaBytes(payload.slice(i + 1));
-    if (modo === 'j') {
-      return Promise.resolve(JSON.parse(new TextDecoder().decode(bytes)));
+    try {
+      var i = String(payload).indexOf('.');
+      if (i < 0) return Promise.reject(new Error('Link incompleto.'));
+      var modo = payload.slice(0, i);
+      var bytes = b64urlParaBytes(payload.slice(i + 1));
+      if (modo === 'j') {
+        return Promise.resolve(JSON.parse(new TextDecoder().decode(bytes)));
+      }
+      if (typeof DecompressionStream === 'undefined') {
+        return Promise.reject(new Error('NAVEGADOR_ANTIGO'));
+      }
+      var descomprimido = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+      return new Response(descomprimido).arrayBuffer().then(function (buf) {
+        return JSON.parse(new TextDecoder().decode(buf));
+      });
+    } catch (e) {
+      return Promise.reject(e);
     }
-    var descomprimido = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
-    return new Response(descomprimido).arrayBuffer().then(function (buf) {
-      return JSON.parse(new TextDecoder().decode(buf));
-    });
   };
 })();
