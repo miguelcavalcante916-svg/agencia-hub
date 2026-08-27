@@ -1,8 +1,7 @@
 {
-  "_ajuda": "Este arquivo controla o portfólio do site. Gere o conteúdo no sistema (app → Meu site), cole aqui inteiro e salve — a Vercel republica o site sozinha em ~1 minuto. Troque os exemplos abaixo pelos links reais dos seus reels/posts.",
-  "itens": [
-    { "url": "https://www.instagram.com/reel/EXEMPLO1/", "titulo": "Aftermovie — Vaquejada Serra Verde" },
-    { "url": "https://www.instagram.com/reel/EXEMPLO2/", "titulo": "Institucional — Clínica Vida" },
-    { "url": "https://www.instagram.com/p/EXEMPLO3/", "titulo": "Campanha — Supermercado Central" }
-  ]
+  "_ajuda": "Este arquivo controla a seção de portfólio do site. Enquanto 'itens' estiver vazio, a seção não aparece no site (nem no menu) — assim ninguém vê um portfólio vazio. Para publicar: gere a lista no sistema (app -> Meu site), cole aqui no lugar de [] e salve. A Vercel republica sozinha em ~1 minuto.",
+  "_exemplo": [
+    { "url": "https://www.instagram.com/reel/CODIGO_DO_REEL/", "titulo": "Aftermovie — Nome do evento" }
+  ],
+  "itens": []
 }

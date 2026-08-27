@@ -19,6 +19,22 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="pt_BR">
 <meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Agência Cavalcante",
+  "description": "Marketing estratégico e produção audiovisual num único fluxo — da ideia à campanha no ar.",
+  "slogan": "Criatividade é estratégia. Estratégia é Cavalcante.",
+  "url": "https://agenciacavalcante.com/",
+  "image": "https://agenciacavalcante.com/og.png",
+  "telephone": "+5584999492725",
+  "areaServed": "BR",
+  "priceRange": "$$",
+  "sameAs": ["https://instagram.com/cavalcante.media"],
+  "knowsAbout": ["Marketing digital", "Produção audiovisual", "Tráfego pago", "Identidade visual"]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
 <!-- Motion (motion.dev) hospedado no próprio projeto — global window.Motion: animate, spring, scroll, inView -->
@@ -556,7 +572,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 </head>
 <body>
 
-<a class="pular" href="#inicio">Pular para o conteúdo</a>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
 <div class="tv-textura" aria-hidden="true"></div>
 
 <!-- ======================= CABEÇALHO ======================= -->
@@ -601,6 +617,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 </header>
 
 <!-- ======================= HERO (eclipse) ======================= -->
+<main id="conteudo">
 <section class="hero grade" id="inicio">
   <div class="container conteudo-hero">
     <a class="selo" href="#portal-secao">
@@ -859,6 +876,8 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     </div>
   </div>
 </section>
+
+</main>
 
 <!-- ======================= RODAPÉ ======================= -->
 <footer>
@@ -1229,7 +1248,12 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   function montarPortfolio(itens) {
     var grade = document.getElementById('portfolio-grade');
     var secao = document.getElementById('portfolio');
-    if (!itens || !itens.length) { secao.style.display = 'none'; return; }
+    if (!itens || !itens.length) {
+      /* sem trabalhos publicados ainda: esconde a seção e também os links do menu para ela */
+      secao.style.display = 'none';
+      document.querySelectorAll('a[href="#portfolio"]').forEach(function (a) { a.style.display = 'none'; });
+      return;
+    }
     var podeIncorporar = /^https?:$/.test(location.protocol);
     grade.innerHTML = itens.map(function (item) {
       if (!item || !item.url) return '';

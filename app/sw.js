@@ -2,7 +2,7 @@
    Estratégia: rede primeiro, cache como reserva — atualizações chegam na hora
    e o app continua abrindo sem internet. */
 
-var CACHE = 'agenciahub-v8';
+var CACHE = 'agenciahub-v9';
 
 var ARQUIVOS = [
   './',
@@ -31,7 +31,8 @@ var ARQUIVOS = [
   './js/app.js',
   './img/icone.svg',
   './img/icone-192.png',
-  './img/icone-512.png'
+  './img/icone-512.png',
+  './img/icone-maskable-512.png'
 ];
 
 self.addEventListener('install', function (e) {

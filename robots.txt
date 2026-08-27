@@ -1,0 +1,7 @@
+# Agência Cavalcante
+User-agent: *
+Allow: /
+# o sistema de gestão é ferramenta interna, não deve aparecer em buscas
+Disallow: /app/
+
+Sitemap: https://agenciacavalcante.com/sitemap.xml
