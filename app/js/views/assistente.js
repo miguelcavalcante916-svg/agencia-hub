@@ -173,7 +173,9 @@
     }).then(function () {
       pensando = false;
       AH.salvar();
-      render(el);
+      /* a resposta pode demorar; se o usuário já trocou de tela, não repintar
+         por cima do que ele está vendo agora — a conversa fica salva de todo jeito */
+      if (!AH.rotaAtualView || AH.rotaAtualView() === 'assistente') render(el);
     });
   }
 

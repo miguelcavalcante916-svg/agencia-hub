@@ -70,10 +70,27 @@
     fecharSidebarMobile();
 
     var view = AH.views[rota.view];
-    document.getElementById('page-title').textContent = view.titulo || rota.nome;
     var el = document.getElementById('view');
+    /* Se o arquivo desta tela não carregou (rede caiu no meio), mostramos um
+       aviso em vez de deixar o app congelado sem explicação. */
+    if (!view || typeof view.render !== 'function') {
+      document.getElementById('page-title').textContent = rota.nome;
+      el.innerHTML = '<div class="card" style="text-align:center;padding:34px">' +
+        '<h2 style="margin-bottom:6px">Esta tela não carregou</h2>' +
+        '<p class="nota-rodape">Recarregue a página. Se continuar assim, confira a conexão.</p></div>';
+      montarNav();
+      return;
+    }
+    document.getElementById('page-title').textContent = view.titulo || rota.nome;
     AH.ui._deveAnimar = true;
-    view.render(el);
+    try {
+      view.render(el);
+    } catch (erro) {
+      console.error('Falha ao montar a tela:', erro);
+      el.innerHTML = '<div class="card" style="text-align:center;padding:34px">' +
+        '<h2 style="margin-bottom:6px">Algo deu errado nesta tela</h2>' +
+        '<p class="nota-rodape">Recarregue a página. Seus dados continuam salvos.</p></div>';
+    }
     montarNav();
     el.scrollTop = 0;
     window.scrollTo(0, 0);
@@ -82,6 +99,9 @@
     void el.offsetWidth;
     el.classList.add('entrando');
   }
+
+  // Qual tela está aberta agora (usado por telas que respondem depois de um tempo)
+  AH.rotaAtualView = function () { return rotaAtual ? rotaAtual.view : null; };
 
   // Rerenderiza a tela atual (chamado após qualquer alteração de dados)
   AH.rerender = function () {

@@ -177,12 +177,18 @@
   /* ---------- modal ---------- */
 
   var modalAtivo = null;
+  var focoAntesDoModal = null;
 
   ui.fecharModal = function () {
     if (modalAtivo) {
       modalAtivo.remove();
       modalAtivo = null;
       document.body.classList.remove('modal-aberto');
+      /* devolve o foco para onde o usuário estava antes de abrir */
+      if (focoAntesDoModal && document.contains(focoAntesDoModal)) {
+        try { focoAntesDoModal.focus(); } catch (e) {}
+      }
+      focoAntesDoModal = null;
     }
   };
 
@@ -192,7 +198,9 @@
    * O corpo vira um <form>; botão principal dispara aoEnviar com o form.
    */
   ui.modal = function (opts) {
+    var focoDeAgora = document.activeElement;
     ui.fecharModal();
+    focoAntesDoModal = focoDeAgora;
     var root = document.getElementById('modal-root');
     var wrap = document.createElement('div');
     wrap.className = 'modal-backdrop';
@@ -226,8 +234,27 @@
       if (e.target === wrap || e.target.closest('[data-fechar]')) ui.fecharModal();
     });
     if (opts.aoMontar) opts.aoMontar(wrap.querySelector('.modal'), ui.fecharModal);
+
+    /* foco: entra no diálogo e não escapa dele enquanto estiver aberto */
+    var caixa = wrap.querySelector('.modal');
+    var focaveis = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
     var primeiro = wrap.querySelector('input,select,textarea');
-    if (primeiro) primeiro.focus();
+    if (primeiro) {
+      primeiro.focus();
+    } else if (caixa) {
+      caixa.setAttribute('tabindex', '-1');
+      caixa.focus();
+    }
+    wrap.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab' || !caixa) return;
+      var lista = Array.prototype.filter.call(caixa.querySelectorAll(focaveis), function (n) {
+        return n.offsetParent !== null;
+      });
+      if (!lista.length) return;
+      var ini = lista[0], fim = lista[lista.length - 1];
+      if (e.shiftKey && document.activeElement === ini) { e.preventDefault(); fim.focus(); }
+      else if (!e.shiftKey && document.activeElement === fim) { e.preventDefault(); ini.focus(); }
+    });
     return wrap;
   };
 

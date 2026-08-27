@@ -176,7 +176,10 @@
       },
       aoEnviar: function (form) {
         var f = new FormData(form);
-        if (!f.get('de') || !f.get('ate') || f.get('investimento') === '') return;
+        if (!f.get('de') || !f.get('ate') || f.get('investimento') === '') {
+          AH.ui.toast('Preencha o período e o investimento.', 'erro');
+          return;
+        }
         var dados = {
           de: f.get('de'),
           ate: f.get('ate'),
