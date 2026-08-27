@@ -52,6 +52,9 @@
       '<span class="badge badge-laranja">Portal do cliente</span>' +
       '</header>';
 
+    /* conteúdo entre o cabeçalho e o rodapé: leitor de tela pula direto para cá */
+    html += '<main id="portal-conteudo">';
+
     /* saudação */
     html += '<section class="portal-hero revelar">' +
       '<p class="portal-eyebrow">Acompanhamento em tempo de relatório</p>' +
@@ -272,6 +275,8 @@
         ? '<a class="btn btn-primario" href="' + AH.telLink(ag.whatsapp) + '" target="_blank" rel="noopener">' + AH.icons.whatsapp + 'Falar com a agência</a>'
         : '') +
       '</div>';
+
+    html += '</main>';
 
     html += '<footer class="portal-rodape">';
     var contatos = [];

@@ -39,9 +39,10 @@
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
-<!-- Motion (motion.dev) hospedado no próprio projeto — global window.Motion: animate, spring, scroll, inView -->
-<script src="vendor/motion.js" defer></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- pesos exatos em vez do eixo variável inteiro (-35 KB) e carga que não trava a primeira pintura -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap"></noscript>
 <noscript><style>.revelar, .revelar-itens > * { opacity: 1 !important; transform: none !important; }</style></noscript>
 <style>
 /*
@@ -83,7 +84,7 @@ body {
   -webkit-tap-highlight-color: transparent;
   overflow-x: hidden;
 }
-h1, h2, h3 { font-family: var(--fonte-titulo); font-optical-sizing: auto; letter-spacing: -.015em; text-wrap: balance; }
+h1, h2, h3 { font-family: var(--fonte-titulo); letter-spacing: -.015em; text-wrap: balance; }
 a { color: inherit; text-decoration: none; }
 img, svg { max-width: 100%; }
 ::selection { background: rgba(67, 97, 238, .45); color: #fff; }
@@ -433,6 +434,12 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 .revelar { opacity: 0; transform: translateY(22px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
 .revelar.visivel { opacity: 1; transform: none; }
 
+/* entrada do herói: escalonada, com a mesma curva de mola que a biblioteca dava */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-entrada > * { animation: heroi-entrar .8s cubic-bezier(.22, 1, .36, 1) backwards; }
+}
+@keyframes heroi-entrar { from { opacity: 0; transform: translateY(26px); } }
+
 /* títulos vivos: cada palavra sobe na sua vez ao entrar na tela */
 .titulo-vivo .palavra { display: inline-block; opacity: 0; transform: translateY(18px); transition: opacity .55s var(--ease), transform .55s var(--ease); }
 .titulo-vivo.visivel .palavra { opacity: 1; transform: none; }
@@ -617,7 +624,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 </header>
 
 <!-- ======================= HERO (eclipse) ======================= -->
-<main id="conteudo">
+<main id="conteudo" tabindex="-1">
 <section class="hero grade" id="inicio">
   <div class="container conteudo-hero">
     <a class="selo" href="#portal-secao">
@@ -1000,60 +1007,50 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     });
   }
 
-  /* o motion.js carrega com defer — espera ele estar disponível */
-  function comMotion(fn) {
-    if (window.Motion) { fn(window.Motion); return; }
-    window.addEventListener('DOMContentLoaded', function () {
-      if (window.Motion) fn(window.Motion);
-    });
-  }
-
-  /* ---------- entrada orquestrada do herói (springs do Motion) ---------- */
-  comMotion(function (Motion) {
+  /* ---------- entrada do herói: escalonada, sem biblioteca ---------- */
+  (function () {
     if (!podeMover) return;
-    var animate = Motion.animate;
     var passos = [
-      ['.hero .selo', 0],
-      ['.hero h1', 0.07],
-      ['.hero .sub', 0.15],
-      ['.hero-ctas', 0.22],
-      ['.hero-nota', 0.3],
-      ['.hero-painel .moldura', 0.36]
+      ['.hero .selo', 0], ['.hero h1', 70], ['.hero .sub', 150],
+      ['.hero-ctas', 220], ['.hero-nota', 300], ['.hero-painel .moldura', 360]
     ];
     passos.forEach(function (p) {
       var el = document.querySelector(p[0]);
       if (!el) return;
-      var transicaoOriginal = el.style.transition;
-      el.style.transition = 'none';
-      el.style.opacity = '0';
-      var controle = animate(el,
-        { opacity: [0, 1], transform: ['translateY(26px)', 'translateY(0px)'] },
-        { type: 'spring', duration: 0.8, bounce: 0, delay: p[1] }
-      );
-      if (controle && controle.finished && controle.finished.then) {
-        controle.finished.then(function () { el.style.transition = transicaoOriginal; });
-      }
+      el.classList.add('hero-entrada-item');
+      el.style.animation = 'heroi-entrar .8s cubic-bezier(.22,1,.36,1) ' + p[1] + 'ms backwards';
     });
-  });
+  })();
 
-  /* ---------- botão magnético (CTA principal) ---------- */
-  comMotion(function (Motion) {
+  /* ---------- botão magnético: um quadro por vez, com rAF ---------- */
+  (function () {
     if (!podeMover || !temHoverFino) return;
-    var animate = Motion.animate;
     document.querySelectorAll('.hero-ctas .btn-azul').forEach(function (btn) {
+      var alvoX = 0, alvoY = 0, x = 0, y = 0, rodando = false;
+
+      function quadro() {
+        /* aproximação suave: o botão persegue o ponteiro, como uma mola */
+        x += (alvoX - x) * 0.18;
+        y += (alvoY - y) * 0.18;
+        btn.style.transform = 'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px)';
+        if (Math.abs(alvoX - x) > 0.1 || Math.abs(alvoY - y) > 0.1) {
+          requestAnimationFrame(quadro);
+        } else {
+          rodando = false;
+          if (alvoX === 0 && alvoY === 0) btn.style.transform = '';
+        }
+      }
+      function ligar() { if (!rodando) { rodando = true; requestAnimationFrame(quadro); } }
+
       btn.addEventListener('pointermove', function (e) {
         var r = btn.getBoundingClientRect();
-        var dx = e.clientX - (r.left + r.width / 2);
-        var dy = e.clientY - (r.top + r.height / 2);
-        animate(btn,
-          { transform: 'translate(' + (dx * 0.14).toFixed(1) + 'px,' + (dy * 0.22).toFixed(1) + 'px)' },
-          { type: 'spring', duration: 0.35, bounce: 0 });
+        alvoX = (e.clientX - (r.left + r.width / 2)) * 0.14;
+        alvoY = (e.clientY - (r.top + r.height / 2)) * 0.22;
+        ligar();
       });
-      btn.addEventListener('pointerleave', function () {
-        animate(btn, { transform: 'translate(0px, 0px)' }, { type: 'spring', duration: 0.55, bounce: 0.25 });
-      });
+      btn.addEventListener('pointerleave', function () { alvoX = 0; alvoY = 0; ligar(); });
     });
-  });
+  })();
 
   /* ---------- ondas 3D em WebGL (shader próprio, sem bibliotecas) ---------- */
   (function () {

@@ -281,12 +281,30 @@
     AH.salvar();
   };
 
+  var jaAvisouQueNaoSalva = false;
+
+  /* Devolve true quando gravou. Em aba anônima, armazenamento bloqueado ou
+     cheio, isso é false — e o usuário precisa saber disso ANTES de trabalhar
+     uma hora e perder tudo, então mostramos uma faixa fixa (uma única vez). */
   AH.salvar = function () {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(AH.state));
+      return true;
     } catch (e) {
       console.error('AgênciaHub: não foi possível salvar no navegador.', e);
-      if (AH.ui && AH.ui.toast) AH.ui.toast('Não foi possível salvar os dados neste navegador.', 'erro');
+      if (!jaAvisouQueNaoSalva) {
+        jaAvisouQueNaoSalva = true;
+        var faixa = document.createElement('div');
+        faixa.setAttribute('role', 'alert');
+        faixa.style.cssText = 'position:sticky;top:0;z-index:70;background:rgba(248,113,113,.16);' +
+          'border-bottom:1px solid rgba(248,113,113,.45);color:#f8d4d4;padding:11px 18px;font-size:13.5px';
+        faixa.innerHTML = '<strong>Este navegador não está guardando os dados.</strong> ' +
+          'Costuma ser janela anônima ou armazenamento cheio. Nada do que você fizer aqui será salvo — ' +
+          'abra o app numa janela normal, ou exporte um backup em Configurações antes de fechar.';
+        var alvo = document.querySelector('.main');
+        if (alvo) alvo.prepend(faixa);
+      }
+      return false;
     }
   };
 
