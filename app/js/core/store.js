@@ -268,7 +268,14 @@
         return;
       }
     } catch (e) {
-      console.warn('AgênciaHub: falha ao ler dados salvos, iniciando com demonstração.', e);
+      /* Não conseguimos ler o que estava salvo. NUNCA apagar por cima: guardamos
+         a cópia bruta com data e hora, para dar chance de recuperar depois. */
+      console.warn('AgênciaHub: falha ao ler os dados salvos.', e);
+      try {
+        var bruto2 = localStorage.getItem(STORAGE_KEY);
+        if (bruto2) localStorage.setItem(STORAGE_KEY + ':corrompido-' + Date.now(), bruto2);
+      } catch (e2) { /* sem espaço para a cópia: seguimos mesmo assim */ }
+      AH.dadosIlegiveis = true;
     }
     AH.state = AH.dadosDemo();
     AH.salvar();

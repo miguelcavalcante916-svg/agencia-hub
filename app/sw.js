@@ -2,7 +2,7 @@
    Estratégia: rede primeiro, cache como reserva — atualizações chegam na hora
    e o app continua abrindo sem internet. */
 
-var CACHE = 'agenciahub-v10';
+var CACHE = 'agenciahub-v11';
 
 var ARQUIVOS = [
   './',
@@ -32,7 +32,8 @@ var ARQUIVOS = [
   './img/icone.svg',
   './img/icone-192.png',
   './img/icone-512.png',
-  './img/icone-maskable-512.png'
+  './img/icone-maskable-512.png',
+  './img/icone-ios-180.png'
 ];
 
 self.addEventListener('install', function (e) {
@@ -52,13 +53,49 @@ self.addEventListener('activate', function (e) {
   );
 });
 
+/* Guarda no cache apenas respostas boas: um 404/500 salvo viraria "arquivo"
+   e o app abriria quebrado até o próximo deploy. */
+function guardar(req, resp) {
+  if (!resp || !resp.ok || resp.type === 'opaque') return;
+  var copia = resp.clone();
+  caches.open(CACHE).then(function (cache) { return cache.put(req, copia); })
+    .catch(function () { /* armazenamento cheio: seguimos sem cachear */ });
+}
+
+/* Sinal fraco costuma ser pior que sinal nenhum: o fetch fica pendurado e o
+   app trava em tela branca. Damos 3,5s à rede antes de servir o cache. */
+function comLimite(promessa, ms) {
+  return new Promise(function (ok, falha) {
+    var pendente = true;
+    var t = setTimeout(function () { if (pendente) { pendente = false; falha(new Error('tempo esgotado')); } }, ms);
+    promessa.then(function (r) { if (pendente) { pendente = false; clearTimeout(t); ok(r); } },
+                  function (e) { if (pendente) { pendente = false; clearTimeout(t); falha(e); } });
+  });
+}
+
 self.addEventListener('fetch', function (e) {
   var req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+
+  var caminho = new URL(req.url).pathname;
+  var eArquivo = /\.(css|js|png|svg|json)$/.test(caminho) && !/manifest\.json$/.test(caminho);
+
+  /* CSS, JS e imagens: cache primeiro (é seguro — a versão do cache muda a cada
+     publicação, então atualização nova chega pelo install). Fica instantâneo. */
+  if (eArquivo) {
+    e.respondWith(
+      caches.match(req).then(function (emCache) {
+        if (emCache) return emCache;
+        return fetch(req).then(function (resp) { guardar(req, resp); return resp; });
+      })
+    );
+    return;
+  }
+
+  /* Página e manifesto: rede primeiro, com limite de tempo, caindo no cache. */
   e.respondWith(
-    fetch(req).then(function (resp) {
-      var copia = resp.clone();
-      caches.open(CACHE).then(function (cache) { cache.put(req, copia); });
+    comLimite(fetch(req), 3500).then(function (resp) {
+      guardar(req, resp);
       return resp;
     }).catch(function () {
       return caches.match(req).then(function (emCache) {

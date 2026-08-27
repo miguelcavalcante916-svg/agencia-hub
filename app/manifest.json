@@ -1,7 +1,7 @@
 {
   "name": "AgênciaHub",
   "short_name": "AgênciaHub",
-  "id": "/app/",
+  "id": "/app/index.html",
   "description": "Gestão da agência: clientes, projetos, gravações, propostas, tráfego pago e portal do cliente.",
   "lang": "pt-BR",
   "start_url": "./index.html",

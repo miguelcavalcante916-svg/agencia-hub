@@ -101,6 +101,19 @@
     AH.carregar();
     AH.atualizarMarca();
 
+    /* Se não deu para ler o que estava salvo, o usuário PRECISA saber — senão
+       ele acha que perdeu tudo. A cópia bruta foi guardada em AH.carregar(). */
+    if (AH.dadosIlegiveis) {
+      var aviso = document.createElement('div');
+      aviso.setAttribute('role', 'alert');
+      aviso.style.cssText = 'position:sticky;top:0;z-index:60;background:rgba(248,113,113,.14);' +
+        'border-bottom:1px solid rgba(248,113,113,.4);color:#f8d4d4;padding:11px 18px;font-size:13.5px';
+      aviso.innerHTML = '<strong>Não consegui ler os seus dados salvos.</strong> ' +
+        'Abri a demonstração para você continuar, mas <b>nada foi apagado</b>: guardei uma cópia do ' +
+        'conteúdo original no navegador. Antes de cadastrar coisas novas, fale comigo para tentar recuperar.';
+      document.querySelector('.main').prepend(aviso);
+    }
+
     var hoje = new Date();
     document.getElementById('sidebar-hoje').textContent =
       hoje.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
