@@ -11,7 +11,7 @@
   --border-forte: rgba(255, 255, 255, .17);
   --texto: #f2f5fc;
   --texto-2: rgba(242, 245, 252, .62);
-  --texto-3: rgba(242, 245, 252, .46);
+  --texto-3: rgba(242, 245, 252, .58);
   --accent: #5878ff;
   --accent-forte: #4361ee;
   --accent-2: #8ea6ff;
@@ -383,7 +383,7 @@ table.tabela { width: 100%; border-collapse: collapse; min-width: 640px; }
 .cal-dia:hover { background: var(--surface-2); }
 .cal-dia.fora { opacity: .38; }
 .cal-dia .num-dia { font-size: 12px; font-weight: 700; color: var(--texto-2); width: 24px; height: 24px; display: grid; place-items: center; border-radius: 99px; }
-.cal-dia.hoje .num-dia { background: var(--accent-forte); color: #16100b; }
+.cal-dia.hoje .num-dia { background: var(--accent-forte); color: #fff; }
 .cal-evento {
   font-size: 11px; font-weight: 600; padding: 1.5px 7px; border-radius: 6px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -861,7 +861,7 @@ body.modo-portal { scroll-behavior: smooth; }
   animation: toast-entrar .35s var(--ease-mola);
   overflow-wrap: break-word;
 }
-.chat-usuario .chat-balao { background: linear-gradient(135deg, var(--accent), var(--accent-forte)); color: #fff; border-bottom-right-radius: 5px; font-weight: 500; }
+.chat-usuario .chat-balao { background: linear-gradient(135deg, var(--accent-forte), #2f47c9); color: #fff; border-bottom-right-radius: 5px; font-weight: 500; }
 .chat-claude .chat-balao { background: var(--surface); border: 1px solid var(--border); border-bottom-left-radius: 5px; }
 
 .chat-digitando { display: flex; gap: 5px; align-items: center; padding: 15px 17px; }

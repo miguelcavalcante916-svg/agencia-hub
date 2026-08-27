@@ -18,8 +18,9 @@
 <meta property="og:description" content="Marketing estratégico e produção audiovisual num único fluxo — da ideia à campanha no ar.">
 <meta property="og:url" content="https://agenciacavalcante.com/">
 <meta property="og:image" content="https://agenciacavalcante.com/og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta property="og:image:alt" content="Agência Cavalcante — marketing e produtora audiovisual">
 <meta property="og:locale" content="pt_BR">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
@@ -33,7 +34,6 @@
   "image": "https://agenciacavalcante.com/og.png",
   "telephone": "+5584999492725",
   "areaServed": "BR",
-  "priceRange": "$$",
   "sameAs": ["https://instagram.com/cavalcante.media"],
   "knowsAbout": ["Marketing digital", "Produção audiovisual", "Tráfego pago", "Identidade visual"]
 }
@@ -54,7 +54,7 @@
   --fundo: #030409;
   --tinta: #f2f5fc;
   --tinta-2: rgba(242, 245, 252, .62);
-  --tinta-3: rgba(242, 245, 252, .46); /* contraste ≥ 4.5:1 nas legendas pequenas */
+  --tinta-3: rgba(242, 245, 252, .58); /* medido: ~6,5:1 sobre o fundo — acima do mínimo de 4,5:1 */
   --azul: #4361ee;
   --azul-vivo: #5878ff;
   --azul-claro: #8ea6ff;
@@ -159,7 +159,7 @@ section.grade { overflow: hidden; } /* os brilhos decorativos de 760px não pode
   .btn:hover svg { transform: translateX(3px) scale(1.05); }
 }
 .btn-azul { background: var(--azul); color: #fff; box-shadow: 0 18px 45px -14px rgba(67, 97, 238, .6); }
-.btn-azul:hover { background: var(--azul-vivo); box-shadow: 0 22px 55px -14px rgba(67, 97, 238, .75); }
+.btn-azul:hover { background: #3550d8; box-shadow: 0 22px 55px -14px rgba(67, 97, 238, .8); }
 .btn-fantasma { color: var(--tinta-2); border-color: var(--borda); }
 .btn-fantasma:hover { color: var(--tinta); background: rgba(255, 255, 255, .05); }
 
@@ -365,7 +365,7 @@ nav.principal a.ativa::after { width: 100%; }
 /* ---------- seções divididas ---------- */
 .dividida { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
 .dividida.invertida > :first-child { order: 2; }
-.dividida h3 { font-size: clamp(26px, 3.6vw, 38px); font-weight: 800; line-height: 1.1; margin-top: 14px; }
+.dividida h3, .dividida .titulo-secao { font-size: clamp(26px, 3.6vw, 38px); font-weight: 800; line-height: 1.1; margin-top: 14px; }
 .dividida .texto p { margin-top: 16px; color: var(--tinta-2); font-size: 16.5px; }
 .lista-check { margin-top: 20px; display: flex; flex-direction: column; gap: 11px; list-style: none; }
 .lista-check li { display: flex; gap: 11px; align-items: flex-start; color: rgba(242,245,252,.8); font-size: 15px; transition: transform .25s var(--ease), color .2s ease; }
@@ -739,7 +739,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   <div class="container dividida">
     <div class="texto revelar">
       <span class="olho">Portal do cliente</span>
-      <h3>Você acompanha tudo,<br>sem precisar perguntar.</h3>
+      <h2 class="titulo titulo-secao">Você acompanha tudo,<br>sem precisar perguntar.</h2>
       <p>Cada cliente recebe um link exclusivo no WhatsApp com o andamento de tudo — sem precisar cobrar ninguém.</p>
       <ul class="lista-check">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Barra de progresso de cada projeto</li>
@@ -803,7 +803,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       </div>
 
       <div class="cartao pacote destaque">
-        <span class="pacote-selo">MAIS ESCOLHIDO</span>
+        <span class="pacote-selo">NOSSA INDICAÇÃO</span>
         <span class="pacote-nome">PROFISSIONAL</span>
         <div class="pacote-preco"><small>plano mensal</small><b>Sob medida</b></div>
         <ul>
@@ -887,6 +887,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     </a>
     <div class="rodape-links">
       <!-- EDITE: @ do Instagram -->
+      <a href="tel:+5584999492725">(84) 99949-2725</a>
       <a href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener">Instagram</a>
       <a href="app/">Acessar o sistema</a>
       <span>© 2026 Agência Cavalcante</span>
