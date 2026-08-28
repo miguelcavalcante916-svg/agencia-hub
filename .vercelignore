@@ -1,0 +1,4 @@
+# arquivos de desenvolvimento que não devem ir para o ar
+.claude/
+.mcp.json
+README.md
