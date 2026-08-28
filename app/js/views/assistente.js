@@ -19,19 +19,31 @@
 
   function sistemaPrompt() {
     return 'Você é o assistente interno da ' + (AH.state.configuracoes.nomeAgencia || 'agência') +
-      ', uma agência de marketing e produtora audiovisual brasileira. Você conversa com o dono ' +
-      'da agência dentro do sistema de gestão AgênciaHub. Responda sempre em português do Brasil, ' +
-      'de forma curta, direta e útil. Use os dados reais abaixo para responder perguntas sobre o ' +
-      'negócio; quando pedirem textos criativos (legendas, roteiros, respostas a clientes), escreva ' +
-      'pronto para usar. Se pedirem algo que se faz dentro do sistema, explique em qual tela fazer ' +
+      ', uma agência de marketing e produtora audiovisual de Alexandria/RN. Você conversa com o dono ' +
+      'da agência dentro do sistema de gestão AgênciaHub.\n\n' +
+      'COMO RESPONDER: sempre em português do Brasil. Vá direto ao ponto — nada de introdução, ' +
+      'nada de repetir a pergunta, nada de resumo no fim. Prefira 1 a 3 frases; use lista curta só ' +
+      'quando forem vários itens. Máximo de 120 palavras, a não ser que peçam um texto pronto ' +
+      '(legenda, roteiro, proposta) — aí escreva só o texto final, sem explicação em volta. ' +
+      'Se faltar dado para responder, diga em uma frase o que falta.\n\n' +
+      'Use os dados reais abaixo para responder perguntas sobre o ' +
+      'negócio. Se pedirem algo que se faz dentro do sistema, diga em qual tela fazer ' +
       '(Clientes, Projetos, Tarefas, Calendário, Conteúdo, Aprovações, Propostas, Tráfego pago, ' +
       'Leads, Financeiro, Portal do cliente, Meu site, Configurações).\n\n' +
       '=== DADOS ATUAIS DA AGÊNCIA ===\n' + AH.resumoNegocio();
   }
 
+  var TEMPO_LIMITE = 60000; // 60s: com effort baixo a resposta chega bem antes disso
+
   function chamarClaude(historico) {
+    /* AbortController evita a promessa pendurada para sempre quando a rede cai
+       no meio da resposta — sem ele o "digitando..." ficaria eterno */
+    var abortar = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var relogio = abortar ? setTimeout(function () { abortar.abort(); }, TEMPO_LIMITE) : null;
+
     return fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      signal: abortar ? abortar.signal : undefined,
       headers: {
         'content-type': 'application/json',
         'x-api-key': chave(),
@@ -41,7 +53,12 @@
       },
       body: JSON.stringify({
         model: AH.state.configuracoes.claudeModelo || 'claude-opus-5',
-        max_tokens: 2048,
+        /* effort baixo = menos raciocínio interno = resposta bem mais rápida.
+           O padrão do modelo é 'high', que é lento demais para um chat de painel. */
+        output_config: { effort: 'low' },
+        /* teto alto de propósito: ele não alonga a resposta (quem controla o
+           tamanho é o prompt), só evita que o texto seja cortado no meio */
+        max_tokens: 8000,
         fallbacks: 'default',
         system: sistemaPrompt(),
         messages: historico
@@ -57,9 +74,23 @@
         if (dados.stop_reason === 'refusal') {
           return 'Não posso ajudar com esse pedido específico — pode reformular?';
         }
-        return (dados.content || []).filter(function (b) { return b.type === 'text'; })
-          .map(function (b) { return b.text; }).join('\n').trim() || '(resposta vazia)';
+        var texto = (dados.content || []).filter(function (b) { return b.type === 'text'; })
+          .map(function (b) { return b.text; }).join('\n').trim();
+        if (!texto) return '(resposta vazia)';
+        if (dados.stop_reason === 'max_tokens') texto += '\n\n(resposta cortada no limite — peça "continue")';
+        return texto;
       });
+    }).catch(function (erro) {
+      // erros de rede do fetch chegam como TypeError, sem mensagem útil em português
+      if (erro && erro.name === 'AbortError') throw new Error('A resposta demorou demais. Tente de novo.');
+      if (erro instanceof TypeError) throw new Error('Sem conexão com a internet — verifique a rede e tente de novo.');
+      throw erro;
+    }).then(function (r) {
+      if (relogio) clearTimeout(relogio);
+      return r;
+    }, function (e) {
+      if (relogio) clearTimeout(relogio);
+      throw e;
     });
   }
 
