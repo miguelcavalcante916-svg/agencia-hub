@@ -769,36 +769,13 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 }
 
 /* ============================================================
-   D) O CAVALO ANDA EM L sobre a grade do herói
-   O símbolo da marca virando movimento: duas casas numa direção, uma
-   na outra, e repete. É o único gesto narrativo da página.
+   D) A GRADE FINA atrás do herói
+   Textura discreta que dá profundidade ao fundo, no mesmo desenho da
+   entrada do portal. Sem nenhuma peça andando em cima: a bolinha que
+   existia aqui percorria um QUADRADO, não o L do cavalo (medido:
+   0,0 -> 84,0 -> 84,84 -> 0,84), e um ponto solto não comunica
+   "cavalo de xadrez" para ninguém mesmo com o caminho certo.
    ============================================================ */
-.trilha-cavalo {
-  position: absolute; left: 7%; top: 30%; z-index: 0;
-  pointer-events: none; width: 12px; height: 12px;
-}
-.trilha-cavalo i {
-  display: block; width: 100%; height: 100%; border-radius: 50%;
-  background: var(--azul-claro);
-  box-shadow: 0 0 20px 4px rgba(142, 166, 255, .45);
-}
-.trilha-cavalo::after {
-  content: ""; position: absolute; inset: -9px; border-radius: 50%;
-  border: 1px solid rgba(142, 166, 255, .35);
-}
-@keyframes salto-em-L {
-  0%,   7%  { translate: 0 0; }
-  20%, 34%  { translate: 0 -84px; }
-  47%, 61%  { translate: 84px -84px; }
-  74%, 88%  { translate: 84px 0; }
-  100%      { translate: 0 0; }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .trilha-cavalo { animation: salto-em-L 11s var(--e-snap) infinite; }
-}
-@media (max-width: 900px) { .trilha-cavalo { display: none; } }
-
-/* a grade fina do tabuleiro atrás do herói, para o salto ter onde acontecer */
 .hero .tabuleiro {
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background-image:
@@ -865,7 +842,6 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   }
   .titulo-vivo .palavra > i { opacity: 1 !important; translate: none !important; rotate: none !important; }
   .servico-icone svg > * { stroke-dashoffset: 0 !important; }
-  .trilha-cavalo { animation: none !important; }
   .marcha .marcha-n { opacity: 1 !important; translate: none !important; }
   .cartao::after, .cartao::before { display: none; }
   html { scroll-behavior: auto; }
@@ -1033,7 +1009,6 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   </div>
 
   <div class="tabuleiro" aria-hidden="true"></div>
-  <div class="trilha-cavalo" aria-hidden="true"><i></i></div>
 
   <div class="horizonte" aria-hidden="true">
     <canvas class="ondas3d" id="ondas3d"></canvas>
