@@ -79,7 +79,18 @@
   --azul-claro: #8ea6ff;
   --borda: rgba(255, 255, 255, .10);
   --cartao: var(--grafite-900);
-  --ease: cubic-bezier(.22, 1, .36, 1);
+  /* Escala fechada de movimento: 5 durações e 3 curvas, e nada fora disso.
+     Antes o arquivo tinha 19 tempos avulsos, o que é o que faz um site
+     parecer montado por pedaços em vez de projetado. */
+  --t-instante: 90ms;   /* pressão do dedo (:active) */
+  --t-rapido: 180ms;    /* hover, foco, seta */
+  --t-base: 320ms;      /* troca de estado: FAQ, menu, chevron */
+  --t-lento: 560ms;     /* revelação de bloco ao rolar */
+  --t-amb: 720ms;       /* régua que se desenha, barra que preenche */
+  --e-sai: cubic-bezier(.22, .61, .36, 1);   /* tudo que entra e assenta */
+  --e-io: cubic-bezier(.65, .05, .36, 1);    /* estado que sai E chega (mesma nos 2 sentidos) */
+  --e-snap: cubic-bezier(.2, .9, .3, 1.02);  /* único overshoot permitido: 2% */
+  --ease: var(--e-sai);
   /* Para trocar por Founders Grotesk (Klim, licença paga): baixe o webfont,
      adicione o @font-face e troque só o primeiro nome desta linha. */
   --fonte-titulo: "Urbanist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -115,7 +126,7 @@ img, svg { max-width: 100%; }
   background: var(--azul); color: #fff;
   padding: 10px 18px; border-radius: 999px; font-weight: 600; font-size: 14px;
   transform: translateY(-64px);
-  transition: transform .2s var(--ease);
+  transition: transform var(--t-base) var(--e-sai);
 }
 .pular:focus-visible { transform: none; }
 
@@ -170,15 +181,18 @@ section.grade { overflow: hidden; } /* os brilhos decorativos de 760px não pode
   display: inline-flex; align-items: center; gap: 9px; justify-content: center;
   border-radius: 999px; padding: 14px 28px;
   font-weight: 600; font-size: 15px; border: 1px solid transparent;
-  cursor: pointer; transition: transform .18s var(--ease), background .18s ease, box-shadow .25s ease, border-color .2s ease;
+  cursor: pointer; transition: transform var(--t-rapido) var(--e-sai), background var(--t-rapido) ease, box-shadow var(--t-rapido) ease, border-color var(--t-rapido) ease;
   white-space: nowrap;
 }
-.btn:active { transform: translateY(1px) scale(.97); transition-duration: .09s; } /* resposta no toque, não no soltar */
-.btn svg { width: 17px; height: 17px; flex: none; transition: transform .22s var(--ease); }
+.btn svg { width: 17px; height: 17px; flex: none; transition: transform var(--t-rapido) var(--e-sai); }
 @media (hover: hover) and (pointer: fine) {
   .btn:hover { transform: translateY(-1px); }
   .btn:hover svg { transform: translateX(3px) scale(1.05); }
 }
+/* :active DEPOIS do :hover de propósito: mesma especificidade, e media query
+   não soma nada — quem vem por último vence. Estando antes, o botão ficava
+   preso no estado de hover e não dava resposta nenhuma ao dedo. */
+.btn:active { transform: scale(.985); transition-duration: var(--t-instante); }
 .btn-azul { background: var(--azul); color: #fff; box-shadow: 0 18px 45px -14px rgba(67, 97, 238, .6); }
 .btn-azul:hover { background: #3550d8; box-shadow: 0 22px 55px -14px rgba(67, 97, 238, .8); }
 .btn-fantasma { color: var(--tinta-2); border-color: var(--borda); }
@@ -189,7 +203,7 @@ section.grade { overflow: hidden; } /* os brilhos decorativos de 760px não pode
   position: relative; border-radius: 18px;
   background: var(--cartao); border: 1px solid var(--borda);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .045); /* luz pegando na borda de cima */
-  transition: transform .25s var(--ease), border-color .25s ease, box-shadow .3s ease;
+  transition: transform var(--t-rapido) var(--e-sai), border-color var(--t-rapido) ease, box-shadow var(--t-rapido) ease;
 }
 @media (hover: hover) and (pointer: fine) {
   .cartao:hover { transform: translateY(-3px); border-color: rgba(67, 97, 238, .45); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 24px 60px -24px rgba(67, 97, 238, .35); }
@@ -199,7 +213,7 @@ section.grade { overflow: hidden; } /* os brilhos decorativos de 760px não pode
   padding: 7px 14px; border-radius: 999px;
   background: rgba(255, 255, 255, .03); border: 1px solid var(--borda);
   font-size: 12.5px; color: var(--tinta-2);
-  transition: border-color .2s ease, transform .2s var(--ease), color .2s ease;
+  transition: border-color var(--t-rapido) ease, transform var(--t-rapido) var(--e-sai), color var(--t-rapido) ease;
 }
 @media (hover: hover) and (pointer: fine) {
   .chip:hover { border-color: rgba(67, 97, 238, .55); transform: translateY(-2px); color: var(--tinta); }
@@ -224,7 +238,7 @@ nav.principal a { font-size: 14px; color: var(--tinta-2); position: relative; pa
 nav.principal a::after {
   content: ""; position: absolute; left: 0; bottom: 0; height: 2px; width: 0;
   border-radius: 2px; background: linear-gradient(90deg, var(--azul), var(--azul-claro));
-  transition: width .28s var(--ease);
+  transition: width var(--t-base) var(--e-sai);
 }
 nav.principal a:hover { color: var(--tinta); }
 @media (hover: hover) and (pointer: fine) {
@@ -242,12 +256,12 @@ nav.principal a.ativa::after { width: 100%; }
   position: absolute; top: 100%; left: 0; right: 0;
   border-top: 1px solid var(--borda); background: rgba(6, 12, 28, .96); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   visibility: hidden; opacity: 0; transform: translateY(-8px);
-  transition: opacity .22s var(--ease), transform .22s var(--ease), visibility 0s linear .22s;
+  transition: opacity var(--t-base) var(--e-io), transform var(--t-base) var(--e-io), visibility 0s linear var(--t-base);
   pointer-events: none;
 }
 .menu-mobile.aberto { visibility: visible; opacity: 1; transform: none; transition-delay: 0s; pointer-events: auto; }
 .menu-mobile .container { display: flex; flex-direction: column; gap: 4px; padding-top: 14px; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
-.menu-mobile .container > * { opacity: 0; transform: translateY(-9px); transition: opacity .3s var(--ease), transform .3s var(--ease); }
+.menu-mobile .container > * { opacity: 0; transform: translateY(-9px); transition: opacity var(--t-base) var(--e-io), transform var(--t-base) var(--e-io); }
 .menu-mobile.aberto .container > * { opacity: 1; transform: none; }
 .menu-mobile.aberto .container > :nth-child(2) { transition-delay: .035s; }
 .menu-mobile.aberto .container > :nth-child(3) { transition-delay: .07s; }
@@ -266,7 +280,7 @@ nav.principal a.ativa::after { width: 100%; }
   border: 1px solid rgba(67, 97, 238, .4); background: rgba(67, 97, 238, .08);
   color: var(--tinta-2); font-size: 12.5px; font-weight: 500;
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  transition: border-color .25s ease, transform .25s var(--ease);
+  transition: border-color var(--t-rapido) ease, transform var(--t-rapido) var(--e-sai);
 }
 .selo:hover { border-color: rgba(142, 166, 255, .7); }
 @media (hover: hover) and (pointer: fine) {
@@ -327,7 +341,7 @@ nav.principal a.ativa::after { width: 100%; }
   background: linear-gradient(180deg, var(--marinho-800), var(--marinho-900));
   box-shadow: 0 40px 90px -30px rgba(22, 37, 95, .65), inset 0 1px 0 rgba(255, 255, 255, .05);
   padding: 12px;
-  transition: transform .35s var(--ease), box-shadow .35s ease;
+  transition: transform var(--t-rapido) var(--e-sai), box-shadow var(--t-rapido) ease;
   transform-style: preserve-3d; will-change: transform;
 }
 .mock { border-radius: 12px; background: var(--grafite-900); border: 1px solid rgba(255,255,255,.06); overflow: hidden; text-align: left; }
@@ -362,7 +376,7 @@ nav.principal a.ativa::after { width: 100%; }
 .servicos-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 46px; }
 .servico { padding: 30px 28px; }
 .servico-icone { width: 52px; height: 52px; border-radius: 13px; background: rgba(67, 97, 238, .1); border: 1px solid rgba(67, 97, 238, .35); display: grid; place-items: center; }
-.servico-icone { transition: transform .3s var(--ease-mola, cubic-bezier(.3,1.35,.45,1)), background .25s ease; }
+.servico-icone { transition: transform var(--t-rapido) var(--e-snap), background var(--t-rapido) ease; }
 .servico-icone svg { width: 23px; height: 23px; color: var(--azul-claro); }
 @media (hover: hover) and (pointer: fine) {
   .servico:hover .servico-icone { transform: scale(1.1) rotate(-4deg); background: rgba(67, 97, 238, .18); }
@@ -389,7 +403,7 @@ nav.principal a.ativa::after { width: 100%; }
 .dividida h3, .dividida .titulo-secao { font-size: clamp(26px, 3.6vw, 38px); font-weight: 800; line-height: 1.1; margin-top: 14px; }
 .dividida .texto p { margin-top: 16px; color: var(--tinta-2); font-size: 16.5px; }
 .lista-check { margin-top: 20px; display: flex; flex-direction: column; gap: 11px; list-style: none; }
-.lista-check li { display: flex; gap: 11px; align-items: flex-start; color: rgba(242,245,252,.8); font-size: 15px; transition: transform .25s var(--ease), color .2s ease; }
+.lista-check li { display: flex; gap: 11px; align-items: flex-start; color: rgba(242,245,252,.8); font-size: 15px; transition: transform var(--t-rapido) var(--e-sai), color var(--t-rapido) ease; }
 @media (hover: hover) and (pointer: fine) {
   .lista-check li:hover { transform: translateX(5px); color: #fff; }
 }
@@ -418,12 +432,12 @@ nav.principal a.ativa::after { width: 100%; }
 .faq-perg svg { width: 19px; height: 19px; color: var(--tinta-3); flex: none; transition: transform .25s ease; }
 .faq-item.aberto .faq-perg svg { transform: rotate(180deg); color: var(--azul-claro); }
 /* anima a altura real da resposta (0fr -> 1fr), sem teto arbitrário */
-.faq-resp { display: grid; grid-template-rows: 0fr; overflow: hidden; transition: grid-template-rows .32s var(--ease); }
+.faq-resp { display: grid; grid-template-rows: 0fr; overflow: hidden; transition: grid-template-rows var(--t-base) var(--e-io); }
 .faq-item.aberto .faq-resp { grid-template-rows: 1fr; }
 .faq-resp p {
   overflow: hidden; min-height: 0;
   color: var(--tinta-2); font-size: 15px;
-  padding-bottom: 0; transition: padding-bottom .32s var(--ease);
+  padding-bottom: 0; transition: padding-bottom var(--t-base) var(--e-io);
 }
 .faq-item.aberto .faq-resp p { padding-bottom: 20px; }
 
@@ -440,7 +454,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   width: 58px; height: 58px; border-radius: 999px;
   background: #22c55e; display: grid; place-items: center;
   box-shadow: 0 14px 34px -8px rgba(34, 197, 94, .55);
-  transition: transform .25s var(--ease);
+  transition: transform var(--t-base) var(--e-io);
   animation: pulso-whats 2.6s infinite;
 }
 .whats-flutuante:active { transform: scale(.94); }
@@ -451,8 +465,31 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 @keyframes pulso-whats { 0%, 100% { box-shadow: 0 14px 34px -8px rgba(34,197,94,.55), 0 0 0 0 rgba(34,197,94,.5); } 50% { box-shadow: 0 14px 34px -8px rgba(34,197,94,.55), 0 0 0 14px rgba(34,197,94,0); } }
 
 /* ---------- animação de entrada ---------- */
-.revelar { opacity: 0; transform: translateY(22px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.revelar { opacity: 0; transform: translateY(14px); transition: opacity var(--t-lento) var(--e-sai), transform var(--t-lento) var(--e-sai); }
 .revelar.visivel { opacity: 1; transform: none; }
+
+/* GESTO-ASSINATURA — a linha fina da identidade existindo como movimento.
+   Cada bloco desenha a própria régua superior da esquerda para a direita
+   quando entra. É composição pura: transform, zero custo de layout, e é o
+   que dá "dinâmico" sem nada ficar balançando na tela depois. */
+.regua { position: relative; }
+.regua::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
+  background: linear-gradient(90deg, var(--azul-claro), rgba(142, 166, 255, 0));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--t-amb) var(--e-sai) 80ms;
+}
+.regua.visivel::before { transform: scaleX(1); }
+
+/* régua de progresso de leitura sob o cabeçalho: no celular o scrollspy do
+   menu não existe (nav some abaixo de 980px), então esta é a única pista
+   de profundidade que o visitante tem lá. */
+.progresso-leitura {
+  position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60;
+  background: linear-gradient(90deg, var(--azul), var(--azul-claro));
+  transform: scaleX(var(--p, 0)); transform-origin: left;
+  pointer-events: none;
+}
 
 /* entrada do herói: escalonada, com a mesma curva de mola que a biblioteca dava */
 @media (prefers-reduced-motion: no-preference) {
@@ -502,18 +539,90 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     }
   }
 }
-@keyframes hero-afasta { to { opacity: .3; transform: translateY(-44px) scale(.985); } }
+@keyframes hero-afasta { to { transform: translateY(-40px); } }
 @keyframes painel-flutua { to { transform: translateY(-52px); } }
 
+
+/* ---------- protocolo: as quatro marchas ---------- */
+.marchas { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 40px; }
+.marcha {
+  background: var(--grafite-900); border: 1px solid var(--borda); border-radius: 14px;
+  padding: 26px 22px 22px; display: flex; flex-direction: column; gap: 9px;
+  transition: border-color var(--t-rapido) ease, transform var(--t-rapido) var(--e-sai);
+}
+.marcha-n {
+  font-family: var(--fonte-titulo); font-size: 12px; font-weight: 800; letter-spacing: .16em;
+  color: var(--azul-claro);
+}
+.marcha h3 { font-family: var(--fonte-titulo); font-size: 19px; font-weight: 800; letter-spacing: -.02em; }
+.marcha p { color: var(--tinta-2); font-size: 14.5px; line-height: 1.6; flex: 1; }
+.marcha-prazo {
+  font-size: 12px; color: var(--tinta-3); border-top: 1px solid var(--borda);
+  padding-top: 11px; margin-top: 4px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .marcha:hover { border-color: rgba(142, 166, 255, .3); transform: translateY(-2px); }
+}
+@media (max-width: 900px) { .marchas { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .marchas { grid-template-columns: 1fr; } }
+
+/* ---------- ficha da agência ---------- */
+.ficha-grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.ficha-bloco { display: flex; flex-direction: column; gap: 8px; padding: 26px 22px; }
+.ficha-bloco p { color: var(--tinta-2); font-size: 14.5px; line-height: 1.6; }
+.ficha-linha { font-size: 16px !important; color: var(--tinta) !important; }
+.ficha-linha a { color: var(--azul-claro); text-decoration: none; border-bottom: 1px solid rgba(142, 166, 255, .3); }
+.ficha-linha a:hover { border-bottom-color: var(--azul-claro); }
+@media (max-width: 900px) { .ficha-grade { grid-template-columns: 1fr; } }
+
+
+/* ---------- portfólio: escada de credibilidade ---------- */
+.portfolio-vazio { display: block !important; }
+.portfolio-convite {
+  padding: clamp(24px, 6vw, 40px) clamp(20px, 5vw, 34px); display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  background: linear-gradient(150deg, var(--marinho-700), var(--grafite-900) 70%);
+  border-color: rgba(142, 166, 255, .22);
+}
+.portfolio-convite h3 { font-family: var(--fonte-titulo); font-size: clamp(20px, 3vw, 27px); font-weight: 800; letter-spacing: -.02em; max-width: 22ch; }
+.portfolio-convite p { color: var(--tinta-2); font-size: 15px; max-width: 52ch; }
+.portfolio-convite .btn { margin-top: 8px; max-width: 100%; }
+.portfolio-convite .btn { white-space: normal; text-align: left; }
+.portfolio-poucos .portfolio-destaque { grid-column: span 2; }
+.portfolio-convite-mini {
+  display: flex; flex-direction: column; justify-content: center; gap: 6px;
+  padding: 26px 22px; text-decoration: none; color: var(--tinta);
+  border-color: rgba(142, 166, 255, .2);
+}
+.portfolio-convite-mini b { font-family: var(--fonte-titulo); font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
+.portfolio-convite-mini .nota { color: var(--azul-claro); font-size: 13px; }
+@media (max-width: 700px) { .portfolio-poucos .portfolio-destaque { grid-column: auto; } }
+
 @media (prefers-reduced-motion: reduce) {
-  .revelar { opacity: 1; transform: none; transition: none; }
-  .revelar-itens:not(.visivel) > * { opacity: 1; }
-  .titulo-vivo .palavra { opacity: 1; transform: none; transition: none; }
-  .revelar-itens.visivel > * { animation: none; }
-  .faixa-trilho { animation: none; }
-  .menu-mobile .container > * { transition: none; opacity: 1; transform: none; }
+  /* Toda transição do site lê um destes tokens, então redefinir os cinco
+     apaga o sistema de movimento inteiro numa tacada — em vez de listar
+     seletor por seletor e esquecer metade, que era o que acontecia. */
+  :root {
+    --t-instante: 1ms; --t-rapido: 1ms; --t-base: 1ms; --t-lento: 1ms; --t-amb: 1ms;
+    --e-sai: linear; --e-io: linear; --e-snap: linear; --ease: linear;
+  }
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* nada de pré-estado invisível: se o movimento não roda, o conteúdo já nasce visível */
+  .revelar, .revelar-itens > *, .titulo-vivo .palavra, .menu-mobile .container > *,
+  .painel, .hero-entrada > * { opacity: 1 !important; transform: none !important; }
+  .revelar-itens.visivel > *, .faixa-trilho, .ponto-pulso, .whats-flutuante,
+  .tv-textura::after { animation: none !important; }
+  .conteudo-hero, .hero-painel { animation-timeline: none !important; }
   html { scroll-behavior: auto; }
-  .ponto-pulso, .whats-flutuante, .tv-textura::after { animation: none; }
+  /* hover vira mudança de cor, nunca deslocamento */
+  .btn:hover, .btn:hover svg, .cartao:hover, .chip:hover, .selo:hover,
+  .servico:hover .servico-icone, .lista-check li:hover, .whats-flutuante:hover,
+  .btn:active { transform: none !important; }
+  .painel::before { transform: scaleX(1) !important; }
 }
 @media (prefers-reduced-transparency: reduce) {
   header.rolou, .menu-mobile { background: var(--marinho-800); backdrop-filter: none; -webkit-backdrop-filter: none; }
@@ -598,6 +707,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 </style>
 </head>
 <body>
+<div class="progresso-leitura" aria-hidden="true"></div>
 
 <a class="pular" href="#conteudo">Pular para o conteúdo</a>
 <div class="tv-textura" aria-hidden="true"></div>
@@ -619,12 +729,13 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       <a href="#servicos">Serviços</a>
       <a href="#portfolio">Portfólio</a>
       <a href="#portal-secao">Portal</a>
+      <a href="#protocolo">Protocolo</a>
       <a href="#pacotes">Pacotes</a>
       <a href="#faq">Dúvidas</a>
     </nav>
     <div class="header-acoes">
-      <a class="entrar" href="app/">Já sou cliente</a>
-      <a class="btn btn-azul" style="padding:10px 20px" href="#contato" data-whats><span class="rotulo-longo">Falar com a gente</span><span class="rotulo-curto">Falar</span></a>
+      <a class="entrar" href="portal/">Já sou cliente</a>
+      <a class="btn btn-azul" style="padding:10px 20px" href="#contato" data-whats data-msg="Olá! Vim pelo site e quero falar sobre marketing para a minha empresa."><span class="rotulo-longo">Falar com a gente</span><span class="rotulo-curto">Falar</span></a>
       <button class="btn-menu" id="btn-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-mobile">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
@@ -635,10 +746,11 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       <a href="#servicos">Serviços</a>
       <a href="#portfolio">Portfólio</a>
       <a href="#portal-secao">Portal</a>
+      <a href="#protocolo">Protocolo</a>
       <a href="#pacotes">Pacotes</a>
       <a href="#faq">Dúvidas</a>
-      <a href="app/">Acessar o sistema</a>
-      <a class="btn btn-azul" href="#contato" data-whats>Falar com a gente</a>
+      <a href="portal/">Portal do cliente</a>
+      <a class="btn btn-azul" href="#contato" data-whats data-msg="Olá! Vim pelo site e quero falar sobre marketing para a minha empresa.">Falar com a gente</a>
     </div>
   </div>
 </header>
@@ -658,7 +770,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
         Quero um diagnóstico gratuito
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
       </a>
-      <a class="btn btn-fantasma" href="#portfolio">
+      <a class="btn btn-fantasma" href="#protocolo" data-nao-esconder>
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
         Ver portfólio
       </a>
@@ -722,22 +834,22 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       </div>
     </div>
     <div class="servicos-grade revelar revelar-itens">
-      <div class="cartao servico">
+      <div class="cartao servico regua">
         <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg></span>
         <span class="olho">Marketing digital</span>
         <h3>Estratégia que gera resultado, não só postagem bonita.</h3>
       </div>
-      <div class="cartao servico">
+      <div class="cartao servico regua">
         <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m15 8 4.5-2.5v13L15 16"/><rect x="2.5" y="6" width="12.5" height="12" rx="2.5"/></svg></span>
         <span class="olho">Produção audiovisual</span>
         <h3>Filmes institucionais, publicitários e conteúdo com alma.</h3>
       </div>
-      <div class="cartao servico">
+      <div class="cartao servico regua">
         <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9c0-1.1-.9-2-2-2h-2a2 2 0 0 1-2-2V6a2.9 2.9 0 0 0-3-3z"/><circle cx="8" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="7.5" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/></svg></span>
         <span class="olho">Identidade visual</span>
         <h3>Uma marca que se sustenta em qualquer canal.</h3>
       </div>
-      <div class="cartao servico">
+      <div class="cartao servico regua">
         <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span>
         <span class="olho">Tráfego pago</span>
         <h3>Campanhas que vendem enquanto você dorme.</h3>
@@ -747,21 +859,67 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 </section>
 
 <!-- ======================= PORTFÓLIO (Instagram) ======================= -->
-<section id="portfolio">
+<section id="portfolio" class="grade">
   <div class="container">
     <div class="servicos-cab">
       <div>
-        <h2 class="titulo">Alguns trabalhos<br>que estão no ar.</h2>
+        <span class="olho">Trabalhos</span>
+        <h2 class="titulo titulo-secao">O que já está<br>no ar.</h2>
       </div>
-      <p class="sub">Direto do nosso Instagram. Toque para assistir.</p>
+      <p class="sub">Cada projeto entra aqui no dia em que estreia. O quadro cresce por entrega, não por promessa.</p>
     </div>
     <div class="portfolio-grade revelar" id="portfolio-grade"></div>
     <!-- EDITE: @ do Instagram -->
-    <p style="text-align:center;margin-top:26px"><a class="btn btn-fantasma" href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener">Ver mais no Instagram</a></p>
+    
   </div>
 </section>
 
 <!-- ======================= PORTAL DO CLIENTE ======================= -->
+<!-- ======================= PROTOCOLO ======================= -->
+<!-- O maior vazio da página era este: o único texto de "como funciona"
+     estava na 2ª pergunta do FAQ, fechada. O cliente do interior compra
+     previsibilidade antes de criatividade — ele quer saber o que acontece
+     depois que chamar no WhatsApp. É também aqui que "diagnóstico
+     gratuito", repetido 3 vezes no site e nunca definido, ganha formato. -->
+<section id="protocolo" class="grade">
+  <div class="container">
+    <div class="servicos-cab revelar">
+      <div>
+        <span class="olho">O protocolo</span>
+        <h2 class="titulo titulo-secao">Quatro marchas,<br>sempre na mesma ordem.</h2>
+      </div>
+      <p class="sub">Toda conta entra pela mesma porta. É isso que separa resultado repetível de sorte de campanha.</p>
+    </div>
+
+    <ol class="marchas revelar revelar-itens">
+      <li class="marcha regua">
+        <span class="marcha-n">01</span>
+        <h3>Diagnóstico</h3>
+        <p>Conversa de uns 20 minutos, no WhatsApp ou na sua loja. Você sai com um diagnóstico escrito do que está travando — fechando com a gente ou não.</p>
+        <span class="marcha-prazo">sem custo</span>
+      </li>
+      <li class="marcha regua">
+        <span class="marcha-n">02</span>
+        <h3>Escopo</h3>
+        <p>Proposta sob medida: o que entra, em que ritmo e como é cobrado. A verba de mídia é sempre à parte, e você vê quanto vai para onde.</p>
+        <span class="marcha-prazo">em até 3 dias</span>
+      </li>
+      <li class="marcha regua">
+        <span class="marcha-n">03</span>
+        <h3>Produção</h3>
+        <p>Roteiro, gravação, edição e anúncio no ar. Equipe e equipamento próprios — inclusive drone. O que é a entrega não é terceirizado.</p>
+        <span class="marcha-prazo">cronograma acordado</span>
+      </li>
+      <li class="marcha regua">
+        <span class="marcha-n">04</span>
+        <h3>Leitura</h3>
+        <p>O que funcionou continua, o que não funcionou muda. Você acompanha pelo portal e conversa com a gente sobre o próximo passo.</p>
+        <span class="marcha-prazo">todo mês</span>
+      </li>
+    </ol>
+  </div>
+</section>
+
 <section id="portal-secao">
   <div class="container dividida">
     <div class="texto revelar">
@@ -817,7 +975,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 
     <!-- EDITE: nomes, preços e itens dos pacotes -->
     <div class="pacotes-grade revelar revelar-itens" style="text-align:left">
-      <div class="cartao pacote">
+      <div class="cartao pacote regua">
         <span class="pacote-nome">ESSENCIAL</span>
         <div class="pacote-preco"><small>plano mensal</small><b>Sob medida</b></div>
         <ul>
@@ -829,7 +987,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
         <a class="btn btn-fantasma" href="#contato" data-whats data-msg="Olá! Tenho interesse no pacote Essencial.">Começar Essencial</a>
       </div>
 
-      <div class="cartao pacote destaque">
+      <div class="cartao pacote regua destaque">
         <span class="pacote-selo">NOSSA INDICAÇÃO</span>
         <span class="pacote-nome">PROFISSIONAL</span>
         <div class="pacote-preco"><small>plano mensal</small><b>Sob medida</b></div>
@@ -843,7 +1001,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
         <a class="btn btn-azul" href="#contato" data-whats data-msg="Olá! Tenho interesse no pacote Profissional.">Começar Profissional</a>
       </div>
 
-      <div class="cartao pacote">
+      <div class="cartao pacote regua">
         <span class="pacote-nome">PREMIUM</span>
         <div class="pacote-preco"><small>projeto completo</small><b>360º</b></div>
         <ul>
@@ -887,6 +1045,33 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 </section>
 
 <!-- ======================= CTA FINAL ======================= -->
+<!-- ======================= FICHA DA AGÊNCIA ======================= -->
+<!-- A página inteira era anônima: nenhum nome de pessoa, nenhum e-mail,
+     nenhum endereço, nenhum horário. Para negócio local isso converte mais
+     que case — e é prova 100% real, que já existe hoje, de graça. -->
+<section id="ficha" class="grade">
+  <div class="container">
+    <div class="ficha-grade revelar revelar-itens">
+      <div class="cartao ficha-bloco regua">
+        <span class="olho">Onde estamos</span>
+        <p class="ficha-linha"><strong>Alexandria — Rio Grande do Norte</strong></p>
+        <p>Atendemos Alexandria e a região do Alto Oeste potiguar presencialmente, e o resto do Brasil de forma remota. Gravação exige deslocamento, e a diária entra no orçamento — sem surpresa depois.</p>
+      </div>
+      <div class="cartao ficha-bloco regua">
+        <span class="olho">Como falar com a gente</span>
+        <p class="ficha-linha"><a href="https://wa.me/5584999492725">WhatsApp (84) 99949-2725</a></p>
+        <p class="ficha-linha"><a href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener">@cavalcante.media</a></p>
+        <p>Segunda a sexta, 8h às 18h. Resposta em até 24h em dia útil.</p>
+      </div>
+      <div class="cartao ficha-bloco regua">
+        <span class="olho">Já é cliente</span>
+        <p class="ficha-linha"><a href="portal/">Entrar no portal</a></p>
+        <p>Se você já trabalha com a gente, seu link exclusivo está no seu WhatsApp. O portal mostra projetos, gravações e campanhas no ar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="contato">
   <div class="container">
     <div class="cartao cta-final revelar">
@@ -894,7 +1079,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       <h2 class="titulo">Bora conversar<br>sobre a sua marca?</h2>
       <p class="sub" style="margin-left:auto;margin-right:auto">Diagnóstico gratuito, sem compromisso, pelo WhatsApp.</p>
       <div class="hero-ctas">
-        <a class="btn btn-azul" href="#" data-whats data-msg="Olá! Quero um diagnóstico gratuito para a minha marca.">
+        <a class="btn btn-azul" href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Quero%20um%20diagn%C3%B3stico%20gratuito%20para%20a%20minha%20empresa." data-whats data-msg="Olá! Quero um diagnóstico gratuito para a minha empresa.">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg>
           Chamar no WhatsApp
         </a>
@@ -917,13 +1102,13 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       <a href="tel:+5584999492725">(84) 99949-2725</a>
       <span>Alexandria/RN</span>
       <a href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener">Instagram</a>
-      <a href="app/">Acessar o sistema</a>
+      <a href="portal/">Portal do cliente</a>
       <span>© 2026 Agência Cavalcante</span>
     </div>
   </div>
 </footer>
 
-<a class="whats-flutuante" href="#" data-whats aria-label="Chamar no WhatsApp">
+<a class="whats-flutuante" href="https://wa.me/5584999492725" data-whats aria-label="Chamar no WhatsApp">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg>
 </a>
 
@@ -1040,36 +1225,6 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       if (!el) return;
       el.classList.add('hero-entrada-item');
       el.style.animation = 'heroi-entrar .8s cubic-bezier(.22,1,.36,1) ' + p[1] + 'ms backwards';
-    });
-  })();
-
-  /* ---------- botão magnético: um quadro por vez, com rAF ---------- */
-  (function () {
-    if (!podeMover || !temHoverFino) return;
-    document.querySelectorAll('.hero-ctas .btn-azul').forEach(function (btn) {
-      var alvoX = 0, alvoY = 0, x = 0, y = 0, rodando = false;
-
-      function quadro() {
-        /* aproximação suave: o botão persegue o ponteiro, como uma mola */
-        x += (alvoX - x) * 0.18;
-        y += (alvoY - y) * 0.18;
-        btn.style.transform = 'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px)';
-        if (Math.abs(alvoX - x) > 0.1 || Math.abs(alvoY - y) > 0.1) {
-          requestAnimationFrame(quadro);
-        } else {
-          rodando = false;
-          if (alvoX === 0 && alvoY === 0) btn.style.transform = '';
-        }
-      }
-      function ligar() { if (!rodando) { rodando = true; requestAnimationFrame(quadro); } }
-
-      btn.addEventListener('pointermove', function (e) {
-        var r = btn.getBoundingClientRect();
-        alvoX = (e.clientX - (r.left + r.width / 2)) * 0.14;
-        alvoY = (e.clientY - (r.top + r.height / 2)) * 0.22;
-        ligar();
-      });
-      btn.addEventListener('pointerleave', function () { alvoX = 0; alvoY = 0; ligar(); });
     });
   })();
 
@@ -1230,22 +1385,48 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     });
   }
 
-  /* cascata: cada filho de uma grade .revelar-itens entra 55ms depois do anterior */
+  /* Cascata DIAGONAL: o atraso vem da posição no tabuleiro (linha e coluna),
+     não da ordem no DOM — as células chegam na diagonal, como um tabuleiro
+     sendo armado. Teto duro de 240ms: passando disso o visitante percebe
+     espera em vez de percepção de movimento. */
   document.querySelectorAll('.revelar-itens').forEach(function (grade) {
+    var colunas = getComputedStyle(grade).gridTemplateColumns.split(' ').length || 1;
     Array.prototype.forEach.call(grade.children, function (filho, i) {
-      filho.style.animationDelay = Math.min(i * 55, 440) + 'ms';
+      var linha = Math.floor(i / colunas), coluna = i % colunas;
+      filho.style.animationDelay = Math.min(linha * 60 + coluna * 30, 240) + 'ms';
     });
   });
+
+  /* Régua de progresso de leitura: uma escrita de estilo por quadro, e só
+     quando o valor muda de verdade. No celular é a única pista de
+     profundidade, porque o menu (e o scrollspy) somem abaixo de 980px. */
+  (function () {
+    var barra = document.querySelector('.progresso-leitura');
+    if (!barra) return;
+    var pendente = false, ultimo = -1;
+    function pintar() {
+      pendente = false;
+      var alcance = document.documentElement.scrollHeight - window.innerHeight;
+      var p = alcance > 0 ? Math.min(window.scrollY / alcance, 1) : 0;
+      if (Math.abs(p - ultimo) < 0.002) return;
+      ultimo = p;
+      barra.style.setProperty('--p', p.toFixed(4));
+    }
+    window.addEventListener('scroll', function () {
+      if (!pendente) { pendente = true; requestAnimationFrame(pintar); }
+    }, { passive: true });
+    pintar();
+  })();
 
   if ('IntersectionObserver' in window) {
     var obs = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (e) {
         if (e.isIntersecting) { e.target.classList.add('visivel'); obs.unobserve(e.target); }
       });
-    }, { threshold: 0.12 });
-    document.querySelectorAll('.revelar, .titulo-vivo').forEach(function (el) { obs.observe(el); });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.revelar, .titulo-vivo, .regua').forEach(function (el) { obs.observe(el); });
   } else {
-    document.querySelectorAll('.revelar, .titulo-vivo').forEach(function (el) { el.classList.add('visivel'); });
+    document.querySelectorAll('.revelar, .titulo-vivo, .regua').forEach(function (el) { el.classList.add('visivel'); });
   }
 
   /* ---------- portfólio: lê portfolio.json (gerado no app, em "Meu site") ---------- */
@@ -1254,8 +1435,9 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  function cartaoAlternativo(item) {
-    return '<a class="cartao portfolio-item" href="' + esc(item.url) + '" target="_blank" rel="noopener">' +
+  function cartaoAlternativo(item, destaque) {
+    return '<a class="cartao portfolio-item regua visivel' + (destaque ? ' portfolio-destaque' : '') +
+      '" href="' + esc(item.url) + '" target="_blank" rel="noopener">' +
       '<span class="portfolio-alt">' +
       '<span class="ig-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg></span>' +
       '<b>' + esc(item.titulo || 'Ver no Instagram') + '</b>' +
@@ -1263,31 +1445,44 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       '</span></a>';
   }
 
+  /* ESCADA DE CREDIBILIDADE — a seção NUNCA some.
+     Antes era tudo-ou-nada: com portfolio.json vazio (que é o estado de hoje)
+     a seção inteira se apagava e o site ficava 100% afirmação e 0% prova.
+     Agora tem três degraus, e o degrau zero ainda leva o visitante a um lugar
+     real onde existe trabalho publicado — o Instagram. */
   function montarPortfolio(itens) {
     var grade = document.getElementById('portfolio-grade');
     var secao = document.getElementById('portfolio');
-    if (!itens || !itens.length) {
-      /* sem trabalhos publicados ainda: esconde a seção e também os links do menu para ela */
-      secao.style.display = 'none';
-      document.querySelectorAll('a[href="#portfolio"]').forEach(function (a) { a.style.display = 'none'; });
+    var validos = (itens || []).filter(function (i) { return i && i.url; });
+
+    if (!validos.length) {
+      /* Degrau 0: sem item cadastrado, a seção continua de pé e manda para o
+         perfil, que é prova verdadeira e não custa nada inventar. */
+      grade.classList.add('portfolio-vazio');
+      grade.innerHTML =
+        '<div class="cartao portfolio-convite regua visivel">' +
+        '<span class="olho">O que já está no ar</span>' +
+        '<h3>Os trabalhos ficam no Instagram, atualizados a cada entrega.</h3>' +
+        '<p>Aftermovie de vaquejada, institucional, cobertura aérea e campanha — cada projeto entra lá no dia em que estreia.</p>' +
+        '<a class="btn btn-azul" href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener">' +
+        'Ver os trabalhos no Instagram' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>' +
+        '</div>';
       return;
     }
-    var podeIncorporar = /^https?:$/.test(location.protocol);
-    grade.innerHTML = itens.map(function (item) {
-      if (!item || !item.url) return '';
-      if (podeIncorporar) {
-        return '<div class="cartao portfolio-item">' +
-          '<blockquote class="instagram-media" data-instgrm-permalink="' + esc(item.url) + '" data-instgrm-version="14">' +
-          cartaoAlternativo(item) +
-          '</blockquote></div>';
-      }
-      return cartaoAlternativo(item);
+
+    /* Degraus 1 e 2: com 1 ou 2 peças a primeira ocupa a célula grande, para
+       não parecer uma grade pela metade; com 3+ vira grade normal. */
+    grade.classList.toggle('portfolio-poucos', validos.length < 3);
+    grade.innerHTML = validos.map(function (item, i) {
+      return cartaoAlternativo(item, i === 0 && validos.length < 3);
     }).join('');
-    if (podeIncorporar) {
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'https://www.instagram.com/embed.js';
-      document.body.appendChild(s);
+    if (validos.length < 3) {
+      grade.innerHTML += '<a class="cartao portfolio-convite-mini regua visivel" ' +
+        'href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener">' +
+        '<span class="olho">Instagram</span>' +
+        '<b>Ver tudo que já entregamos</b>' +
+        '<span class="nota">@cavalcante.media</span></a>';
     }
   }
 
