@@ -512,18 +512,34 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 .revelar { opacity: 0; transform: translateY(14px); transition: opacity var(--t-lento) var(--e-sai), transform var(--t-lento) var(--e-sai); }
 .revelar.visivel { opacity: 1; transform: none; }
 
-/* GESTO-ASSINATURA — a linha fina da identidade existindo como movimento.
-   Cada bloco desenha a própria régua superior da esquerda para a direita
-   quando entra. É composição pura: transform, zero custo de layout, e é o
-   que dá "dinâmico" sem nada ficar balançando na tela depois. */
-.regua { position: relative; }
-.regua::before {
-  content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
-  background: linear-gradient(90deg, var(--azul-claro), rgba(142, 166, 255, 0));
-  transform: scaleX(0); transform-origin: left;
-  transition: transform var(--t-amb) var(--e-sai) 80ms;
+/* GESTO-ASSINATURA — a luz corre a BORDA INTEIRA, e só quando o ponteiro
+   está no cartão. A risca fixa no topo de cada quadrado virava ruído: com
+   dez cartões na tela eram dez traços azuis parados sem dizer nada. Agora o
+   contorno é neutro em repouso e a identidade aparece na interação.
+   Técnica: um conic-gradient girando, recortado só na faixa da borda com
+   mask-composite. @property é o que deixa o ângulo animar de fato — sem
+   ele o navegador trata o valor como texto e o giro não acontece. */
+@property --giro { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+.cartao::before {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit;
+  padding: 1.5px; pointer-events: none; z-index: -1; opacity: 0;
+  /* arco estreito e núcleo quase branco: assim o olho lê uma LUZ QUE ANDA,
+     e não um brilho difuso parado. Faixa larga vira glow, faixa curta vira
+     movimento — foi a diferença entre o efeito funcionar e não funcionar. */
+  background: conic-gradient(from var(--giro),
+              transparent 0 74%, rgba(142, 166, 255, .28) 81%,
+              #dfe6ff 88%, rgba(142, 166, 255, .28) 95%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  transition: opacity var(--t-base) ease;
 }
-.regua.visivel::before { transform: scaleX(1); }
+@keyframes correr-borda { to { --giro: 360deg; } }
+@media (hover: hover) and (pointer: fine) {
+  .cartao:hover::before { opacity: 1; animation: correr-borda 2.6s linear infinite; }
+}
 
 /* ======================= ROLAGEM FLUIDA =======================
    Onde o navegador suporta animation-timeline: view(), a entrada dos blocos
@@ -557,12 +573,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       animation-range: entry 6% cover 34%;
       animation-delay: 0s;
     }
-    html.rolagem-fluida .regua::before {
-      transition: none;
-      animation: desenhar-fluido linear both;
-      animation-timeline: view();
-      animation-range: entry 10% cover 30%;
-    }
+
   }
 }
 
@@ -841,15 +852,14 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
      ficariam presos no quadro inicial (invisíveis) para quem pediu menos
      movimento — é o erro clássico de scroll-driven animation */
   html.rolagem-fluida .revelar, html.rolagem-fluida .revelar-itens > *,
-  html.rolagem-fluida .regua::before, html.rolagem-fluida .marchas::before {
+  html.rolagem-fluida .marchas::before {
     animation: none !important; animation-timeline: none !important;
     opacity: 1 !important; translate: none !important; scale: none !important;
   }
   /* SEM depender de .rolagem-fluida: sob reduce o JS nunca adiciona essa
-     classe, então a regra antiga não casava e as réguas ficavam presas em
-     scaleX(0) — invisíveis. Movimento reduzido significa estado final na
-     hora, não elemento escondido. */
-  .regua::before, .marchas::before { transform: scaleX(1) !important; }
+     classe, e a linha do protocolo ficaria presa em scaleX(0) — invisível.
+     Movimento reduzido é estado final na hora, não elemento escondido. */
+  .marchas::before { transform: scaleX(1) !important; }
   .revelar-itens .servico-icone, .revelar-itens .servico .olho, .revelar-itens .servico h3 {
     opacity: 1 !important; translate: none !important; animation: none !important;
   }
@@ -857,7 +867,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   .servico-icone svg > * { stroke-dashoffset: 0 !important; }
   .trilha-cavalo { animation: none !important; }
   .marcha .marcha-n { opacity: 1 !important; translate: none !important; }
-  .cartao::after { display: none; }
+  .cartao::after, .cartao::before { display: none; }
   html { scroll-behavior: auto; }
   /* hover vira mudança de cor, nunca deslocamento */
   .btn:hover, .btn:hover svg, .cartao:hover, .chip:hover, .selo:hover,
@@ -1078,22 +1088,22 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       </div>
     </div>
     <div class="servicos-grade revelar revelar-itens">
-      <div class="cartao servico regua">
+      <div class="cartao servico">
         <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg></span>
         <span class="olho">Marketing digital</span>
         <h3>Estratégia que gera resultado, não só postagem bonita.</h3>
       </div>
-      <div class="cartao servico regua">
+      <div class="cartao servico">
         <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m15 8 4.5-2.5v13L15 16"/><rect x="2.5" y="6" width="12.5" height="12" rx="2.5"/></svg></span>
         <span class="olho">Produção audiovisual</span>
         <h3>Filmes institucionais, publicitários e conteúdo com alma.</h3>
       </div>
-      <div class="cartao servico regua">
+      <div class="cartao servico">
         <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9c0-1.1-.9-2-2-2h-2a2 2 0 0 1-2-2V6a2.9 2.9 0 0 0-3-3z"/><circle cx="8" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="7.5" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/></svg></span>
         <span class="olho">Identidade visual</span>
         <h3>Uma marca que se sustenta em qualquer canal.</h3>
       </div>
-      <div class="cartao servico regua">
+      <div class="cartao servico">
         <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span>
         <span class="olho">Tráfego pago</span>
         <h3>Campanhas que vendem enquanto você dorme.</h3>
@@ -1136,25 +1146,25 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     </div>
 
     <ol class="marchas revelar revelar-itens">
-      <li class="marcha regua">
+      <li class="marcha">
         <span class="marcha-n">01</span>
         <h3>Diagnóstico</h3>
         <p>Conversa de uns 20 minutos, no WhatsApp ou na sua loja. Você sai com um diagnóstico escrito do que está travando — fechando com a gente ou não.</p>
         <span class="marcha-prazo">sem custo</span>
       </li>
-      <li class="marcha regua">
+      <li class="marcha">
         <span class="marcha-n">02</span>
         <h3>Escopo</h3>
         <p>Proposta sob medida: o que entra, em que ritmo e como é cobrado. A verba de mídia é sempre à parte, e você vê quanto vai para onde.</p>
         <span class="marcha-prazo">em até 3 dias</span>
       </li>
-      <li class="marcha regua">
+      <li class="marcha">
         <span class="marcha-n">03</span>
         <h3>Produção</h3>
         <p>Roteiro, gravação, edição e anúncio no ar. Equipe e equipamento próprios — inclusive drone. O que é a entrega não é terceirizado.</p>
         <span class="marcha-prazo">cronograma acordado</span>
       </li>
-      <li class="marcha regua">
+      <li class="marcha">
         <span class="marcha-n">04</span>
         <h3>Leitura</h3>
         <p>O que funcionou continua, o que não funcionou muda. Você acompanha pelo portal e conversa com a gente sobre o próximo passo.</p>
@@ -1219,7 +1229,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 
     <!-- EDITE: nomes, preços e itens dos pacotes -->
     <div class="pacotes-grade revelar revelar-itens" style="text-align:left">
-      <div class="cartao pacote regua">
+      <div class="cartao pacote">
         <span class="pacote-nome">ESSENCIAL</span>
         <div class="pacote-preco"><small>plano mensal</small><b>Sob medida</b></div>
         <ul>
@@ -1231,7 +1241,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
         <a class="btn btn-fantasma" href="#contato" data-whats data-msg="Olá! Tenho interesse no pacote Essencial.">Começar Essencial</a>
       </div>
 
-      <div class="cartao pacote regua destaque">
+      <div class="cartao pacote destaque">
         <span class="pacote-selo">NOSSA INDICAÇÃO</span>
         <span class="pacote-nome">PROFISSIONAL</span>
         <div class="pacote-preco"><small>plano mensal</small><b>Sob medida</b></div>
@@ -1245,7 +1255,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
         <a class="btn btn-azul" href="#contato" data-whats data-msg="Olá! Tenho interesse no pacote Profissional.">Começar Profissional</a>
       </div>
 
-      <div class="cartao pacote regua">
+      <div class="cartao pacote">
         <span class="pacote-nome">PREMIUM</span>
         <div class="pacote-preco"><small>projeto completo</small><b>360º</b></div>
         <ul>
@@ -1296,18 +1306,18 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 <section id="ficha" class="grade">
   <div class="container">
     <div class="ficha-grade revelar revelar-itens">
-      <div class="cartao ficha-bloco regua">
+      <div class="cartao ficha-bloco">
         <span class="olho">Onde estamos</span>
         <p class="ficha-linha"><strong>Alexandria — Rio Grande do Norte</strong></p>
         <p>Atendemos Alexandria e a região do Alto Oeste potiguar presencialmente, e o resto do Brasil de forma remota. Gravação exige deslocamento, e a diária entra no orçamento — sem surpresa depois.</p>
       </div>
-      <div class="cartao ficha-bloco regua">
+      <div class="cartao ficha-bloco">
         <span class="olho">Como falar com a gente</span>
         <p class="ficha-linha"><a href="https://wa.me/5584999492725">WhatsApp (84) 99949-2725</a></p>
         <p class="ficha-linha"><a href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener">@cavalcante.media</a></p>
         <p>Segunda a sexta, 8h às 18h. Resposta em até 24h em dia útil.</p>
       </div>
-      <div class="cartao ficha-bloco regua">
+      <div class="cartao ficha-bloco">
         <span class="olho">Já é cliente</span>
         <p class="ficha-linha"><a href="portal/">Entrar no portal</a></p>
         <p>Se você já trabalha com a gente, seu link exclusivo está no seu WhatsApp. O portal mostra projetos, gravações e campanhas no ar.</p>
@@ -1710,9 +1720,9 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
         if (e.isIntersecting) { e.target.classList.add('visivel'); obs.unobserve(e.target); }
       });
     }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
-    document.querySelectorAll('.revelar, .titulo-vivo, .regua').forEach(function (el) { obs.observe(el); });
+    document.querySelectorAll('.revelar, .titulo-vivo').forEach(function (el) { obs.observe(el); });
   } else {
-    document.querySelectorAll('.revelar, .titulo-vivo, .regua').forEach(function (el) { el.classList.add('visivel'); });
+    document.querySelectorAll('.revelar, .titulo-vivo').forEach(function (el) { el.classList.add('visivel'); });
   }
 
   /* ---------- portfólio: lê portfolio.json (gerado no app, em "Meu site") ---------- */
@@ -1722,7 +1732,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   }
 
   function cartaoAlternativo(item, destaque) {
-    return '<a class="cartao portfolio-item regua visivel' + (destaque ? ' portfolio-destaque' : '') +
+    return '<a class="cartao portfolio-item visivel' + (destaque ? ' portfolio-destaque' : '') +
       '" href="' + esc(item.url) + '" target="_blank" rel="noopener">' +
       '<span class="portfolio-alt">' +
       '<span class="ig-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg></span>' +
@@ -1746,7 +1756,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
          perfil, que é prova verdadeira e não custa nada inventar. */
       grade.classList.add('portfolio-vazio');
       grade.innerHTML =
-        '<div class="cartao portfolio-convite regua visivel">' +
+        '<div class="cartao portfolio-convite visivel">' +
         '<span class="olho">O que já está no ar</span>' +
         '<h3>Os trabalhos ficam no Instagram, atualizados a cada entrega.</h3>' +
         '<p>Aftermovie de vaquejada, institucional, cobertura aérea e campanha — cada projeto entra lá no dia em que estreia.</p>' +
@@ -1764,7 +1774,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       return cartaoAlternativo(item, i === 0 && validos.length < 3);
     }).join('');
     if (validos.length < 3) {
-      grade.innerHTML += '<a class="cartao portfolio-convite-mini regua visivel" ' +
+      grade.innerHTML += '<a class="cartao portfolio-convite-mini visivel" ' +
         'href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener">' +
         '<span class="olho">Instagram</span>' +
         '<b>Ver tudo que já entregamos</b>' +
