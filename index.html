@@ -83,11 +83,13 @@
      Antes o arquivo tinha 19 tempos avulsos, o que é o que faz um site
      parecer montado por pedaços em vez de projetado. */
   --t-instante: 90ms;   /* pressão do dedo (:active) */
-  --t-rapido: 180ms;    /* hover, foco, seta */
-  --t-base: 320ms;      /* troca de estado: FAQ, menu, chevron */
-  --t-lento: 560ms;     /* revelação de bloco ao rolar */
-  --t-amb: 720ms;       /* régua que se desenha, barra que preenche */
-  --e-sai: cubic-bezier(.22, .61, .36, 1);   /* tudo que entra e assenta */
+  --t-rapido: 240ms;    /* hover, foco, seta — 180ms batia seco demais */
+  --t-base: 380ms;      /* troca de estado: FAQ, menu, chevron */
+  --t-lento: 760ms;     /* revelação de bloco ao rolar */
+  --t-amb: 950ms;       /* régua que se desenha, linha que atravessa */
+  /* Curva mais macia que a anterior (.22,.61,.36,1): desacelera por muito
+     mais tempo e chega sem freada. É o que tira o "estalo". */
+  --e-sai: cubic-bezier(.16, .84, .44, 1);
   --e-io: cubic-bezier(.65, .05, .36, 1);    /* estado que sai E chega (mesma nos 2 sentidos) */
   --e-snap: cubic-bezier(.2, .9, .3, 1.02);  /* único overshoot permitido: 2% */
   --ease: var(--e-sai);
@@ -132,7 +134,12 @@ img, svg { max-width: 100%; }
 
 .container { max-width: 1120px; margin: 0 auto; padding: 0 22px; }
 section { position: relative; padding: 102px 0; }
-section.grade { overflow: hidden; } /* os brilhos decorativos de 760px não podem criar rolagem lateral */
+/* overflow: CLIP, não hidden. Os dois contêm o brilho decorativo, mas
+   'hidden' cria um scroll container, e aí o animation-timeline: view() passa
+   a medir contra a seção em vez da página — o bloco nasce já "no fim" da
+   animação e a rolagem fluida não acontece. 'clip' contém sem criar
+   contexto de rolagem. O 'hidden' fica como reserva para Safari antigo. */
+section.grade { overflow: hidden; overflow: clip; }
 
 /* ---------- textura de TV (scanlines + ruído) ---------- */
 .tv-textura { position: fixed; inset: 0; pointer-events: none; z-index: 95; }
@@ -206,7 +213,7 @@ section.grade { overflow: hidden; } /* os brilhos decorativos de 760px não pode
   transition: transform var(--t-rapido) var(--e-sai), border-color var(--t-rapido) ease, box-shadow var(--t-rapido) ease;
 }
 @media (hover: hover) and (pointer: fine) {
-  .cartao:hover { transform: translateY(-3px); border-color: rgba(67, 97, 238, .45); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 24px 60px -24px rgba(67, 97, 238, .35); }
+  .cartao:hover { transform: translateY(-4px); border-color: rgba(142, 166, 255, .38); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .09), 0 30px 70px -28px rgba(67, 97, 238, .5); }
 }
 .chip {
   display: inline-flex; align-items: center; gap: 7px;
@@ -379,9 +386,46 @@ nav.principal a.ativa::after { width: 100%; }
 .servico-icone { transition: transform var(--t-rapido) var(--e-snap), background var(--t-rapido) ease; }
 .servico-icone svg { width: 23px; height: 23px; color: var(--azul-claro); }
 @media (hover: hover) and (pointer: fine) {
-  .servico:hover .servico-icone { transform: scale(1.1) rotate(-4deg); background: rgba(67, 97, 238, .18); }
+  .servico:hover .servico-icone { transform: translateY(-3px) scale(1.06); background: rgba(67, 97, 238, .2); border-color: rgba(142, 166, 255, .55); }
 }
 .servico .olho { margin-top: 22px; }
+
+/* Montagem interna do cartão: ícone, rótulo e título entram com um respiro
+   entre si. Antes o cartão chegava como um retângulo chapado; agora ele se
+   arma — é o que dá sensação de peso sem custar movimento a mais. */
+@media (prefers-reduced-motion: no-preference) {
+  /* caminho do observer (sem rolagem fluida): translate, nunca transform —
+     transform fica reservado ao hover, senão uma regra engole a outra */
+  html:not(.rolagem-fluida) .revelar-itens .servico-icone,
+  html:not(.rolagem-fluida) .revelar-itens .servico .olho,
+  html:not(.rolagem-fluida) .revelar-itens .servico h3 { opacity: 0; translate: 0 9px; }
+  html:not(.rolagem-fluida) .revelar-itens.visivel .servico-icone,
+  html:not(.rolagem-fluida) .revelar-itens.visivel .servico .olho,
+  html:not(.rolagem-fluida) .revelar-itens.visivel .servico h3 {
+    opacity: 1; translate: none;
+    transition: opacity var(--t-lento) var(--e-sai), translate var(--t-lento) var(--e-sai);
+  }
+  html:not(.rolagem-fluida) .revelar-itens.visivel .servico-icone { transition-delay: 90ms; }
+  html:not(.rolagem-fluida) .revelar-itens.visivel .servico .olho { transition-delay: 170ms; }
+  html:not(.rolagem-fluida) .revelar-itens.visivel .servico h3   { transition-delay: 240ms; }
+}
+
+/* sob rolagem fluida os internos também acompanham o scroll, numa janela
+   um pouco depois da do cartão — o cartão chega, e o conteúdo se assenta */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes assentar { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: none; } }
+    html.rolagem-fluida .revelar-itens .servico-icone,
+    html.rolagem-fluida .revelar-itens .servico .olho,
+    html.rolagem-fluida .revelar-itens .servico h3 {
+      animation: assentar linear both;
+      animation-timeline: view();
+    }
+    html.rolagem-fluida .revelar-itens .servico-icone { animation-range: entry 12% cover 32%; }
+    html.rolagem-fluida .revelar-itens .servico .olho { animation-range: entry 16% cover 36%; }
+    html.rolagem-fluida .revelar-itens .servico h3    { animation-range: entry 20% cover 40%; }
+  }
+}
 .servico h3 { font-size: 21px; margin-top: 8px; line-height: 1.3; transition: color .25s ease; }
 .servico:hover h3 { color: var(--azul-claro); }
 .servico p { margin-top: 10px; color: var(--tinta-2); font-size: 15px; }
@@ -481,6 +525,47 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 }
 .regua.visivel::before { transform: scaleX(1); }
 
+/* ======================= ROLAGEM FLUIDA =======================
+   Onde o navegador suporta animation-timeline: view(), a entrada dos blocos
+   deixa de ser um gatilho ("apareceu -> dispara 760ms") e passa a ser função
+   da posição do elemento na tela: o bloco acompanha o dedo enquanto você
+   rola. É a diferença entre animação disparada e animação contínua, e é o
+   que faltava para o site parecer fluido em vez de rígido.
+   A classe .rolagem-fluida é posta pelo JS só quando há suporte de verdade;
+   sem ela nada muda e o caminho do IntersectionObserver continua valendo. */
+@keyframes entrar-fluido {
+  /* translate/scale (propriedades independentes), NÃO transform:
+     compõem com o transform do hover em vez de bloqueá-lo */
+  from { opacity: 0; translate: 0 30px; scale: .988; }
+  to   { opacity: 1; translate: none; scale: 1; }
+}
+@keyframes desenhar-fluido { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html.rolagem-fluida .revelar,
+    html.rolagem-fluida .revelar.visivel,
+    html.rolagem-fluida .revelar-itens > *,
+    html.rolagem-fluida .revelar-itens.visivel > * {
+      /* só a opacidade base; NADA de 'transform: none' aqui — esta regra tem
+         especificidade maior que .cartao:hover e engoliria o hover inteiro */
+      opacity: 1;
+      animation: entrar-fluido linear both;
+      animation-timeline: view();
+      /* janela larga o bastante para o movimento ser lido como contínuo,
+         curta o bastante para não ficar meio-transparente parado na tela */
+      animation-range: entry 6% cover 34%;
+      animation-delay: 0s;
+    }
+    html.rolagem-fluida .regua::before {
+      transition: none;
+      animation: desenhar-fluido linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 30%;
+    }
+  }
+}
+
 /* régua de progresso de leitura sob o cabeçalho: no celular o scrollspy do
    menu não existe (nav some abaixo de 980px), então esta é a única pista
    de profundidade que o visitante tem lá. */
@@ -544,7 +629,32 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
 
 
 /* ---------- protocolo: as quatro marchas ---------- */
-.marchas { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 40px; }
+.marchas { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 40px; position: relative; }
+/* O protocolo é uma SEQUÊNCIA, não uma grade — mas animava como grade, e era
+   isso que deixava a área rígida. Esta linha atravessa as quatro marchas e se
+   desenha da primeira para a última, dizendo com movimento o que o número diz
+   com texto: uma coisa vem depois da outra. */
+.marchas::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, var(--azul-claro) 0%, rgba(142, 166, 255, .45) 55%, rgba(142, 166, 255, 0) 100%);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--t-amb) var(--e-sai) 120ms;
+  z-index: 1;
+}
+.marchas.visivel::before { transform: scaleX(1); }
+/* cada marcha acende quando a linha passa por ela */
+.marchas .marcha::before { transition-delay: calc(var(--i, 0) * 150ms + 200ms); }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html.rolagem-fluida .marchas::before {
+      transition: none;
+      animation: desenhar-fluido linear both;
+      animation-timeline: view();
+      animation-range: entry 12% cover 42%;
+    }
+  }
+}
+@media (max-width: 900px) { .marchas::before { display: none; } }
 .marcha {
   background: var(--grafite-900); border: 1px solid var(--borda); border-radius: 14px;
   padding: 26px 22px 22px; display: flex; flex-direction: column; gap: 9px;
@@ -617,6 +727,22 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   .revelar-itens.visivel > *, .faixa-trilho, .ponto-pulso, .whats-flutuante,
   .tv-textura::after { animation: none !important; }
   .conteudo-hero, .hero-painel { animation-timeline: none !important; }
+  /* a rolagem fluida usa animation-timeline: view(); sem isso os blocos
+     ficariam presos no quadro inicial (invisíveis) para quem pediu menos
+     movimento — é o erro clássico de scroll-driven animation */
+  html.rolagem-fluida .revelar, html.rolagem-fluida .revelar-itens > *,
+  html.rolagem-fluida .regua::before, html.rolagem-fluida .marchas::before {
+    animation: none !important; animation-timeline: none !important;
+    opacity: 1 !important; translate: none !important; scale: none !important;
+  }
+  /* SEM depender de .rolagem-fluida: sob reduce o JS nunca adiciona essa
+     classe, então a regra antiga não casava e as réguas ficavam presas em
+     scaleX(0) — invisíveis. Movimento reduzido significa estado final na
+     hora, não elemento escondido. */
+  .regua::before, .marchas::before { transform: scaleX(1) !important; }
+  .revelar-itens .servico-icone, .revelar-itens .servico .olho, .revelar-itens .servico h3 {
+    opacity: 1 !important; translate: none !important; animation: none !important;
+  }
   html { scroll-behavior: auto; }
   /* hover vira mudança de cor, nunca deslocamento */
   .btn:hover, .btn:hover svg, .cartao:hover, .chip:hover, .selo:hover,
@@ -1394,6 +1520,20 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     Array.prototype.forEach.call(grade.children, function (filho, i) {
       var linha = Math.floor(i / colunas), coluna = i % colunas;
       filho.style.animationDelay = Math.min(linha * 60 + coluna * 30, 240) + 'ms';
+    });
+  });
+
+  /* Rolagem fluida: só liga onde animation-timeline: view() existe de fato.
+     Sem suporte (Safari antigo, Firefox), o caminho do IntersectionObserver
+     continua valendo e ninguém vê diferença — a não ser a fluidez. */
+  if (podeMover && window.CSS && CSS.supports && CSS.supports('animation-timeline', 'view()')) {
+    document.documentElement.classList.add('rolagem-fluida');
+  }
+
+  /* índice de cada marcha, para a linha acender uma depois da outra */
+  document.querySelectorAll('.marchas').forEach(function (lista) {
+    Array.prototype.forEach.call(lista.children, function (li, i) {
+      li.style.setProperty('--i', i);
     });
   });
 
