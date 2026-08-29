@@ -92,6 +92,9 @@
   --e-sai: cubic-bezier(.16, .84, .44, 1);
   --e-io: cubic-bezier(.65, .05, .36, 1);    /* estado que sai E chega (mesma nos 2 sentidos) */
   --e-snap: cubic-bezier(.2, .9, .3, 1.02);  /* único overshoot permitido: 2% */
+  /* easeOutQuad — a curva que a referência usa em praticamente toda
+     interação curta. Entra na escala como a curva de hover/rótulo. */
+  --e-slot: cubic-bezier(.25, .46, .45, .94);
   --ease: var(--e-sai);
   /* Para trocar por Founders Grotesk (Klim, licença paga): baixe o webfont,
      adicione o @font-face e troque só o primeiro nome desta linha. */
@@ -805,6 +808,64 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   }
 }
 
+
+/* ============================================================
+   TRÊS EFEITOS TRAZIDOS DA REFERÊNCIA (alche.studio)
+   O que lá é three.js + GSAP + Lenis num bundle de 1,83 MB, aqui é CSS
+   nativo. Não é preguiça: a CSP do site bloqueia script de terceiro, e
+   1,83 MB de JS antes do primeiro pixel mataria o 4G do interior — que é
+   exatamente onde o seu cliente vai abrir isso.
+   ============================================================ */
+
+/* 1) BOTÃO CAÇA-NÍQUEL — o rótulo rola para cima e o de baixo entra no
+      lugar. Lá é o "SlotButton"; aqui são duas cópias do texto numa
+      máscara, movidas com translate. Custo: zero JS por quadro. */
+.slot { display: grid; overflow: clip; }
+.slot > span {
+  grid-area: 1 / 1;
+  transition: translate var(--t-rapido) var(--e-slot);
+}
+.slot > span + span { translate: 0 100%; }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover .slot > span { translate: 0 -100%; }
+  .btn:hover .slot > span + span { translate: 0 0; }
+}
+
+/* 2) SUBLINHADO QUE ENTRA PELA ESQUERDA E SAI PELA DIREITA.
+      Um detalhe de 4 linhas que separa site cuidado de site montado:
+      o traço não "desaparece", ele continua o movimento e sai. */
+.link-traco { position: relative; text-decoration: none; }
+.link-traco::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 1px;
+  background: currentColor; opacity: .75;
+  transform: scaleX(0); transform-origin: right;
+  transition: transform var(--t-rapido) var(--e-slot);
+}
+@media (hover: hover) and (pointer: fine) {
+  .link-traco:hover::after, .link-traco:focus-visible::after {
+    transform: scaleX(1); transform-origin: left;
+  }
+}
+
+/* 3) MARCA-TEXTO — a faixa varre a frase da esquerda para a direita, uma
+      vez só, quando ela entra na tela. Anima background-size, que não
+      recalcula layout. É o gesto mais visível da referência. */
+.marcado {
+  background-image: linear-gradient(90deg, rgba(67,97,238,.55), rgba(22,37,95,.85));
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 0% 100%;
+  padding: .12em .24em; margin: 0 -.24em;
+  border-radius: 3px;
+  transition: background-size var(--t-amb) var(--e-slot);
+}
+.marcado.visivel { background-size: 100% 100%; }
+@media (prefers-reduced-motion: reduce) {
+  .marcado { background-size: 100% 100% !important; transition: none !important; }
+  .slot > span, .slot > span + span { translate: none !important; }
+  .link-traco::after { transition: none !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   /* Toda transição do site lê um destes tokens, então redefinir os cinco
      apaga o sistema de movimento inteiro numa tacada — em vez de listar
@@ -1042,7 +1103,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       </div>
     </div>
 
-    <p class="prova revelar">Criatividade é estratégia. Estratégia é Cavalcante.</p>
+    <p class="prova revelar">Criatividade é estratégia. <span class="marcado">Estratégia é Cavalcante.</span></p>
   </div>
 
   <div class="faixa" aria-hidden="true">
@@ -1630,6 +1691,34 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
     });
   });
 
+  /* Botão caça-níquel: duplica o rótulo dentro de uma máscara. Feito em JS
+     para não ter que editar os 10 botões à mão — e para o HTML continuar
+     legível para quem for mexer depois. A cópia é aria-hidden, senão o
+     leitor de tela anunciaria o rótulo duas vezes. */
+  if (podeMover) {
+    document.querySelectorAll('.btn').forEach(function (btn) {
+      if (btn.querySelector('.slot')) return;
+      var textos = Array.prototype.filter.call(btn.childNodes, function (no) {
+        return no.nodeType === 3 && no.textContent.trim();
+      });
+      if (textos.length !== 1) return;   /* botão com estrutura fora do padrão: deixa quieto */
+      var rotulo = textos[0].textContent.trim();
+      var slot = document.createElement('span');
+      slot.className = 'slot';
+      var a = document.createElement('span'); a.textContent = rotulo;
+      var b = document.createElement('span'); b.textContent = rotulo;
+      b.setAttribute('aria-hidden', 'true');
+      slot.appendChild(a); slot.appendChild(b);
+      btn.replaceChild(slot, textos[0]);
+    });
+  }
+
+  /* o sublinhado que entra pela esquerda e sai pela direita, nos links de
+     texto — não nos botões, que já têm o caça-níquel */
+  document.querySelectorAll('.rodape-links a, .faq-resp a, .ficha-linha a').forEach(function (a) {
+    a.classList.add('link-traco');
+  });
+
   /* Holofote que segue o ponteiro dentro do cartão. Um listener só, no
      documento, em vez de um por cartão; uma escrita de estilo por quadro;
      e nenhuma leitura de layout fora do rAF. */
@@ -1695,9 +1784,9 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
         if (e.isIntersecting) { e.target.classList.add('visivel'); obs.unobserve(e.target); }
       });
     }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
-    document.querySelectorAll('.revelar, .titulo-vivo').forEach(function (el) { obs.observe(el); });
+    document.querySelectorAll('.revelar, .titulo-vivo, .marcado').forEach(function (el) { obs.observe(el); });
   } else {
-    document.querySelectorAll('.revelar, .titulo-vivo').forEach(function (el) { el.classList.add('visivel'); });
+    document.querySelectorAll('.revelar, .titulo-vivo, .marcado').forEach(function (el) { el.classList.add('visivel'); });
   }
 
   /* ---------- portfólio: lê portfolio.json (gerado no app, em "Meu site") ---------- */
