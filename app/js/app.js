@@ -118,6 +118,22 @@
       return;
     }
 
+    /* modo público vindo do login por e-mail: os dados chegaram pela API e a
+       tela de login deixou em sessionStorage. Não vão na URL de propósito —
+       dado de cliente não tem por que ficar no histórico do navegador. */
+    if (/^#\/p\?sessao$/.test(location.hash || '')) {
+      var bruto = null;
+      try { bruto = sessionStorage.getItem('cavalcante:portal:dados'); } catch (e) { /* bloqueado */ }
+      if (bruto) {
+        try {
+          AH.portalPublicoDireto(JSON.parse(bruto));
+          return;
+        } catch (e) { /* json quebrado: cai para o login */ }
+      }
+      location.replace('../portal/');
+      return;
+    }
+
     AH.carregar();
     AH.atualizarMarca();
 

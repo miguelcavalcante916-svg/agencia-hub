@@ -330,9 +330,17 @@
 
   /* ---------- modo público (aberto pelo link) ---------- */
 
-  AH.portalPublico = function (payload) {
+  /* Renderiza o portal a partir dos dados JÁ prontos (login por e-mail).
+     O caminho do link continua existindo e passa por aqui depois de decodificar. */
+  AH.portalPublicoDireto = function (dados) {
+    var raiz = prepararRaizPortal();
+    document.title = (dados.agencia && dados.agencia.nome ? dados.agencia.nome + ' · ' : '') + 'Portal do cliente';
+    raiz.innerHTML = AH.renderPortalHTML(dados);
+    AH.ligarPortal(raiz);
+  };
+
+  function prepararRaizPortal() {
     document.body.classList.add('modo-portal');
-    // se o endereço mudar (ex.: navegar para o painel), recarrega no modo certo
     window.addEventListener('hashchange', function () { location.reload(); });
     var raiz = document.getElementById('portal-publico');
     if (!raiz) {
@@ -340,6 +348,11 @@
       raiz.id = 'portal-publico';
       document.body.appendChild(raiz);
     }
+    return raiz;
+  }
+
+  AH.portalPublico = function (payload) {
+    var raiz = prepararRaizPortal();
     raiz.innerHTML = '<div class="portal"><p class="nota-rodape" style="padding:48px 0;text-align:center">Carregando o seu portal…</p></div>';
     AH.decodificarPortal(payload).then(function (dados) {
       document.title = (dados.agencia && dados.agencia.nome ? dados.agencia.nome + ' · ' : '') + 'Portal do cliente';
@@ -444,6 +457,26 @@
     html += '<label class="campo" style="margin-bottom:18px"><span class="campo-rotulo">Link exclusivo deste cliente</span>' +
       '<input class="input" id="portal-link" readonly value="Gerando link..."></label>';
 
+    html += '<div class="card" style="margin-bottom:18px">' +
+      '<div class="card-titulo">' + AH.icons.portal + 'Acesso por e-mail e senha</div>' +
+      '<p class="nota-rodape" style="margin-bottom:14px">Cadastre o acesso deste cliente. Ele entra em ' +
+      '<b>agenciacavalcante.com/portal/</b> com o e-mail e a senha — sem precisar guardar link nenhum. ' +
+      'A senha é gravada com hash no servidor: nem eu nem você conseguimos lê-la depois.</p>' +
+      '<div class="grade-form">' +
+      '<label class="campo"><span class="campo-rotulo">E-mail do cliente</span>' +
+      '<input class="input" id="acesso-email" type="email" autocomplete="off" placeholder="cliente@gmail.com"></label>' +
+      '<label class="campo"><span class="campo-rotulo">Senha (mínimo 6 caracteres)</span>' +
+      '<input class="input" id="acesso-senha" type="text" autocomplete="off" placeholder="deixe em branco para só atualizar os dados"></label>' +
+      '<label class="campo"><span class="campo-rotulo">Chave de administração</span>' +
+      '<input class="input" id="acesso-chave" type="password" autocomplete="off" placeholder="a chave que você criou na Vercel"></label>' +
+      '</div>' +
+      '<div class="toolbar" style="margin-top:12px">' +
+      '<button class="btn btn-primario" id="acesso-publicar">' + AH.icons.portal + 'Publicar acesso deste cliente</button>' +
+      '<button class="btn btn-ghost" id="acesso-remover">Remover acesso</button>' +
+      '</div>' +
+      '<p class="nota-rodape" id="acesso-aviso" style="margin-top:10px"></p>' +
+      '</div>';
+
     html += '<div class="card-titulo">' + AH.icons.olho + 'Prévia — é exatamente isso que o cliente vê</div>' +
       '<div class="portal-preview" id="portal-preview"></div>';
 
@@ -480,6 +513,73 @@
       gerarLink().then(function (url) { window.open(url, '_blank'); });
     });
     inputLink.addEventListener('click', function () { inputLink.select(); });
+
+    /* ---------- acesso por e-mail e senha ---------- */
+    var campoEmail = el.querySelector('#acesso-email');
+    var campoSenha = el.querySelector('#acesso-senha');
+    var campoChave = el.querySelector('#acesso-chave');
+    var aviso = el.querySelector('#acesso-aviso');
+
+    /* a chave de administração fica só neste navegador, como a chave da API
+       do Claude — nunca é escrita em nenhum arquivo do repositório */
+    try { campoChave.value = localStorage.getItem('agenciahub:portal:chave') || ''; } catch (e) {}
+
+    function dizer(msg, ruim) {
+      aviso.innerHTML = (ruim ? AH.icons.alerta + ' ' : '') + msg;
+      aviso.style.color = ruim ? '#ffb9b9' : 'var(--texto-2)';
+    }
+
+    function chamarPublicar(corpo) {
+      return fetch('/api/portal/publicar', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(corpo)
+      }).then(function (r) {
+        return r.json().then(function (j) { return { status: r.status, corpo: j }; });
+      });
+    }
+
+    el.querySelector('#acesso-publicar').addEventListener('click', function () {
+      var email = (campoEmail.value || '').trim();
+      var chave = (campoChave.value || '').trim();
+      if (!email || email.indexOf('@') < 1) { dizer('Informe o e-mail do cliente.', true); return; }
+      if (!chave) { dizer('Cole a chave de administração (a que você guardou na Vercel).', true); return; }
+      try { localStorage.setItem('agenciahub:portal:chave', chave); } catch (e) {}
+
+      var cliente = AH.clientePorId(sel.clienteId);
+      var snap = AH.snapshotPortal(sel.clienteId, { incluirCobrancas: sel.incluirCobrancas });
+      if (!snap) { dizer('Não consegui montar os dados deste cliente.', true); return; }
+
+      dizer('Publicando…');
+      chamarPublicar({
+        chave: chave, email: email, senha: campoSenha.value || undefined,
+        nome: cliente ? cliente.nome : '', dados: snap
+      }).then(function (r) {
+        if (r.status === 200) {
+          campoSenha.value = '';
+          dizer('Pronto. ' + AH.esc(email) + ' já entra em <b>agenciacavalcante.com/portal/</b>' +
+                (r.corpo.senhaTrocada ? ' com a senha nova.' : '. Os dados foram atualizados; a senha continua a mesma.'));
+        } else if (r.corpo && r.corpo.codigo === 'NAO_CONFIGURADO') {
+          dizer('O portal por senha ainda não foi ligado na Vercel. Enquanto isso, use o link exclusivo acima.', true);
+        } else {
+          dizer(AH.esc((r.corpo && r.corpo.erro) || ('Erro ' + r.status)), true);
+        }
+      }).catch(function () {
+        dizer('Sem conexão com o servidor. Confira a internet e tente de novo.', true);
+      });
+    });
+
+    el.querySelector('#acesso-remover').addEventListener('click', function () {
+      var email = (campoEmail.value || '').trim();
+      var chave = (campoChave.value || '').trim();
+      if (!email || !chave) { dizer('Informe o e-mail e a chave de administração.', true); return; }
+      AH.ui.confirmar('Remover o acesso de ' + email + '? Ele deixa de conseguir entrar no portal.', function () {
+        chamarPublicar({ chave: chave, email: email, remover: true }).then(function (r) {
+          dizer(r.status === 200 ? 'Acesso de ' + AH.esc(email) + ' removido.'
+                                 : AH.esc((r.corpo && r.corpo.erro) || ('Erro ' + r.status)), r.status !== 200);
+        }).catch(function () { dizer('Sem conexão com o servidor.', true); });
+      }, 'Remover');
+    });
   }
 
   AH.views = AH.views || {};

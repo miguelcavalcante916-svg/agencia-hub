@@ -14,172 +14,369 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@700;800&family=Lexend:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@700;800&family=Lexend:wght@400;500;600&display=swap"></noscript>
 <style>
+/* Mesmos tokens do site, para a entrada do portal não parecer outra marca */
 :root {
   --marinho-900: #060C1C; --marinho-800: #0A1730; --marinho-700: #16255F;
-  --grafite-900: #08090E; --borda: rgba(255,255,255,.10);
+  --grafite-900: #08090E; --grafite-800: #101219;
+  --borda: rgba(255,255,255,.10);
   --tinta: #fff; --tinta-2: rgba(255,255,255,.72); --tinta-3: rgba(255,255,255,.60);
-  --azul: #4361ee; --azul-claro: #8ea6ff;
-  --t-rapido: 180ms; --t-base: 320ms; --t-lento: 560ms;
-  --e-sai: cubic-bezier(.22,.61,.36,1);
+  --azul: #4361ee; --azul-vivo: #5878ff; --azul-claro: #8ea6ff;
+  --t-instante: 90ms; --t-rapido: 240ms; --t-base: 380ms; --t-lento: 760ms; --t-amb: 950ms;
+  --e-sai: cubic-bezier(.16, .84, .44, 1);
   --fonte-titulo: "Urbanist", ui-sans-serif, system-ui, sans-serif;
 }
+@property --giro { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
 * { box-sizing: border-box; margin: 0; }
 body {
   background: var(--marinho-900); color: var(--tinta); min-height: 100dvh;
   font: 15px/1.6 "Lexend", ui-sans-serif, system-ui, sans-serif;
-  display: grid; place-items: center; padding: 24px;
+  display: grid; place-items: center; padding: 24px 20px 40px;
   -webkit-font-smoothing: antialiased;
 }
-/* a grade fina do tabuleiro, igual à do site */
+/* a grade fina do tabuleiro, igual à do herói do site */
 body::before {
   content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background-image:
-    linear-gradient(to right, rgba(255,255,255,.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px);
-  background-size: 88px 88px;
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
-          mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+    linear-gradient(to right, rgba(255,255,255,.038) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.038) 1px, transparent 1px);
+  background-size: 84px 84px;
+  -webkit-mask-image: radial-gradient(ellipse 72% 58% at 50% 38%, #000 28%, transparent 76%);
+          mask-image: radial-gradient(ellipse 72% 58% at 50% 38%, #000 28%, transparent 76%);
 }
+/* o brilho do navy da logo */
+body::after {
+  content: ""; position: fixed; z-index: 0; pointer-events: none;
+  left: 50%; top: -22rem; width: 40rem; height: 40rem; translate: -50% 0;
+  border-radius: 50%; background: rgba(22, 37, 95, .5); filter: blur(120px);
+}
+
+.envelope { position: relative; z-index: 1; width: 100%; max-width: 452px; }
+
 .caixa {
-  position: relative; z-index: 1; width: 100%; max-width: 460px;
+  position: relative; isolation: isolate;
   background: var(--grafite-900); border: 1px solid var(--borda);
-  border-radius: 16px; padding: 38px 32px 30px; text-align: center;
+  border-radius: 18px; padding: 40px 34px 30px;
   animation: entrar var(--t-lento) var(--e-sai) backwards;
 }
-/* a régua-assinatura */
+/* a mesma luz que corre a borda dos cartões do site */
 .caixa::before {
-  content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
-  background: linear-gradient(90deg, var(--azul-claro), rgba(142,166,255,0));
-  transform: scaleX(0); transform-origin: left;
-  animation: desenhar 720ms var(--e-sai) 180ms forwards;
+  content: ""; position: absolute; inset: -1px; border-radius: inherit;
+  padding: 1.5px; pointer-events: none; z-index: -1;
+  background: conic-gradient(from var(--giro),
+              transparent 0 74%, rgba(142,166,255,.28) 81%,
+              #dfe6ff 88%, rgba(142,166,255,.28) 95%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: correr-borda 6s linear infinite;
 }
-@keyframes entrar { from { opacity: 0; transform: translateY(14px); } }
-@keyframes desenhar { to { transform: scaleX(1); } }
+@keyframes correr-borda { to { --giro: 360deg; } }
+@keyframes entrar { from { opacity: 0; translate: 0 16px; } }
+@keyframes surgir { from { opacity: 0; translate: 0 8px; } }
 
-.marca { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 22px; }
-.marca svg { height: 34px; color: var(--tinta); }
-.marca b { font-family: var(--fonte-titulo); font-size: 15px; font-weight: 800; letter-spacing: -.01em; }
-.marca span { color: var(--azul-claro); }
+.marca { display: flex; align-items: center; gap: 11px; margin-bottom: 26px; }
+.marca svg { height: 36px; color: var(--tinta); flex: none; }
+.marca b { font-family: var(--fonte-titulo); font-size: 15px; font-weight: 800; letter-spacing: -.01em; display: block; }
+.marca b span { color: var(--azul-claro); }
+.marca small { display: block; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--tinta-3); margin-top: 2px; }
 
-h1 { font-family: var(--fonte-titulo); font-size: 26px; font-weight: 800; letter-spacing: -.03em; line-height: 1.15; }
-.sub { color: var(--tinta-2); margin-top: 10px; font-size: 14.5px; }
+h1 { font-family: var(--fonte-titulo); font-size: 28px; font-weight: 800; letter-spacing: -.03em; line-height: 1.12; }
+.sub { color: var(--tinta-2); margin-top: 9px; font-size: 14.5px; }
 
-form { margin-top: 24px; text-align: left; }
-label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--azul-claro); font-family: var(--fonte-titulo); font-weight: 800; margin-bottom: 8px; }
+form { margin-top: 26px; }
+.campo { margin-bottom: 15px; animation: surgir var(--t-lento) var(--e-sai) backwards; }
+.campo:nth-of-type(1) { animation-delay: 90ms; }
+.campo:nth-of-type(2) { animation-delay: 160ms; }
+label {
+  display: block; font-family: var(--fonte-titulo); font-size: 11px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .14em; color: var(--azul-claro); margin-bottom: 8px;
+}
+.entrada { position: relative; }
 input {
   width: 100%; background: var(--marinho-900); color: var(--tinta);
-  border: 1px solid var(--borda); border-radius: 10px; padding: 13px 14px;
-  font: 400 14px/1.4 "Lexend", ui-sans-serif, system-ui, sans-serif;
-  transition: border-color var(--t-rapido) ease;
+  border: 1px solid var(--borda); border-radius: 11px; padding: 14px 15px;
+  font: 400 15px/1.4 "Lexend", ui-sans-serif, system-ui, sans-serif;
+  transition: border-color var(--t-rapido) ease, background var(--t-rapido) ease;
 }
-input:focus { outline: 2px solid var(--azul-claro); outline-offset: 2px; border-color: transparent; }
-input::placeholder { color: rgba(255,255,255,.35); }
+input:hover { border-color: rgba(255,255,255,.18); }
+input:focus { outline: 2px solid var(--azul-claro); outline-offset: 2px; border-color: transparent; background: var(--grafite-800); }
+input::placeholder { color: rgba(255,255,255,.32); }
+input[type=password] { padding-right: 52px; }
+.ver-senha {
+  position: absolute; right: 6px; top: 50%; translate: 0 -50%;
+  background: none; border: 0; cursor: pointer; padding: 9px 10px; border-radius: 8px;
+  color: var(--tinta-3); display: grid; place-items: center;
+  transition: color var(--t-rapido) ease, background var(--t-rapido) ease;
+}
+.ver-senha:hover { color: var(--tinta); background: rgba(255,255,255,.06); }
+.ver-senha:focus-visible { outline: 2px solid var(--azul-claro); outline-offset: 2px; }
+.ver-senha svg { width: 19px; height: 19px; grid-area: 1 / 1; }
+/* o [hidden] do HTML precisa ser reafirmado: dentro de um grid os dois
+   ícones ocupavam a mesma célula e apareciam empilhados */
+.ver-senha svg[hidden] { display: none; }
 
 .btn {
-  width: 100%; margin-top: 14px; border: 0; cursor: pointer;
-  background: var(--azul); color: #fff; border-radius: 11px; padding: 14px 20px;
+  width: 100%; margin-top: 10px; border: 0; cursor: pointer;
+  background: var(--azul); color: #fff; border-radius: 12px; padding: 15px 20px;
   font: 600 15px "Lexend", ui-sans-serif, system-ui, sans-serif;
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  transition: background var(--t-rapido) ease, transform var(--t-rapido) var(--e-sai);
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  box-shadow: 0 18px 45px -18px rgba(67,97,238,.75);
+  transition: background var(--t-rapido) ease, box-shadow var(--t-rapido) ease, transform var(--t-rapido) var(--e-sai);
+  animation: surgir var(--t-lento) var(--e-sai) 230ms backwards;
 }
-.btn:hover { background: #5878ff; }
-.btn:active { transform: scale(.985); transition-duration: 90ms; }
+.btn:hover { background: var(--azul-vivo); box-shadow: 0 22px 55px -18px rgba(67,97,238,.95); }
+.btn:active { transform: scale(.985); transition-duration: var(--t-instante); }
 .btn:focus-visible { outline: 2px solid var(--azul-claro); outline-offset: 3px; }
+.btn[disabled] { opacity: .6; cursor: progress; }
+.btn svg { width: 17px; height: 17px; flex: none; }
 
-.erro {
-  margin-top: 12px; font-size: 13.5px; color: #ffb4b4;
-  background: rgba(248,113,113,.12); border: 1px solid rgba(248,113,113,.35);
-  border-radius: 9px; padding: 10px 12px;
+/* rodinha de espera enquanto o servidor responde */
+.girando { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: girar .7s linear infinite; }
+@keyframes girar { to { rotate: 360deg; } }
+
+.aviso {
+  margin-top: 14px; font-size: 13.5px; border-radius: 10px; padding: 11px 13px;
+  animation: surgir var(--t-base) var(--e-sai);
 }
-.ajuda { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--borda); font-size: 13.5px; color: var(--tinta-3); }
-.ajuda a { color: var(--azul-claro); }
-.rodape { position: relative; z-index: 1; margin-top: 18px; font-size: 12.5px; color: rgba(255,255,255,.4); text-align: center; }
-.rodape a { color: rgba(255,255,255,.55); }
+.aviso.ruim { color: #ffb9b9; background: rgba(248,113,113,.12); border: 1px solid rgba(248,113,113,.34); }
+.aviso.neutro { color: var(--tinta-2); background: rgba(255,255,255,.04); border: 1px solid var(--borda); }
+.aviso a { color: var(--azul-claro); }
+
+.rodape-caixa { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--borda); font-size: 13.5px; color: var(--tinta-3); }
+.rodape-caixa a { color: var(--azul-claro); }
+.alternativa { background: none; border: 0; padding: 0; font: inherit; color: var(--azul-claro); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.fora { margin-top: 18px; text-align: center; font-size: 12.5px; color: rgba(255,255,255,.4); }
+.fora a { color: rgba(255,255,255,.58); }
+
+#bloco-link { display: none; }
+#bloco-link.mostrar { display: block; }
+
+@media (max-width: 420px) { .caixa { padding: 32px 22px 26px; } h1 { font-size: 24px; } }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before { animation-duration: 1ms !important; transition-duration: 1ms !important; }
-  .caixa::before { transform: scaleX(1); }
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
+  .caixa::before { animation: none !important; opacity: .35; }
+  .btn:hover, .btn:active { transform: none !important; }
 }
 </style>
 </head>
 <body>
 
-<div>
+<div class="envelope">
 <div class="caixa">
   <div class="marca">
     <svg viewBox="314.7 184.9 450.4 710.1" fill="currentColor" aria-hidden="true"><path d="M511,574.3c2.9,4.1,5.8,8.2,8.7,12.2c8.2,11.5,20.7,19.3,34.7,20.9c7.7,0.9,16.3,3.1,24.8,7.4 c22.9,11.7,37,41,47.7,71.5c4.1,11.7,8.8,28,11.3,48.1c5.2,0.8,14.4,3,24,9.4c10.5,7,16.2,15.7,18.8,20.4 c0.1-31.2-4.7-71.4-23.4-113.1c-11-24.4-26.9-55.6-60.2-77.1C568.4,555.1,537.5,554.9,511,574.3z"/><path d="M661.9,765.8c-3.2-3.6-5.8-6.4-10.2-9c-10.2-5.9-20.8-4.9-25.3-4.2c-17.7,1.8-43,3.3-73.3,1.3 c-32.4-2.1-53.4-3-75.9-13.2c-29.7-13.5-54-36.7-72.8-67.3c-60.2-97.8-63.5-202.3-20.3-307.3c12.5-30.3,30.6-56.6,54.2-77.5 c20.8-18.4,42.7-29,52.1-33.3c4.9-2.2,19.1-8.5,38.5-13.3c12.7-3.2,28.3-6.9,48.9-6.1c0.1,0,0.2,0,0.2,0 c11.2,0.5,21.5-5.9,26-16.1c3.1-7.1,6.2-14.2,9.3-21.3c-5.9-1.6-9.2-2.8-12.5-3.3c-6.1-0.9-12.3-1.7-18.5-2 c-66.6-3.6-122.8,20.9-170.5,65.8c-102.4,96.4-125.1,329.3-22.9,464.4c7.2,9.5,13.6,16.6,16.7,20c5.4,5.2,13.2,12.3,23.1,19.9 c0,0,6.5,4.8,12.3,8.8c23.6,16.6,50.7,24.4,50.7,24.4c9,2.5,22.2,5.1,38.7,5c65.2-0.7,112.6-1,129,0.1c4.4,0.3,13.5,0.6,16.6-4.4 C681.6,788.1,663.6,767.7,661.9,765.8z"/><path d="M655.8,844.9c-80,0-159.9,0-239.9-0.1c-7.3,0-14.5-0.8-22.2-1.2c5-21.3,7.5-31.7,13.9-36.7 c5.4-4.2,15.5-4.2,34.7-4.9c10.1-0.4,18.4-0.3,23.9-0.2c-9.4-3.2-21.4-8.3-34-16.5c-15.9-10.4-27.1-21.9-34.4-30.7 c-2.2-0.1-5.4-0.1-9.2,0c-10.6,0.4-16.1,0.3-19.5,3.3c-4.2,3.7-5.9,10.3-5.6,20.2c1.2,34.8-9.7,66.5-30.8,94.5 c-3.1,4.1-5,9-8,14.4h383.3C695.9,846.6,693.7,844.9,655.8,844.9z"/><path d="M755,454.8c-2-10.8-6.4-18.5-9.4-24.1c-25.7-47-54.9-54.5-84.4-99.6c-18.1-27.6-15.1-36.8-33.1-52.1 c-8.5-7.2-29.6-22.4-59.1-23.6c-9.8-0.4-17.9,0.8-23.6,2.1c0.6,9,1.1,18,1.7,27.1c0.6,9.4,7.9,17,17.2,17.8 c2.9,0.2,5.9,0.7,9.1,1.4c2.6,0.6,16.7,3.7,29.8,13.6c15.3,11.6,18.7,24.6,27.4,40.2c18.1,32.5,32.6,29.1,73.2,81.5 c11.3,14.6,16.6,23.1,16.2,34.2c-0.5,13.9-9.4,27.5-26.6,38.9C654,464,603.9,456.4,545,472.9c-31.3,8.8-63.2-14.7-71.4-48.3 c-4.5-18.2-2.5-38.1-3.1-57.2c-0.2-5.6,1-11.1,1.6-16.7c-12.9,11.2-30.9,29.5-44.9,56.2c-46.8,89.3-2,183.9,6.7,205.5 c13.9,34.6,36.4,63.5,68.9,82.9c23.7,14.2,49,19.6,77.8,8.3c-1.6-6.6-5.2-18.1-14.6-29.1c-5.4-6.3-11-10.6-15.4-13.4 c-10.2-1.9-26.2-6.4-42-17.8c-20.1-14.5-29-32.6-39.3-53.6c-13.7-27.7-18.6-51.6-20.4-61.9c-5.3-30.8-3.2-57.2,0-75.8 c18.1,44.1,42.9,55.3,52.2,58.6c25.9,9.1,65.1,5.1,81.4,0.7c30.4-8.3,55.6,2.3,77.4,22.9c9.9,9.4,19,19.7,27.5,28.7 C737.3,543,765.2,510.3,755,454.8z"/></svg>
-    <b>Agência <span>Cavalcante</span></b>
+    <span>
+      <b>Agência <span>Cavalcante</span></b>
+      <small>Portal do cliente</small>
+    </span>
   </div>
 
-  <h1>Portal do Cliente</h1>
-  <p class="sub">Cole aqui o link de acesso que você recebeu no WhatsApp. Depois disso este aparelho já entra direto.</p>
+  <h1>Entrar no seu portal</h1>
+  <p class="sub">Use o e-mail e a senha que a agência cadastrou para você.</p>
 
-  <form id="form-entrar">
-    <label for="campo-link">Seu link de acesso</label>
-    <input id="campo-link" type="text" inputmode="url" autocomplete="off" spellcheck="false"
-           placeholder="https://agenciacavalcante.com/app/#/p?d=..." required>
-    <button class="btn" type="submit">
-      Entrar no meu portal
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+  <form id="form-login" novalidate>
+    <div class="campo">
+      <label for="campo-email">E-mail</label>
+      <div class="entrada">
+        <input id="campo-email" name="email" type="email" inputmode="email"
+               autocomplete="username" autocapitalize="none" spellcheck="false"
+               placeholder="seunome@gmail.com" required>
+      </div>
+    </div>
+
+    <div class="campo">
+      <label for="campo-senha">Senha</label>
+      <div class="entrada">
+        <input id="campo-senha" name="senha" type="password"
+               autocomplete="current-password" placeholder="sua senha" required>
+        <button class="ver-senha" type="button" id="btn-ver" aria-label="Mostrar a senha" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" id="olho-fechado" hidden><path d="M3 3l18 18M10.6 10.7a2 2 0 002.8 2.8"/><path d="M9.4 5.2A9.7 9.7 0 0112 5c5 0 9 4.5 9 7 0 .9-.6 2.2-1.7 3.4M6.3 6.9C3.9 8.4 3 10.4 3 12c0 2 4 7 9 7 1.4 0 2.7-.4 3.8-1"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" id="olho-aberto"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn" type="submit" id="btn-entrar">
+      <span id="rotulo-btn">Entrar no portal</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" id="seta-btn"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
     </button>
-    <div class="erro" id="erro" hidden></div>
+
+    <div class="aviso ruim" id="erro" role="alert" hidden></div>
   </form>
 
-  <p class="ajuda">
-    Não encontrou o link? Ele foi enviado no seu WhatsApp pela agência.
-    <a href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Perdi%20o%20link%20do%20meu%20portal%2C%20pode%20reenviar%3F">Peça o reenvio aqui</a>.
+  <!-- Caminho alternativo: quem já tem o link exclusivo continua entrando por
+       ele, inclusive enquanto o login por e-mail não está ligado. -->
+  <div id="bloco-link">
+    <div class="aviso neutro" style="margin-top:18px">
+      <strong>Entrar com o link exclusivo</strong>
+      <p style="margin-top:6px">Cole o endereço que a agência mandou no seu WhatsApp.</p>
+      <div class="entrada" style="margin-top:10px">
+        <input id="campo-link" type="text" inputmode="url" spellcheck="false"
+               placeholder="https://agenciacavalcante.com/app/#/p?d=…">
+      </div>
+      <button class="btn" type="button" id="btn-link" style="margin-top:10px">Entrar com o link</button>
+    </div>
+  </div>
+
+  <p class="rodape-caixa">
+    Esqueceu a senha ou não recebeu o acesso?
+    <a href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Preciso%20de%20acesso%20ao%20portal%20do%20cliente.">Fale com a agência no WhatsApp</a>.
+    <br><br>
+    <button class="alternativa" type="button" id="btn-alternar">Tenho um link de acesso em vez de senha</button>
   </p>
 </div>
 
-<p class="rodape">
-  <a href="../">Voltar ao site</a>
-</p>
+<p class="fora"><a href="../">Voltar ao site</a></p>
 </div>
 
 <script>
 (function () {
   'use strict';
-  var CHAVE = 'cavalcante:portal:link';
-  var form = document.getElementById('form-entrar');
-  var campo = document.getElementById('campo-link');
-  var erro = document.getElementById('erro');
 
-  function mostrarErro(msg) {
-    erro.textContent = msg;
+  var CHAVE_TOKEN = 'cavalcante:portal:token';
+  var CHAVE_LINK  = 'cavalcante:portal:link';
+  var CHAVE_DADOS = 'cavalcante:portal:dados';
+
+  var form   = document.getElementById('form-login');
+  var email  = document.getElementById('campo-email');
+  var senha  = document.getElementById('campo-senha');
+  var btn    = document.getElementById('btn-entrar');
+  var rotulo = document.getElementById('rotulo-btn');
+  var seta   = document.getElementById('seta-btn');
+  var erro   = document.getElementById('erro');
+  var blocoLink = document.getElementById('bloco-link');
+
+  function guardar(chave, valor) { try { localStorage.setItem(chave, valor); } catch (e) { /* aba anônima */ } }
+  function ler(chave) { try { return localStorage.getItem(chave); } catch (e) { return null; } }
+
+  function mostrarErro(msg, comLink) {
+    erro.innerHTML = msg + (comLink
+      ? ' <a href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Preciso%20de%20acesso%20ao%20portal.">Falar com a agência</a>.'
+      : '');
     erro.hidden = false;
   }
 
-  /* Extrai só a parte que importa do que foi colado: o cliente pode colar a
-     URL inteira, ou só o pedaço #/p?d=... — os dois têm que funcionar. */
-  function extrair(texto) {
-    var t = String(texto || '').trim();
-    var m = t.match(/#\/p\?d=([A-Za-z0-9._~%-]+)/);
-    return m ? m[1] : null;
+  function ocupado(sim) {
+    btn.disabled = sim;
+    rotulo.textContent = sim ? 'Entrando…' : 'Entrar no portal';
+    seta.hidden = sim;
+    var roda = document.getElementById('roda');
+    if (sim && !roda) {
+      roda = document.createElement('span');
+      roda.id = 'roda'; roda.className = 'girando';
+      btn.appendChild(roda);
+    } else if (!sim && roda) { roda.remove(); }
   }
 
-  function entrar(payload, guardar) {
-    if (guardar) {
-      try { localStorage.setItem(CHAVE, payload); } catch (e) { /* aba anônima: entra mesmo assim */ }
-    }
-    location.replace('../app/index.html#/p?d=' + payload);
+  /* Entra de fato: guarda os dados nesta aba e entrega ao portal do app.
+     sessionStorage e não a URL porque os dados do cliente não têm por que
+     ficar no histórico do navegador nem em log de servidor nenhum. */
+  function abrirPortal(resposta) {
+    try { sessionStorage.setItem(CHAVE_DADOS, JSON.stringify(resposta.dados)); }
+    catch (e) { mostrarErro('Seu navegador está bloqueando o armazenamento. Libere os dados de site e tente de novo.'); return; }
+    location.replace('../app/index.html#/p?sessao');
   }
 
-  /* Já entrou neste aparelho antes? Vai direto, sem pedir nada de novo. */
-  var salvo = null;
-  try { salvo = localStorage.getItem(CHAVE); } catch (e) { /* storage bloqueado */ }
-  if (salvo) { entrar(salvo, false); }
+  function pedir(corpo) {
+    var parar = null;
+    var controle = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    if (controle) parar = setTimeout(function () { controle.abort(); }, 20000);
+    return fetch('/api/portal/entrar', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(corpo),
+      signal: controle ? controle.signal : undefined
+    }).then(function (r) {
+      if (parar) clearTimeout(parar);
+      return r.json().then(function (j) { return { status: r.status, corpo: j }; });
+    }, function (e) {
+      if (parar) clearTimeout(parar);
+      throw e;
+    });
+  }
 
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
+  function mostrarBlocoLink() { blocoLink.classList.add('mostrar'); }
+
+  /* ---------- volta automática: o aparelho já entrou antes ---------- */
+  var token = ler(CHAVE_TOKEN);
+  if (token) {
+    ocupado(true);
+    pedir({ token: token }).then(function (r) {
+      if (r.status === 200) { abrirPortal(r.corpo); return; }
+      try { localStorage.removeItem(CHAVE_TOKEN); } catch (e) {}
+      ocupado(false);
+    }).catch(function () { ocupado(false); });
+  }
+
+  /* ---------- entrar com e-mail e senha ---------- */
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
     erro.hidden = true;
-    var payload = extrair(campo.value);
-    if (!payload) {
-      mostrarErro('Esse link não parece o do portal. Ele tem "#/p?d=" no meio — cole o endereço inteiro que a agência enviou.');
-      campo.focus();
-      return;
-    }
-    entrar(payload, true);
+    var e = email.value.trim(), s = senha.value;
+    if (!e || e.indexOf('@') < 1) { mostrarErro('Digite o seu e-mail completo.'); email.focus(); return; }
+    if (!s) { mostrarErro('Digite a sua senha.'); senha.focus(); return; }
+
+    ocupado(true);
+    pedir({ email: e, senha: s }).then(function (r) {
+      ocupado(false);
+      if (r.status === 200) {
+        guardar(CHAVE_TOKEN, r.corpo.token);
+        abrirPortal(r.corpo);
+        return;
+      }
+      if (r.corpo && r.corpo.codigo === 'NAO_CONFIGURADO') {
+        mostrarErro('O login por e-mail ainda não foi ativado. Use o link de acesso abaixo, ou fale com a agência.');
+        mostrarBlocoLink();
+        return;
+      }
+      mostrarErro((r.corpo && r.corpo.erro) || 'Não consegui entrar agora.', r.status === 401);
+      senha.select();
+    }).catch(function (err) {
+      ocupado(false);
+      if (err && err.name === 'AbortError') mostrarErro('O servidor demorou demais para responder. Tente de novo.');
+      else mostrarErro('Sem conexão com a internet — verifique a rede e tente de novo.');
+    });
   });
+
+  /* ---------- mostrar/esconder a senha ---------- */
+  var btnVer = document.getElementById('btn-ver');
+  var olhoAberto = document.getElementById('olho-aberto');
+  var olhoFechado = document.getElementById('olho-fechado');
+  btnVer.addEventListener('click', function () {
+    var vendo = senha.type === 'text';
+    senha.type = vendo ? 'password' : 'text';
+    olhoAberto.hidden = !vendo;
+    olhoFechado.hidden = vendo;
+    btnVer.setAttribute('aria-pressed', String(!vendo));
+    btnVer.setAttribute('aria-label', vendo ? 'Mostrar a senha' : 'Esconder a senha');
+    senha.focus();
+  });
+
+  /* ---------- caminho do link exclusivo ---------- */
+  document.getElementById('btn-alternar').addEventListener('click', function () {
+    mostrarBlocoLink();
+    document.getElementById('campo-link').focus();
+  });
+
+  function entrarPorLink() {
+    var campo = document.getElementById('campo-link');
+    var m = String(campo.value || '').match(/#\/p\?d=([A-Za-z0-9._~%-]+)/);
+    if (!m) { mostrarErro('Esse link não parece o do portal. Ele tem "#/p?d=" no meio — cole o endereço inteiro.'); campo.focus(); return; }
+    guardar(CHAVE_LINK, m[1]);
+    location.replace('../app/index.html#/p?d=' + m[1]);
+  }
+  document.getElementById('btn-link').addEventListener('click', entrarPorLink);
+  document.getElementById('campo-link').addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter') { ev.preventDefault(); entrarPorLink(); }
+  });
+
+  /* quem entrou por link antes continua entrando por ele */
+  var linkSalvo = ler(CHAVE_LINK);
+  if (!token && linkSalvo) { location.replace('../app/index.html#/p?d=' + linkSalvo); }
+
+  if (!token) email.focus();
 })();
 </script>
 </body>

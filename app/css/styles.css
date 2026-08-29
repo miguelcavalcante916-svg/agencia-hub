@@ -890,3 +890,7 @@ body.modo-portal { scroll-behavior: smooth; }
   .portal .progresso-preenchido, .funil-fill { width: var(--w, 0%); transition: none; }
   body.modo-portal { scroll-behavior: auto; }
 }
+
+/* ---------- acesso do cliente por e-mail e senha (tela Portal) ---------- */
+.grade-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .grade-form { grid-template-columns: 1fr; } }

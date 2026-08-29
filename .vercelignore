@@ -5,3 +5,5 @@ README.md
 
 # proposta de design (usa CDN do Tailwind, que a CSP bloqueia — não vai para o ar)
 proposta/
+
+# as funções serverless ficam em /api e são publicadas; nada a ignorar aqui
