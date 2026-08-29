@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cavalcante — Hero (proposta em Tailwind)</title>
+
+<!--
+  ====================================================================
+  ENTREGÁVEL 3 — Hero Section em HTML + Tailwind CSS
+  Agência Cavalcante · Soluções Digitais — Alexandria/RN
+  ====================================================================
+
+  ATENÇÃO, LEIA ANTES DE USAR:
+  Este arquivo é a PROPOSTA em Tailwind, do jeito que foi pedido — para
+  você entregar a qualquer dev ou colar em qualquer projeto React/Next.
+
+  O site que está no ar (agenciacavalcante.com) NÃO usa Tailwind de
+  propósito: ele roda com CSS próprio, sem build e sem nenhum script de
+  terceiros, porque a Content-Security-Policy do servidor bloqueia
+  script externo — e o CDN do Tailwind é exatamente isso. Colocar este
+  arquivo no ar como está faria a página carregar SEM ESTILO NENHUM.
+  A versão de produção tem o mesmo desenho, escrita em CSS nativo.
+
+  PALETA (medida em WCAG 2.1, âncora #16255F extraída da logo):
+    marinho-900 #060C1C  chão da página
+    marinho-800 #0A1730  faixa de seção
+    marinho-700 #16255F  o navy da logo — destaque
+    marinho-600 #1E3480  borda viva
+    grafite-900 #08090E  card recuado (cava no marinho)
+    grafite-800 #101219  card elevado
+    branco      #FFFFFF  H1/H2 — 19,5:1
+    azul        #4361EE  SÓ preenchimento (3,9:1 como texto = reprovado)
+    azul-claro  #8EA6FF  único azul legível como texto (8,4:1)
+-->
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          marinho: { 900: '#060C1C', 800: '#0A1730', 700: '#16255F', 600: '#1E3480' },
+          grafite: { 900: '#08090E', 800: '#101219' },
+          acento:  { DEFAULT: '#4361EE', vivo: '#5878FF', claro: '#8EA6FF' },
+        },
+        fontFamily: {
+          titulo: ['Urbanist', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          corpo:  ['Lexend', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+        letterSpacing: { apertado: '-0.03em' },
+        keyframes: {
+          entrar:  { '0%': { opacity: '0', transform: 'translateY(18px)' },
+                     '100%': { opacity: '1', transform: 'translateY(0)' } },
+          respira: { '0%,100%': { transform: 'translateY(0)' },
+                     '50%':     { transform: 'translateY(-8px)' } },
+          pulso:   { '0%':   { boxShadow: '0 0 0 0 rgba(67,97,238,.55)' },
+                     '100%': { boxShadow: '0 0 0 12px rgba(67,97,238,0)' } },
+          varre:   { '0%': { transform: 'translateX(-120%)' },
+                     '100%': { transform: 'translateX(220%)' } },
+        },
+        animation: {
+          entrar:  'entrar .8s cubic-bezier(.22,1,.36,1) backwards',
+          respira: 'respira 7s ease-in-out infinite',
+          pulso:   'pulso 2.4s ease-out infinite',
+          varre:   'varre 3.2s cubic-bezier(.4,0,.2,1) infinite',
+        },
+      },
+    },
+  }
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@700;800&family=Lexend:wght@400;500;600&display=swap">
+
+<style>
+  /* O tabuleiro: linhas de 1px que sugerem a grade sem desenhar um tabuleiro
+     literal. Fica atrás de tudo, com máscara radial para sumir nas bordas. */
+  .tabuleiro {
+    background-image:
+      linear-gradient(to right,  rgba(255,255,255,.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.045) 1px, transparent 1px);
+    background-size: 88px 88px;
+    -webkit-mask-image: radial-gradient(ellipse 78% 62% at 50% 32%, #000 35%, transparent 78%);
+            mask-image: radial-gradient(ellipse 78% 62% at 50% 32%, #000 35%, transparent 78%);
+  }
+  /* Movimento em L do cavalo: o único “efeito” narrativo da dobra.
+     Duas casas para cima, uma para o lado — e recomeça. Sem exagero. */
+  @keyframes salto-cavalo {
+    0%,  8%  { transform: translate(0, 0); }
+    22%, 36% { transform: translate(0, -88px); }
+    50%, 92% { transform: translate(88px, -88px); }
+    100%     { transform: translate(88px, -88px); }
+  }
+  .salto { animation: salto-cavalo 6.5s cubic-bezier(.68,-0.25,.27,1.25) infinite; }
+
+  /* Nada disso roda para quem pediu menos movimento no sistema. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .001ms !important;
+    }
+  }
+</style>
+</head>
+
+<body class="bg-marinho-900 font-corpo text-white antialiased">
+
+<!-- ============================ HERO ============================ -->
+<section id="inicio" class="relative isolate overflow-hidden bg-marinho-900">
+
+  <!-- camada 1: a grade do tabuleiro -->
+  <div class="tabuleiro pointer-events-none absolute inset-0 -z-20" aria-hidden="true"></div>
+
+  <!-- camada 2: o brilho do navy da logo, bem discreto -->
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div class="animate-respira absolute left-1/2 top-[-18rem] h-[42rem] w-[42rem] -translate-x-1/2 rounded-full bg-marinho-700/40 blur-[130px]"></div>
+    <div class="absolute bottom-[-16rem] right-[-8rem] h-[30rem] w-[30rem] rounded-full bg-acento/10 blur-[120px]"></div>
+  </div>
+
+  <!-- a peça que anda em L, sobre a grade -->
+  <div class="pointer-events-none absolute left-[8%] top-[26%] -z-10 hidden lg:block" aria-hidden="true">
+    <div class="salto">
+      <div class="h-[10px] w-[10px] rounded-full bg-acento-claro shadow-[0_0_22px_4px_rgba(142,166,255,.45)]"></div>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-[1200px] px-6 pb-24 pt-32 sm:pt-40 lg:pb-32">
+
+    <!-- ---------- coluna de texto ---------- -->
+    <div class="mx-auto max-w-3xl text-center">
+
+      <!-- selo: leva para o portal, que é o diferencial real e verificável -->
+      <a href="#portal"
+         class="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[.03] px-4 py-2 text-[13px] font-medium text-white/80
+                transition duration-300 hover:border-acento-claro/40 hover:bg-white/[.06] hover:text-white
+                animate-entrar [animation-delay:0ms]">
+        <span class="relative flex h-1.5 w-1.5">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-acento-claro opacity-70"></span>
+          <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-acento-claro"></span>
+        </span>
+        Cada cliente recebe um portal próprio para acompanhar tudo
+        <svg class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+
+      <!-- H1: branco puríssimo, Urbanist 800, tracking apertado -->
+      <h1 class="animate-entrar [animation-delay:70ms] mt-8 font-titulo text-[clamp(2.5rem,7vw,4.75rem)] font-extrabold leading-[1.02] tracking-apertado text-white">
+        Estratégia primeiro.
+        <span class="block text-white/45">O resto é consequência.</span>
+      </h1>
+
+      <p class="animate-entrar [animation-delay:150ms] mx-auto mt-7 max-w-[54ch] text-[clamp(1rem,1.6vw,1.15rem)] leading-relaxed text-white/70">
+        Marketing e produção audiovisual decididos juntos, no mesmo lugar —
+        para a sua empresa parar de disputar atenção no improviso.
+      </p>
+
+      <!-- CTAs: o primário é preenchimento sólido (branco sobre #4361EE = 5,02:1) -->
+      <div class="animate-entrar [animation-delay:220ms] mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20um%20diagn%C3%B3stico%20para%20a%20minha%20empresa."
+           class="group relative inline-flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-acento px-7 py-4 font-semibold text-white
+                  shadow-[0_10px_34px_-12px_rgba(67,97,238,.9)]
+                  transition-all duration-300 hover:-translate-y-0.5 hover:bg-acento-vivo hover:shadow-[0_16px_44px_-12px_rgba(67,97,238,1)]
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-acento-claro sm:w-auto">
+          <!-- brilho que varre o botão: 1 passada a cada 3,2s, quase imperceptível -->
+          <span class="animate-varre pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/25 to-transparent" aria-hidden="true"></span>
+          <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg>
+          Falar com a gente no WhatsApp
+        </a>
+
+        <a href="#servicos"
+           class="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/12 px-7 py-4 font-semibold text-white/90
+                  transition-all duration-300 hover:border-white/25 hover:bg-white/[.04] hover:text-white
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-acento-claro sm:w-auto">
+          Ver como trabalhamos
+          <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>
+        </a>
+      </div>
+
+      <!-- micro-garantias: prometem processo, não resultado (nada inventado) -->
+      <div class="animate-entrar [animation-delay:300ms] mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-white/50">
+        <span class="inline-flex items-center gap-2"><span class="h-1 w-1 rounded-full bg-acento-claro"></span>Resposta em até 24h</span>
+        <span class="inline-flex items-center gap-2"><span class="h-1 w-1 rounded-full bg-acento-claro"></span>Diagnóstico sem compromisso</span>
+        <span class="inline-flex items-center gap-2"><span class="h-1 w-1 rounded-full bg-acento-claro"></span>Alexandria/RN e região</span>
+      </div>
+    </div>
+
+    <!-- ---------- BENTO GRID: a prova do método, em blocos ---------- -->
+    <div class="animate-entrar [animation-delay:380ms] mt-20 grid grid-cols-1 gap-3 md:grid-cols-6 lg:grid-cols-12">
+
+      <!-- célula grande: o portal do cliente (o diferencial real) -->
+      <article class="group relative overflow-hidden rounded-2xl border border-white/10 bg-grafite-900 p-7 md:col-span-6 lg:col-span-7 lg:row-span-2
+                      transition-colors duration-500 hover:border-acento-claro/25">
+        <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-acento-claro/45 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+        <span class="font-titulo text-[11px] font-bold uppercase tracking-[.16em] text-acento-claro">Portal do cliente</span>
+        <h2 class="mt-3 font-titulo text-2xl font-extrabold tracking-apertado text-white">Você vê o projeto andando, não só o resultado no fim.</h2>
+        <p class="mt-3 max-w-[46ch] text-[15px] leading-relaxed text-white/65">
+          Link exclusivo no seu WhatsApp com o andamento de cada entrega, a agenda de gravações e as campanhas no ar.
+        </p>
+
+        <!-- mock do painel, em blocos -->
+        <div class="mt-7 rounded-xl border border-white/[.08] bg-marinho-900/70 p-4">
+          <div class="flex items-center gap-1.5 pb-3">
+            <i class="h-2 w-2 rounded-full bg-white/15"></i><i class="h-2 w-2 rounded-full bg-white/15"></i><i class="h-2 w-2 rounded-full bg-white/15"></i>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <div class="rounded-lg border border-white/[.07] bg-grafite-800 p-3">
+              <span class="block text-[10px] uppercase tracking-widest text-white/40">Em produção</span>
+              <b class="mt-1 block font-titulo text-xl text-white">—</b>
+            </div>
+            <div class="rounded-lg border border-white/[.07] bg-grafite-800 p-3">
+              <span class="block text-[10px] uppercase tracking-widest text-white/40">Esta semana</span>
+              <b class="mt-1 block font-titulo text-xl text-white">—</b>
+            </div>
+            <div class="rounded-lg border border-white/[.07] bg-grafite-800 p-3">
+              <span class="block text-[10px] uppercase tracking-widest text-white/40">Campanhas no ar</span>
+              <b class="mt-1 block font-titulo text-xl text-white">—</b>
+            </div>
+          </div>
+          <!-- os traços são de propósito: o painel só mostra número quando o
+               cliente for real. Nada de dado de exemplo no site. -->
+        </div>
+      </article>
+
+      <!-- célula: tráfego pago -->
+      <article class="group rounded-2xl border border-white/10 bg-grafite-900 p-6 transition-all duration-500 hover:border-white/20 hover:bg-grafite-800 md:col-span-3 lg:col-span-5">
+        <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-acento/30 bg-acento/10 transition-transform duration-500 group-hover:-translate-y-0.5">
+          <svg class="h-[18px] w-[18px] text-acento-claro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>
+        </div>
+        <h3 class="mt-4 font-titulo text-lg font-extrabold tracking-apertado text-white">Tráfego pago com hipótese antes do orçamento</h3>
+        <p class="mt-2 text-[14px] leading-relaxed text-white/60">Definimos o que estamos testando e por quê. Verba sem tese é aposta.</p>
+      </article>
+
+      <!-- célula: audiovisual -->
+      <article class="group rounded-2xl border border-white/10 bg-grafite-900 p-6 transition-all duration-500 hover:border-white/20 hover:bg-grafite-800 md:col-span-3 lg:col-span-5">
+        <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-acento/30 bg-acento/10 transition-transform duration-500 group-hover:-translate-y-0.5">
+          <svg class="h-[18px] w-[18px] text-acento-claro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"><rect x="2.5" y="6.5" width="13" height="11" rx="2.5"/><path d="M15.5 10.5 21.5 7v10l-6-3.5z"/></svg>
+        </div>
+        <h3 class="mt-4 font-titulo text-lg font-extrabold tracking-apertado text-white">Produção própria, do roteiro à cor</h3>
+        <p class="mt-2 text-[14px] leading-relaxed text-white/60">Equipe e equipamento nossos, drone incluso. Sem terceirizar o que é a entrega.</p>
+      </article>
+
+      <!-- faixa larga: a frase da marca, sobre o navy da logo -->
+      <article class="relative overflow-hidden rounded-2xl border border-marinho-600/50 bg-marinho-700 p-7 md:col-span-6 lg:col-span-12">
+        <div class="tabuleiro pointer-events-none absolute inset-0 opacity-60" aria-hidden="true"></div>
+        <p class="relative font-titulo text-[clamp(1.15rem,2.4vw,1.75rem)] font-extrabold tracking-apertado text-white">
+          Criatividade é estratégia. Estratégia é Cavalcante.
+        </p>
+        <p class="relative mt-1.5 text-[14px] text-white/60">Alexandria/RN · marketing e produtora audiovisual</p>
+      </article>
+    </div>
+  </div>
+
+  <!-- linha fina fechando a dobra -->
+  <div class="h-px w-full bg-gradient-to-r from-transparent via-white/12 to-transparent" aria-hidden="true"></div>
+</section>
+
+</body>
+</html>

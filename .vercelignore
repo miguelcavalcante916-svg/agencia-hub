@@ -2,3 +2,6 @@
 .claude/
 .mcp.json
 README.md
+
+# proposta de design (usa CDN do Tailwind, que a CSP bloqueia — não vai para o ar)
+proposta/

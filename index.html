@@ -10,7 +10,7 @@
 <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
 <link rel="shortcut icon" href="favicon.svg?v=2" type="image/svg+xml">
 <link rel="apple-touch-icon" href="app/img/icone-ios-180.png">
-<meta name="theme-color" content="#030409">
+<meta name="theme-color" content="#060C1C">
 <link rel="canonical" href="https://agenciacavalcante.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Agência Cavalcante">
@@ -58,15 +58,27 @@
     em "Meu site").
 */
 :root {
-  --fundo: #030409;
-  --tinta: #f2f5fc;
-  --tinta-2: rgba(242, 245, 252, .62);
-  --tinta-3: rgba(242, 245, 252, .58); /* medido: ~6,5:1 sobre o fundo — acima do mínimo de 4,5:1 */
+  /* Escala de azul-marinho ancorada no #16255F, extraído da logo oficial.
+     Todas as razões abaixo foram medidas em WCAG 2.1 sobre --marinho-900. */
+  --marinho-900: #060C1C;   /* chão da página */
+  --marinho-800: #0A1730;   /* faixa de seção */
+  --marinho-700: #16255F;   /* o navy da logo — blocos de destaque */
+  --marinho-600: #1E3480;   /* borda viva */
+  --grafite-900: #08090E;   /* card recuado: cava no marinho e cria profundidade */
+  --grafite-800: #101219;   /* card elevado (hover) */
+
+  --fundo: var(--marinho-900);
+  --tinta: #ffffff;                        /* 19,5:1 — H1/H2 em branco puríssimo */
+  --tinta-2: rgba(255, 255, 255, .72);     /* 10,1:1 */
+  --tinta-3: rgba(255, 255, 255, .60);     /*  7,3:1 */
+  /* #4361ee reprova como TEXTO em qualquer fundo desta paleta (3,5–4,0:1):
+     usar só como preenchimento. Branco sobre ele dá 5,02:1. O azul legível
+     como texto é o --azul-claro (6,2–8,6:1). */
   --azul: #4361ee;
   --azul-vivo: #5878ff;
   --azul-claro: #8ea6ff;
-  --borda: rgba(255, 255, 255, .08);
-  --cartao: rgba(255, 255, 255, .025);
+  --borda: rgba(255, 255, 255, .10);
+  --cartao: var(--grafite-900);
   --ease: cubic-bezier(.22, 1, .36, 1);
   /* Para trocar por Founders Grotesk (Klim, licença paga): baixe o webfont,
      adicione o @font-face e troque só o primeiro nome desta linha. */
@@ -196,7 +208,7 @@ section.grade { overflow: hidden; } /* os brilhos decorativos de 760px não pode
 
 /* ---------- header ---------- */
 header { position: fixed; top: 0; left: 0; right: 0; z-index: 50; transition: background .25s ease, border-color .25s ease; border-bottom: 1px solid transparent; }
-header.rolou { background: rgba(3, 4, 9, .78); backdrop-filter: blur(16px) saturate(160%); -webkit-backdrop-filter: blur(16px) saturate(160%); border-color: var(--borda); }
+header.rolou { background: rgba(6, 12, 28, .78); backdrop-filter: blur(16px) saturate(160%); -webkit-backdrop-filter: blur(16px) saturate(160%); border-color: var(--borda); }
 .header-linha { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 16px; }
 .logo { display: flex; align-items: center; gap: 11px; }
 .logo-icone {
@@ -228,7 +240,7 @@ nav.principal a.ativa::after { width: 100%; }
 .btn-menu svg { width: 24px; height: 24px; }
 .menu-mobile {
   position: absolute; top: 100%; left: 0; right: 0;
-  border-top: 1px solid var(--borda); background: rgba(3, 4, 9, .96); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--borda); background: rgba(6, 12, 28, .96); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   visibility: hidden; opacity: 0; transform: translateY(-8px);
   transition: opacity .22s var(--ease), transform .22s var(--ease), visibility 0s linear .22s;
   pointer-events: none;
@@ -294,7 +306,7 @@ nav.principal a.ativa::after { width: 100%; }
 .eclipse .planeta {
   position: absolute; top: 120px; left: 50%; transform: translateX(-50%);
   width: 1700px; height: 1700px; border-radius: 50%;
-  background: radial-gradient(circle at 50% 18%, #0a1230 0%, #05070f 22%, var(--fundo) 45%);
+  background: radial-gradient(circle at 50% 18%, var(--marinho-700) 0%, var(--marinho-800) 24%, var(--fundo) 48%);
   box-shadow:
     0 -3px 14px rgba(190, 205, 255, .9),
     0 -14px 44px rgba(88, 120, 255, .75),
@@ -312,13 +324,13 @@ nav.principal a.ativa::after { width: 100%; }
 .hero-painel { position: relative; z-index: 6; max-width: 900px; margin: -170px auto 0; padding: 0 22px; }
 .moldura {
   border-radius: 20px; border: 1px solid rgba(255, 255, 255, .09);
-  background: linear-gradient(180deg, #0a1024, #050914);
+  background: linear-gradient(180deg, var(--marinho-800), var(--marinho-900));
   box-shadow: 0 40px 90px -30px rgba(22, 37, 95, .65), inset 0 1px 0 rgba(255, 255, 255, .05);
   padding: 12px;
   transition: transform .35s var(--ease), box-shadow .35s ease;
   transform-style: preserve-3d; will-change: transform;
 }
-.mock { border-radius: 12px; background: #070b1a; border: 1px solid rgba(255,255,255,.05); overflow: hidden; text-align: left; }
+.mock { border-radius: 12px; background: var(--grafite-900); border: 1px solid rgba(255,255,255,.06); overflow: hidden; text-align: left; }
 .mock-topo { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,.06); }
 .mock-topo i { width: 9px; height: 9px; border-radius: 99px; background: rgba(255,255,255,.12); }
 .mock-topo i:first-child { background: rgba(67,97,238,.85); }
@@ -362,9 +374,9 @@ nav.principal a.ativa::after { width: 100%; }
 
 /* ---------- portfólio (Instagram) ---------- */
 .portfolio-grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 46px; }
-.portfolio-item { overflow: hidden; padding: 0; background: #070b1a; }
+.portfolio-item { overflow: hidden; padding: 0; background: var(--grafite-900); }
 .portfolio-item:active { transform: scale(.985); transition-duration: .09s; }
-.portfolio-item blockquote.instagram-media { margin: 0 !important; min-width: 0 !important; width: 100% !important; border: 0 !important; background: #070b1a !important; box-shadow: none !important; }
+.portfolio-item blockquote.instagram-media { margin: 0 !important; min-width: 0 !important; width: 100% !important; border: 0 !important; background: #08090E !important; box-shadow: none !important; }
 .portfolio-alt { display: flex; flex-direction: column; gap: 10px; padding: 26px 22px; min-height: 220px; justify-content: center; align-items: center; text-align: center; }
 .portfolio-alt .ig-icone { width: 52px; height: 52px; border-radius: 15px; background: linear-gradient(135deg, #16255f, var(--azul)); display: grid; place-items: center; }
 .portfolio-alt .ig-icone svg { width: 24px; height: 24px; color: #fff; }
@@ -504,7 +516,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   .ponto-pulso, .whats-flutuante, .tv-textura::after { animation: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  header.rolou, .menu-mobile { background: #05070f; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  header.rolou, .menu-mobile { background: var(--marinho-800); backdrop-filter: none; -webkit-backdrop-filter: none; }
   .selo { backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 
@@ -1093,7 +1105,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       '  float d1=max(dot(n,L1),0.);' +
       '  float d2=max(dot(n,L2),0.);' +
       '  float spec=pow(max(dot(reflect(-L1,n),vec3(0.,0.,1.)),0.),26.);' +
-      '  vec3 fundo=vec3(.008,.014,.045);' +
+      '  vec3 fundo=vec3(.024,.047,.110);' +
       '  vec3 azul=vec3(.26,.38,.93);' +
       '  vec3 claro=vec3(.6,.68,1.);' +
       '  vec3 cor=fundo+azul*d1*.5+azul*d2*.16+claro*spec*.85;' +
