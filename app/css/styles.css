@@ -15,7 +15,9 @@
   --accent: #5878ff;
   --accent-forte: #4361ee;
   --accent-2: #8ea6ff;
-  --fonte-titulo: "Bricolage Grotesque", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  /* Para trocar por Founders Grotesk (Klim, licença paga): baixe o webfont,
+     adicione o @font-face e troque só o primeiro nome desta linha. */
+  --fonte-titulo: "Urbanist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --verde: #4ade80;
   --vermelho: #f87171;
   --amarelo: #facc15;
@@ -36,7 +38,7 @@ html, body { height: 100%; }
 body {
   background: radial-gradient(900px 480px at 50% -160px, rgba(67, 97, 238, .16), transparent 70%) no-repeat, var(--bg);
   color: var(--texto);
-  font-family: "Instrument Sans", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Lexend", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 14.5px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
