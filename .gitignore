@@ -3,3 +3,7 @@ Thumbs.db
 *.log
 node_modules/
 __pycache__/
+
+# screenshots de teste não entram no repositório
+/*.png
+!og.png
