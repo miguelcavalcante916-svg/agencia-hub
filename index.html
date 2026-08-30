@@ -860,6 +860,61 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
   transition: background-size var(--t-amb) var(--e-slot);
 }
 .marcado.visivel { background-size: 100% 100%; }
+
+/* ============================================================
+   PROTOCOLO PRESO — a seção fica na tela enquanto as marchas avançam
+   É a ideia estrutural da referência (um palco que gruda por milhares de
+   pixels) feita com position: sticky puro, sem ScrollTrigger e sem pin.
+   Só no desktop: no celular, prender a tela por uma tela e meia dá a
+   sensação de que a página travou — lá as quatro marchas seguem empilhadas.
+   ============================================================ */
+@media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+  .protocolo-palco { height: 230vh; }
+  /* centraliza o conteúdo na tela enquanto está preso: ancorado no topo
+     sobrava um vazio grande embaixo durante toda a rolagem da seção */
+  .protocolo-preso {
+    position: sticky; top: 88px;
+    min-height: calc(100vh - 88px);
+    display: grid; align-content: center;
+    padding-bottom: 4vh;
+  }
+
+  /* No palco preso, a PROGRESSÃO é a entrada das marchas — então a animação
+     de revelação por scroll sai de cena aqui. Sem isso ela continuaria
+     dirigindo opacity, e animação vence declaração CSS: as quatro ficavam
+     todas na mesma opacidade e o destaque da marcha da vez não aparecia. */
+  .marchas > *, html.rolagem-fluida .marchas > * {
+    animation: none !important;
+    translate: none !important;
+    scale: none !important;
+  }
+  /* a marcha que ainda não chegou fica recuada; a da vez acende */
+  html .marchas.revelar-itens > .marcha {
+    opacity: .3;
+    transition: opacity var(--t-base) var(--e-slot),
+                border-color var(--t-base) ease,
+                translate var(--t-base) var(--e-sai),
+                background var(--t-base) ease,
+                box-shadow var(--t-base) ease;
+  }
+  html .marchas.revelar-itens > .marcha[data-cumprida] { opacity: .58; }
+  html .marchas.revelar-itens > .marcha[data-ativa] {
+    opacity: 1; translate: 0 -10px;
+    border-color: rgba(142, 166, 255, .55);
+    background: var(--grafite-800);
+    box-shadow: 0 26px 60px -30px rgba(67, 97, 238, .8);
+  }
+  html .marchas.revelar-itens > .marcha[data-ativa] .marcha-n { color: #dfe6ff; }
+
+  /* a linha deixa de "desenhar ao entrar" e passa a espelhar o avanço */
+  .marchas::before,
+  html.rolagem-fluida .marchas::before {
+    animation: none !important;
+    transform: scaleX(var(--avanco, 0));
+    transition: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .marcado { background-size: 100% 100% !important; transition: none !important; }
   .slot > span, .slot > span + span { translate: none !important; }
@@ -1172,7 +1227,8 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
      depois que chamar no WhatsApp. É também aqui que "diagnóstico
      gratuito", repetido 3 vezes no site e nunca definido, ganha formato. -->
 <section id="protocolo" class="grade">
-  <div class="container">
+  <div class="protocolo-palco">
+  <div class="container protocolo-preso">
     <div class="servicos-cab revelar">
       <div>
         <span class="olho">O protocolo</span>
@@ -1207,6 +1263,7 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
         <span class="marcha-prazo">todo mês</span>
       </li>
     </ol>
+  </div>
   </div>
 </section>
 
@@ -1742,6 +1799,49 @@ footer { border-top: 1px solid var(--borda); padding: 34px 0 44px; }
       if (!quadroLuz) { quadroLuz = true; requestAnimationFrame(pintarLuz); }
     }, { passive: true });
   }
+
+  /* Protocolo preso: uma leitura de layout por quadro, e só no desktop.
+     No celular a seção não gruda — prender a tela por uma tela e meia num
+     aparelho pequeno passa a sensação de que a página travou. */
+  (function () {
+    var palco = document.querySelector('.protocolo-palco');
+    var lista = document.querySelector('.marchas');
+    if (!palco || !lista || !podeMover) return;
+    if (!window.matchMedia('(min-width: 901px)').matches) return;
+
+    var marchas = Array.prototype.slice.call(lista.children);
+    var pendente = false, ultimaEtapa = -1, ultimoAvanco = -1;
+
+    function medir() {
+      pendente = false;
+      var r = palco.getBoundingClientRect();
+      var curso = r.height - window.innerHeight;
+      if (curso <= 0) return;
+      /* 0 quando o topo do palco encosta no topo da tela, 1 quando o fim
+         chega lá. O /0.86 faz a última marcha acender antes do fim, para
+         ela não passar voando na saída. */
+      var p = Math.min(Math.max(-r.top / curso, 0), 1);
+      var avanco = Math.min(p / 0.86, 1);
+
+      if (Math.abs(avanco - ultimoAvanco) > 0.004) {
+        ultimoAvanco = avanco;
+        lista.style.setProperty('--avanco', avanco.toFixed(4));
+      }
+      var etapa = Math.min(Math.floor(avanco * marchas.length), marchas.length - 1);
+      if (etapa !== ultimaEtapa) {
+        ultimaEtapa = etapa;
+        marchas.forEach(function (li, i) {
+          if (i === etapa) li.setAttribute('data-ativa', ''); else li.removeAttribute('data-ativa');
+          if (i < etapa) li.setAttribute('data-cumprida', ''); else li.removeAttribute('data-cumprida');
+        });
+      }
+    }
+
+    function agendar() { if (!pendente) { pendente = true; requestAnimationFrame(medir); } }
+    window.addEventListener('scroll', agendar, { passive: true });
+    window.addEventListener('resize', agendar, { passive: true });
+    medir();
+  })();
 
   /* Rolagem fluida: só liga onde animation-timeline: view() existe de fato.
      Sem suporte (Safari antigo, Firefox), o caminho do IntersectionObserver
