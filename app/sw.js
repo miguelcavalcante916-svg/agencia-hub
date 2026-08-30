@@ -2,13 +2,14 @@
    Estratégia: rede primeiro, cache como reserva — atualizações chegam na hora
    e o app continua abrindo sem internet. */
 
-var CACHE = 'agenciahub-v13';
+var CACHE = 'agenciahub-v14';
 
 var ARQUIVOS = [
   './',
   './index.html',
   './manifest.json',
   './css/styles.css',
+  './js/core/trava.js',
   './js/core/store.js',
   './js/core/ui.js',
   './js/views/dashboard.js',

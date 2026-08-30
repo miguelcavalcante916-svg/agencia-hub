@@ -44,6 +44,24 @@
       '<button class="btn btn-primario" type="submit">Salvar assistente</button></div></form>' +
       '</div>';
 
+    html += '<div class="card"><div class="card-titulo">' + AH.icons.config + 'Senha do painel</div>' +
+      '<p class="nota-rodape" style="margin-bottom:12px">A senha que tranca este painel. Ela é guardada com hash no servidor — ' +
+      'nem eu nem ninguém consegue ler depois. Se esquecer, dá para redefinir com a chave de administração.</p>' +
+      '<div class="grade-form">' +
+      '<label class="campo"><span class="campo-rotulo">Senha atual</span>' +
+      '<input class="input" id="painel-atual" type="password" autocomplete="off" placeholder="deixe em branco se ainda não tem"></label>' +
+      '<label class="campo"><span class="campo-rotulo">Senha nova (mínimo 6)</span>' +
+      '<input class="input" id="painel-nova" type="password" autocomplete="new-password"></label>' +
+      '<label class="campo"><span class="campo-rotulo">Chave de administração (só se esqueceu a atual)</span>' +
+      '<input class="input" id="painel-chave" type="password" autocomplete="off" placeholder="opcional"></label>' +
+      '</div>' +
+      '<div class="toolbar" style="margin-top:12px">' +
+      '<button class="btn btn-primario" id="painel-salvar">Salvar senha do painel</button>' +
+      '<button class="btn btn-ghost" id="painel-sair">Sair deste aparelho</button>' +
+      '</div>' +
+      '<p class="nota-rodape" id="painel-aviso" style="margin-top:10px"></p>' +
+      '</div>';
+
     html += '<div class="card"><div class="card-titulo">' + AH.icons.download + 'Backup dos dados</div>' +
       '<p class="nota-rodape" style="margin-bottom:12px">Tudo fica salvo <b>somente neste navegador</b>. Exporte um backup com frequência e guarde no seu Drive — assim você não perde nada se trocar de computador ou limpar o navegador.</p>' +
       '<div class="config-acoes">' +
@@ -62,6 +80,52 @@
     html += '</div>';
 
     el.innerHTML = html;
+
+    /* ---------- senha do painel ---------- */
+    (function () {
+      var aviso = el.querySelector('#painel-aviso');
+      function dizer(msg, ruim) {
+        aviso.innerHTML = msg;
+        aviso.style.color = ruim ? '#ffb9b9' : 'var(--texto-2)';
+      }
+      if (AH.avisoPainel) dizer(AH.icons.alerta + ' ' + AH.esc(AH.avisoPainel), true);
+
+      el.querySelector('#painel-salvar').addEventListener('click', function () {
+        var nova = el.querySelector('#painel-nova').value;
+        if (nova.length < 6) { dizer('A senha nova precisa ter pelo menos 6 caracteres.', true); return; }
+        dizer('Salvando…');
+        fetch('/api/agencia/senha', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            novaSenha: nova,
+            senhaAtual: el.querySelector('#painel-atual').value || undefined,
+            chave: el.querySelector('#painel-chave').value || undefined
+          })
+        }).then(function (r) {
+          return r.json().then(function (j) { return { status: r.status, corpo: j }; });
+        }).then(function (r) {
+          if (r.status === 200) {
+            el.querySelector('#painel-nova').value = '';
+            el.querySelector('#painel-atual').value = '';
+            el.querySelector('#painel-chave').value = '';
+            dizer(r.corpo.primeira
+              ? 'Senha definida. A partir de agora o painel pede ela para abrir.'
+              : 'Senha trocada. Os outros aparelhos vão pedir a nova no próximo acesso.');
+          } else if (r.corpo && r.corpo.codigo === 'NAO_CONFIGURADO') {
+            dizer('O banco ainda não foi criado na Vercel, então não dá para guardar a senha. Sem ele o painel fica aberto.', true);
+          } else {
+            dizer(AH.esc((r.corpo && r.corpo.erro) || ('Erro ' + r.status)), true);
+          }
+        }).catch(function () { dizer('Sem conexão com o servidor.', true); });
+      });
+
+      el.querySelector('#painel-sair').addEventListener('click', function () {
+        AH.ui.confirmar('Sair do painel neste aparelho? Ele vai pedir a senha de novo.', function () {
+          if (AH.esquecerPainel) AH.esquecerPainel();
+        }, 'Sair');
+      });
+    })();
 
     el.querySelector('#form-cfg').addEventListener('submit', function (e) {
       e.preventDefault();

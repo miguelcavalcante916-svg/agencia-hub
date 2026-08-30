@@ -21,6 +21,37 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+
+<!-- ======================= TRAVA DO PAINEL =======================
+     Cobre o app até a senha ser conferida NO SERVIDOR. A senha nunca
+     aparece neste arquivo nem em nenhum JavaScript que vai para o
+     navegador — só o hash dela existe, e ele fica no banco.
+
+     REGRA DE OURO: em qualquer dúvida, a trava ABRE. Servidor fora do ar,
+     banco não configurado, senha nunca definida — em todos esses casos
+     você entra, com aviso na tela. Ficar trancado para fora do próprio
+     sistema por causa de uma variável faltando seria muito pior do que o
+     risco que essa trava cobre.
+     ============================================================ -->
+<div class="trava" id="trava" hidden>
+  <form class="trava-caixa" id="trava-form">
+    <div class="trava-marca">
+      <div class="brand-logo" aria-hidden="true"></div>
+      <div>
+        <strong>AgênciaHub</strong>
+        <small>Painel da agência</small>
+      </div>
+    </div>
+    <label class="campo">
+      <span class="campo-rotulo">Senha do painel</span>
+      <input class="input" id="trava-senha" type="password" autocomplete="current-password" autofocus>
+    </label>
+    <button class="btn btn-primario" type="submit" id="trava-btn">Entrar no painel</button>
+    <p class="trava-erro" id="trava-erro" role="alert" hidden></p>
+    <p class="trava-nota" id="trava-nota"></p>
+  </form>
+</div>
+
   <div class="app" id="app">
     <aside class="sidebar" id="sidebar" aria-label="Menu principal">
       <div class="brand">
@@ -53,6 +84,7 @@
   <div id="toast-root" aria-live="polite"></div>
   <div id="print-root" class="print-root" aria-hidden="true"></div>
 
+  <script src="js/core/trava.js"></script>
   <script src="js/core/store.js"></script>
   <script src="js/core/ui.js"></script>
   <script src="js/views/dashboard.js"></script>

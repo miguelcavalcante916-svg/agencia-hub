@@ -894,3 +894,37 @@ body.modo-portal { scroll-behavior: smooth; }
 /* ---------- acesso do cliente por e-mail e senha (tela Portal) ---------- */
 .grade-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
 @media (max-width: 640px) { .grade-form { grid-template-columns: 1fr; } }
+
+/* ---------- trava do painel ---------- */
+.trava {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--bg, #060C1C);
+  display: grid; place-items: center; padding: 24px;
+}
+.trava[hidden] { display: none; }
+.trava::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.038) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.038) 1px, transparent 1px);
+  background-size: 84px 84px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 28%, transparent 76%);
+          mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 28%, transparent 76%);
+}
+.trava-caixa {
+  position: relative; width: 100%; max-width: 380px;
+  background: #08090E; border: 1px solid var(--linha, rgba(255,255,255,.1));
+  border-radius: 18px; padding: 32px 28px 26px;
+  display: grid; gap: 14px;
+}
+.trava-marca { display: flex; align-items: center; gap: 11px; margin-bottom: 6px; }
+.trava-marca strong { display: block; font-family: var(--fonte-titulo); font-size: 15px; font-weight: 800; }
+.trava-marca small { display: block; font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--texto-3); margin-top: 2px; }
+.trava-erro {
+  margin: 0; font-size: 13.5px; color: #ffb9b9;
+  background: rgba(248,113,113,.12); border: 1px solid rgba(248,113,113,.34);
+  border-radius: 9px; padding: 10px 12px;
+}
+.trava-erro[hidden] { display: none; }
+.trava-nota { margin: 0; font-size: 12.5px; color: var(--texto-3); line-height: 1.55; }
+.trava-nota b { color: var(--texto-2); }
