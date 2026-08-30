@@ -3,15 +3,19 @@
 :root {
   --ease: cubic-bezier(.22, 1, .36, 1);
   --ease-mola: cubic-bezier(.3, 1.35, .45, 1);
-  --bg: #030409;
-  --surface: #0a0e1b;
-  --surface-2: #121830;
-  --surface-3: #1a2340;
-  --border: rgba(255, 255, 255, .08);
-  --border-forte: rgba(255, 255, 255, .17);
-  --texto: #f2f5fc;
-  --texto-2: rgba(242, 245, 252, .62);
-  --texto-3: rgba(242, 245, 252, .58);
+  /* Mesma escala de azul-marinho do site, ancorada no #16255F da logo.
+     O app tinha ficado no quase-preto de antes enquanto o site migrou —
+     eram duas marcas diferentes lado a lado. */
+  --bg: #060C1C;          /* = --marinho-900 do site */
+  --surface: #0A1730;     /* = --marinho-800 */
+  --surface-2: #16255F;   /* = --marinho-700, o navy da logo */
+  --surface-3: #1E3480;   /* = --marinho-600 */
+  --grafite: #08090E;     /* card recuado, igual ao do site */
+  --border: rgba(255, 255, 255, .10);
+  --border-forte: rgba(255, 255, 255, .19);
+  --texto: #ffffff;                        /* branco puro, 19,5:1 */
+  --texto-2: rgba(255, 255, 255, .72);     /* 10,1:1 */
+  --texto-3: rgba(255, 255, 255, .60);     /*  7,3:1 */
   --accent: #5878ff;
   --accent-forte: #4361ee;
   --accent-2: #8ea6ff;
