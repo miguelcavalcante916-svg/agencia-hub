@@ -81,3 +81,11 @@ O módulo de clientes mantém busca, segmentos, tabela, contatos, status, projet
 A nova captura desktop confirma a troca real de composição: o hero deixou de ser centralizado e passou a usar headline editorial de grande escala à esquerda, espaço negativo intencional à direita e o painel do AgênciaHub ancorado como prova visual. A navegação continua limpa e as cores oficiais permanecem inalteradas.
 
 No mobile, o layout retorna de forma controlada para uma composição central, mantendo headline, descrição, CTAs, nota e painel dentro da largura útil. A mudança não é apenas de motion: tipografia, grid, ritmo de seções e destaque de portfólio/protocolo também foram reconfigurados por breakpoint.
+
+## 21st.dev layout v3
+
+A mini-navbar flutuante está funcionando no desktop e a seção de serviços ganhou composição editorial com índice vertical e quatro cartões horizontais. No mobile, o capítulo mantém o ritmo e a navegação, mas a headline de serviços quebra em uma palavra por linha; isso é visualmente excessivo e será corrigido ampliando a largura útil do título no breakpoint estreito.
+
+## Correção final do breakpoint
+
+A headline de serviços agora quebra em três linhas naturais no mobile (`Tudo que sua / marca precisa, / com um time só.`), eliminando a coluna estreita artificial. No desktop, a mini-navbar flutuante permanece equilibrada, o painel mockup continua ancorado à direita e o índice vertical de serviços funciona como assinatura editorial.

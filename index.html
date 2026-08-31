@@ -1258,6 +1258,86 @@ section { scroll-margin-top: 92px; }
 #ficha .ficha-bloco { min-height: 210px; }
 #contato .cta-final { padding-block: clamp(72px, 9vw, 118px); }
 #contato .cta-final .titulo { font-size: clamp(38px, 6.2vw, 76px); letter-spacing: -.06em; }
+
+/* Mini Navbar — referência 21st.dev adaptada à navegação existente. */
+header.rolou .header-linha {
+  width: min(calc(100% - 28px), 1140px);
+  height: 60px;
+  margin: 7px auto 0;
+  padding-inline: 18px;
+  border: 1px solid rgba(142,166,255,.17);
+  border-radius: 999px;
+  background: rgba(6,12,28,.82);
+  box-shadow: 0 18px 48px -26px rgba(0,0,0,.82), inset 0 1px 0 rgba(255,255,255,.06);
+}
+header.rolou nav.principal { gap: 18px; }
+header.rolou .header-acoes .entrar { display: none; }
+header.rolou .logo { transform: translateX(1px) scale(.96); transform-origin: left center; }
+
+/* Interactive Accordion — quatro frentes reais em um índice visual, sem esconder texto. */
+.servicos-grade { counter-reset: servico; }
+.servico { counter-increment: servico; }
+.servico::after {
+  content: "0" counter(servico);
+  position: absolute;
+  top: 23px;
+  right: 22px;
+  color: rgba(142,166,255,.45);
+  font-family: var(--fonte-titulo);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  transition: color .35s ease, transform .45s var(--e-snap);
+}
+.servico:hover::after { color: var(--azul-claro); transform: translateY(-2px); }
+.servico::before { z-index: 1; }
+.servico .olho { letter-spacing: .16em; }
+
+/* Project Showcase — o primeiro trabalho ganha uma presença maior, os demais
+   funcionam como uma lista compacta de entradas, sem inventar mídia. */
+.portfolio-grade { counter-reset: projeto; }
+.portfolio-item { counter-increment: projeto; }
+.portfolio-item::before {
+  content: "0" counter(projeto);
+  position: absolute;
+  top: 16px;
+  left: 17px;
+  z-index: 3;
+  color: rgba(255,255,255,.62);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  mix-blend-mode: screen;
+}
+.portfolio-convite { min-height: 280px; }
+.portfolio-convite::after {
+  content: "Cavalcante / trabalhos reais";
+  position: absolute;
+  right: 22px;
+  bottom: 20px;
+  color: rgba(142,166,255,.42);
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+/* How It Works Timeline — uma linha contínua e uma leitura por etapas. */
+.marchas .marcha { z-index: 2; }
+.marchas .marcha:nth-child(2) { transform: translateY(18px); }
+.marchas .marcha:nth-child(3) { transform: translateY(-2px); }
+.marchas .marcha:nth-child(4) { transform: translateY(24px); }
+.marchas .marcha:hover { transform: translateY(-4px) translateX(8px); }
+
+@media (max-width: 900px) {
+  header.rolou .header-linha { width: calc(100% - 20px); margin-top: 5px; }
+  .marchas .marcha:nth-child(n) { transform: none; }
+}
+@media (max-width: 700px) {
+  header.rolou .header-linha { border-radius: 18px; }
+  header.rolou .header-acoes .entrar { display: none; }
+  .portfolio-convite::after { position: static; margin-top: 4px; }
+}
+
 footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto; padding-inline: clamp(22px, 5vw, 64px); }
 
 @media (max-width: 1100px) {
@@ -1286,6 +1366,8 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
   .hero-painel { margin-top: -94px; padding-inline: 18px; }
   .hero-painel .moldura { padding: 8px; }
   .faixa { margin-top: 68px; }
+  #servicos .servicos-cab { grid-template-columns: 1fr; }
+  #servicos .servicos-cab .titulo { max-width: none; }
   .servicos-grade { grid-template-columns: 1fr; margin-top: 36px; }
   .servico { min-height: 222px; }
   .servico .olho { margin-top: 22px; }

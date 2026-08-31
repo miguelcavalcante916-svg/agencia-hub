@@ -30,3 +30,15 @@ O app manterá todos os módulos, hash routes, `localStorage`, PWA, modais, form
 ## Guardrails
 
 O motion será implementado principalmente com `transform`, `opacity`, `filter` limitado e propriedades de composição. Todas as superfícies respeitarão `prefers-reduced-motion: reduce`. O site não dependerá de hover para conteúdo, e o app não esconderá ações essenciais por hover. A implantação continuará sem build e sem novas dependências.
+
+## Referências de layout utilizadas
+
+| Área | Padrão de referência | Aplicação no `agencia-hub` |
+|---|---|---|
+| Hero | [Editorial Collage Hero](https://21st.dev/@felipemenezes098/components/hero-04) | Composição assimétrica: narrativa e CTA à esquerda, mockup real do AgênciaHub como prova à direita. |
+| Navegação | [Mini Navbar](https://21st.dev/@aghasisahakyan1/components/mini-navbar) | Header compacto e flutuante após o primeiro scroll, preservando logo, âncoras e CTA. |
+| Serviços | [Interactive Accordion](https://21st.dev/@jatin-yadav05/components/interactive-accordion) | Índice numerado, cartões com foco e expansão visual sem esconder os quatro serviços reais. |
+| Processo | [How It Works Timeline](https://21st.dev/@7ovr/components/how-it-works-2) | Linha de quatro marchas com sequência, offsets editoriais e versão linear no mobile. |
+| Portfólio | [Project Showcase](https://21st.dev/@jatin-yadav05/components/project-showcase) | Primeiro trabalho com maior presença e demais entradas em composição compacta, mantendo o fallback do Instagram. |
+| Fechamento | [Motion Footer](https://21st.dev/@easemize/components/motion-footer) | CTA tipográfico, faixa contínua e assinatura de marca sem importar GSAP ou aurora genérica. |
+| Fundo | [Elegant Dark Pattern](https://21st.dev/@jatin-yadav05/components/elegant-dark-pattern) | Grid, scanline e profundidade reaproveitados em CSS nativo, com marinho e azul oficiais. |
