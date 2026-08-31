@@ -48,3 +48,7 @@ O motion será implementado principalmente com `transform`, `opacity`, `filter` 
 No site, nove cenas respondem à posição do cursor de rolagem em um único `requestAnimationFrame`: conteúdo do hero, painel do AgênciaHub, título de serviços, showcase, timeline, preview do portal, pacotes, FAQ e CTA final. Cada cena recebe uma profundidade curta entre 11 e 30 pixels e usa `translate`, não `transform`, para coexistir com tilt, hover e transições de layout.
 
 No AgênciaHub, cards, tiles, tabelas, colunas do kanban e CTA do portal recebem uma variação ainda menor, limitada a 8 pixels. O listener é global, os elementos são registrados uma única vez por `WeakSet` e o movimento é desativado automaticamente quando o sistema sinaliza `prefers-reduced-motion: reduce`.
+
+## Campo 3D do hero
+
+O hero recebeu uma cena 3D nativa composta por uma esfera com iluminação radial, três anéis orbitais, um cubo com seis faces e uma etiqueta técnica. O conjunto usa `transform-style: preserve-3d`, `perspective`, `translateZ`, animação de órbita e inclinação interpolada pelo ponteiro; o horizonte WebGL existente continua como base ambiental. Em telas menores, a cena reduz escala/opacidade; com movimento reduzido, todas as rotações são congeladas em uma pose estável.

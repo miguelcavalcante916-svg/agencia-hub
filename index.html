@@ -1172,6 +1172,19 @@ section.grade:nth-of-type(odd)::before { animation-delay: -4s; }
 }
 [data-scroll-motion="slow"] { transition-duration: .36s; }
 [data-scroll-motion="still"] { transition: none; }
+
+/* Cada seção vira um capítulo ativo: o foco muda enquanto o visitante
+   atravessa a página, como em uma narrativa de produto, mas sem esconder
+   conteúdo nem depender de scroll-snap obrigatório. */
+main section[id] { --chapter-distance: 0; --chapter-progress: 0; }
+main section[id] > .container,
+main section[id] > .faixa-trilho,
+main section[id] > .hero-painel { transition: translate .34s cubic-bezier(.22,1,.36,1); }
+main section[data-scroll-focus="active"] > .container { translate: 0 calc(var(--chapter-distance) * -7px); }
+main section[data-scroll-focus="active"] .titulo-vivo .palavra:nth-child(odd) { rotate: -.45deg; }
+main section[data-scroll-focus="active"] .titulo-vivo .palavra:nth-child(even) { rotate: .45deg; }
+main section[data-scroll-focus="active"] .brilho { opacity: .98; }
+
 @media (prefers-reduced-motion: reduce) {
   [data-scroll-motion] { translate: none; will-change: auto; transition: none; }
 }
@@ -1354,6 +1367,105 @@ header.rolou .logo { transform: translateX(1px) scale(.96); transform-origin: le
 
 footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto; padding-inline: clamp(22px, 5vw, 64px); }
 
+/* Campo 3D Cavalcante — cena DOM sem imagem falsa ou biblioteca pesada. */
+.hero-3d-scene {
+  position: absolute;
+  z-index: 2;
+  top: 20%;
+  right: 1vw;
+  width: min(48vw, 650px);
+  aspect-ratio: 1;
+  pointer-events: none;
+  perspective: 1200px;
+  opacity: .82;
+}
+.hero-3d-cluster {
+  position: absolute;
+  inset: 8%;
+  transform-style: preserve-3d;
+  transform: rotateX(58deg) rotateZ(-18deg);
+  animation: campo-3d 16s ease-in-out infinite alternate;
+}
+.hero-3d-orb {
+  position: absolute;
+  left: 31%; top: 29%;
+  width: 38%; aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translateZ(54px);
+  transform-style: preserve-3d;
+  background: radial-gradient(circle at 30% 24%, #e8edff 0 2%, #8ea6ff 11%, #4361ee 34%, #1e3480 64%, #060c1c 100%);
+  box-shadow: -20px 22px 48px rgba(0,0,0,.42), 0 0 34px rgba(67,97,238,.46), inset -16px -22px 35px rgba(0,0,0,.38), inset 12px 8px 22px rgba(255,255,255,.18);
+}
+.hero-3d-orb::after {
+  content: "";
+  position: absolute; inset: 8%;
+  border-radius: 50%;
+  border: 1px solid rgba(219,228,255,.3);
+  transform: translateZ(18px);
+  box-shadow: inset 0 0 30px rgba(142,166,255,.34);
+}
+.hero-3d-orb span {
+  position: absolute; left: 17%; top: 14%; width: 21%; height: 12%;
+  border-radius: 50%; background: rgba(255,255,255,.68); filter: blur(7px);
+  transform: translateZ(22px) rotate(-24deg);
+}
+.hero-3d-ring {
+  position: absolute; left: 6%; top: 25%; width: 88%; height: 50%;
+  border: 1px solid rgba(142,166,255,.5);
+  border-radius: 50%;
+  transform-style: preserve-3d;
+  box-shadow: 0 0 20px rgba(67,97,238,.18), inset 0 0 16px rgba(142,166,255,.12);
+}
+.hero-3d-ring-a { transform: rotateX(72deg) rotateZ(6deg) translateZ(16px); animation: ring-a 12s linear infinite; }
+.hero-3d-ring-b { left: 18%; top: 7%; width: 64%; height: 86%; transform: rotateY(72deg) rotateZ(-20deg) translateZ(8px); border-color: rgba(88,120,255,.34); animation: ring-b 14s linear infinite reverse; }
+.hero-3d-ring-c { left: 20%; top: 16%; width: 60%; height: 68%; transform: rotateX(78deg) rotateZ(88deg) translateZ(-16px); border-color: rgba(219,228,255,.18); animation: ring-c 18s linear infinite; }
+.hero-3d-cube {
+  position: absolute; right: 11%; bottom: 12%; width: 92px; height: 92px;
+  transform-style: preserve-3d; transform: rotateX(-18deg) rotateY(24deg) translateZ(82px);
+  animation: cubo-3d 11s ease-in-out infinite alternate;
+}
+.hero-3d-cube i {
+  position: absolute; inset: 0; display: block;
+  border: 1px solid rgba(142,166,255,.5);
+  background: linear-gradient(135deg, rgba(67,97,238,.18), rgba(6,12,28,.4));
+  box-shadow: inset 0 0 22px rgba(142,166,255,.08), 0 0 18px rgba(67,97,238,.12);
+  backface-visibility: visible;
+}
+.hero-3d-cube i:nth-child(1) { transform: translateZ(46px); }
+.hero-3d-cube i:nth-child(2) { transform: rotateY(180deg) translateZ(46px); }
+.hero-3d-cube i:nth-child(3) { transform: rotateY(90deg) translateZ(46px); }
+.hero-3d-cube i:nth-child(4) { transform: rotateY(-90deg) translateZ(46px); }
+.hero-3d-cube i:nth-child(5) { transform: rotateX(90deg) translateZ(46px); }
+.hero-3d-cube i:nth-child(6) { transform: rotateX(-90deg) translateZ(46px); }
+.hero-3d-label {
+  position: absolute; right: 6%; top: 10%; color: rgba(219,228,255,.6);
+  font-size: 9px; letter-spacing: .24em; white-space: nowrap;
+  transform: translateZ(42px) rotateZ(18deg);
+}
+.hero-3d-scene::after {
+  content: ""; position: absolute; inset: 14%; border-radius: 50%;
+  background: radial-gradient(circle, rgba(67,97,238,.16), transparent 62%);
+  filter: blur(20px); transform: translateZ(-20px);
+}
+@keyframes campo-3d { from { transform: rotateX(calc(58deg + var(--scene-tilt-y, 0deg))) rotateZ(calc(-18deg + var(--scene-tilt-x, 0deg))) translate3d(-8px, calc(4px + var(--scroll-shift, 0px)), 0); } to { transform: rotateX(calc(63deg + var(--scene-tilt-y, 0deg))) rotateZ(calc(18deg + var(--scene-tilt-x, 0deg))) translate3d(10px, calc(-8px + var(--scroll-shift, 0px)), 22px); } }
+@keyframes ring-a { to { transform: rotateX(72deg) rotateZ(366deg) translateZ(16px); } }
+@keyframes ring-b { to { transform: rotateY(72deg) rotateZ(-380deg) translateZ(8px); } }
+@keyframes ring-c { to { transform: rotateX(78deg) rotateZ(448deg) translateZ(-16px); } }
+@keyframes cubo-3d { from { transform: rotateX(-18deg) rotateY(24deg) translateZ(76px); } to { transform: rotateX(26deg) rotateY(204deg) translateZ(96px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-3d-cluster, .hero-3d-ring-a, .hero-3d-ring-b, .hero-3d-ring-c, .hero-3d-cube { animation: none !important; }
+  .hero-3d-cluster { transform: rotateX(58deg) rotateZ(-18deg); }
+  .hero-3d-cube { transform: rotateX(-18deg) rotateY(24deg) translateZ(82px); }
+}
+@media (max-width: 900px) {
+  .hero-3d-scene { width: min(62vw, 470px); right: -9vw; top: 22%; opacity: .58; }
+}
+@media (max-width: 560px) {
+  .hero-3d-scene { width: 280px; right: -18vw; top: 13%; opacity: .36; }
+  .hero-3d-label { display: none; }
+}
+
 @media (max-width: 1100px) {
   .hero { padding-top: 136px; }
   .hero h1 { font-size: clamp(48px, 7.4vw, 76px); }
@@ -1507,6 +1619,19 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
     </div>
 
     <p class="prova revelar">Criatividade é estratégia. <span class="marcado">Estratégia é Cavalcante.</span></p>
+  </div>
+
+  <div class="hero-3d-scene" aria-hidden="true">
+    <div class="hero-3d-cluster">
+      <div class="hero-3d-orb"><span></span></div>
+      <div class="hero-3d-ring hero-3d-ring-a"></div>
+      <div class="hero-3d-ring hero-3d-ring-b"></div>
+      <div class="hero-3d-ring hero-3d-ring-c"></div>
+      <div class="hero-3d-cube">
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <span class="hero-3d-label">CAVALCANTE / 3D FIELD</span>
+    </div>
   </div>
 
   <div class="faixa" aria-hidden="true">
@@ -2054,6 +2179,28 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
     ligar();
   })();
 
+  /* ---------- 3D campo interativo ---------- */
+  (function () {
+    var cena = document.querySelector('.hero-3d-cluster');
+    if (!cena || !podeMover || !temHoverFino) return;
+    var alvoX = 0, alvoY = 0, atualX = 0, atualY = 0, quadro = false;
+    function limitar(v, min, max) { return Math.min(Math.max(v, min), max); }
+    function pintar() {
+      quadro = false;
+      atualX += (alvoX - atualX) * .08;
+      atualY += (alvoY - atualY) * .08;
+      cena.style.setProperty('--scene-tilt-x', atualX.toFixed(2) + 'deg');
+      cena.style.setProperty('--scene-tilt-y', atualY.toFixed(2) + 'deg');
+      if (Math.abs(alvoX - atualX) > .05 || Math.abs(alvoY - atualY) > .05) requestAnimationFrame(pintar);
+    }
+    window.addEventListener('pointermove', function (event) {
+      alvoX = limitar((event.clientX / window.innerWidth - .5) * 11, -5.5, 5.5);
+      alvoY = limitar((event.clientY / window.innerHeight - .5) * -9, -4.5, 4.5);
+      if (!quadro) { quadro = true; requestAnimationFrame(pintar); }
+    }, { passive: true });
+    window.addEventListener('blur', function () { alvoX = 0; alvoY = 0; if (!quadro) { quadro = true; requestAnimationFrame(pintar); } });
+  })();
+
   /* Títulos vivos em TODA seção. Antes a regra pulava tudo que estivesse
      dentro de .revelar — que é quase todo título do site —, então o efeito
      existia no código e não aparecia em lugar nenhum. */
@@ -2307,6 +2454,7 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
     var cenas = [
       ['.hero .conteudo-hero', '.hero', -16, 'slow'],
       ['.hero-painel', '.hero', -30, 'slow'],
+      ['.hero-3d-cluster', '.hero', 22, 'slow'],
       ['#servicos .titulo', '#servicos', 14, 'slow'],
       ['#portfolio .portfolio-grade', '#portfolio', -20, 'slow'],
       ['#protocolo .marchas', '#protocolo', 18, 'slow'],
@@ -2322,6 +2470,7 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
       return { alvo: alvo, ancora: ancora, profundidade: item[2] };
     }).filter(Boolean);
 
+    var capitulos = Array.prototype.slice.call(document.querySelectorAll('main section[id]'));
     var pendente = false, ultimoScroll = -1;
     function limitar(v, min, max) { return Math.min(Math.max(v, min), max); }
     function pintar() {
@@ -2333,6 +2482,16 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
         var progresso = limitar((centro - r.top) / faixa, 0, 1);
         var deslocamento = (progresso - .5) * cena.profundidade;
         cena.alvo.style.setProperty('--scroll-shift', deslocamento.toFixed(2) + 'px');
+      });
+      capitulos.forEach(function (capitulo) {
+        var r = capitulo.getBoundingClientRect();
+        var centroCapitulo = r.top + r.height / 2;
+        var distancia = limitar((centroCapitulo - centro) / Math.max(window.innerHeight, 1), -1, 1);
+        var progresso = limitar(1 - Math.abs(distancia), 0, 1);
+        capitulo.style.setProperty('--chapter-distance', distancia.toFixed(3));
+        capitulo.style.setProperty('--chapter-progress', progresso.toFixed(3));
+        if (progresso > .34) capitulo.setAttribute('data-scroll-focus', 'active');
+        else capitulo.removeAttribute('data-scroll-focus');
       });
     }
     function agendar() {

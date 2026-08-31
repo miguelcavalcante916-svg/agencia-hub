@@ -97,3 +97,11 @@ As capturas em `scrollY=0` e `scrollY=1200` confirmam o novo comportamento: o he
 ## Scroll no AgênciaHub
 
 A captura em rolagem do dashboard mantém todos os cards, gráfico, agenda, prazos e atalhos alinhados. O deslocamento aplicado é curto e independente do `transform`, então melhora a sensação de profundidade sem deslocar o conteúdo de trabalho nem interferir em ações críticas.
+
+## Refinamento cinematográfico das referências
+
+A primeira dobra mantém a presença da marca com headline e painel em camadas. Durante a rolagem, o capítulo de serviços permanece legível enquanto a navegação contextualiza o ponto da jornada; o portfólio entra como novo capítulo editorial, com foco progressivo e prova real preservada.
+
+## Campo 3D do hero
+
+A cena 3D agora é visível no hero com esfera sombreada, três anéis orbitais, cubo com seis faces e rótulo técnico discreto. No desktop, ela ocupa o espaço narrativo à direita e permanece atrás do painel do AgênciaHub; no mobile, reduz opacidade e escala para não disputar com a headline. A cena responde ao ponteiro em dois eixos, acompanha o scroll por profundidade e fica estática no modo de movimento reduzido.
