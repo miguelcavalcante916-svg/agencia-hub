@@ -1161,6 +1161,143 @@ section.grade:nth-of-type(odd)::before { animation-delay: -4s; }
   .hero::after, .hero .gradiente, section.grade::before, .brilho, .cta-final::before { animation: none !important; }
   .logo:hover, .cartao:hover, .marcha:hover, .faq-item:hover, .rodape-links a:hover { transform: none; }
 }
+
+/* ============================================================
+   Cavalcante structural redesign — layout editorial
+   A mudança aqui é de composição, não apenas de efeito:
+   mais contraste de escala, assimetria controlada e capítulos
+   com funções visuais diferentes.
+   ============================================================ */
+:root { --largura-editorial: 1320px; }
+section { scroll-margin-top: 92px; }
+.hero {
+  padding-top: 158px;
+  text-align: left;
+}
+.hero .conteudo-hero {
+  max-width: var(--largura-editorial);
+  padding-inline: clamp(22px, 5vw, 64px);
+  margin-inline: auto;
+  text-align: left;
+}
+.hero h1 {
+  max-width: 10ch;
+  font-size: clamp(50px, 7.2vw, 92px);
+  letter-spacing: -.055em;
+  text-wrap: balance;
+}
+.hero .sub { max-width: 39rem; margin-left: 0; margin-right: 0; text-wrap: pretty; }
+.hero-ctas { justify-content: flex-start; }
+.hero-nota { justify-content: flex-start; }
+.hero-painel {
+  width: min(55vw, 650px);
+  max-width: none;
+  margin: -238px max(22px, calc((100vw - var(--largura-editorial)) / 2)) 0 auto;
+  padding: 0;
+}
+.hero-painel .moldura { padding: 14px; }
+.hero-painel .prova { text-align: left; padding-left: 4px; }
+.faixa { margin-top: 96px; }
+
+#servicos .container, #portfolio .container, #protocolo .container,
+#portal-secao .container, #pacotes .container, #faq .container,
+#ficha .container, #contato .container { max-width: var(--largura-editorial); }
+#servicos .servicos-cab { grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr); }
+#servicos .servicos-cab::after {
+  content: "04 frentes · 01 fluxo";
+  align-self: end;
+  justify-self: end;
+  color: var(--tinta-3);
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  padding-bottom: 3px;
+}
+.servicos-grade {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 54px;
+}
+.servico {
+  min-height: 296px;
+  padding: 26px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.servico h3 { font-size: clamp(18px, 1.65vw, 23px); max-width: 17ch; }
+.servico .olho { margin-top: auto; order: 2; }
+.servico h3 { order: 3; }
+.servico-icone { order: 1; }
+
+#portfolio .servicos-cab { align-items: end; }
+#portfolio .servicos-cab > p { max-width: 35ch; justify-self: end; text-wrap: pretty; }
+.portfolio-grade:not(.portfolio-vazio) {
+  grid-template-columns: minmax(0, 1.2fr) repeat(2, minmax(0, .9fr));
+  grid-auto-rows: minmax(190px, auto);
+}
+.portfolio-grade:not(.portfolio-vazio) .portfolio-item:first-child { grid-row: span 2; min-height: 410px; }
+.portfolio-grade:not(.portfolio-vazio) .portfolio-item:first-child .portfolio-alt { min-height: 410px; }
+
+#protocolo { background: linear-gradient(180deg, rgba(6,12,28,0), rgba(10,23,48,.24) 50%, rgba(6,12,28,0)); }
+#protocolo .servicos-cab { grid-template-columns: minmax(0, 1.15fr) minmax(260px, .85fr); }
+.marchas { gap: 12px; }
+.marcha { min-height: 250px; }
+#portal-secao { background: linear-gradient(180deg, rgba(10,23,48,.2), rgba(6,12,28,0) 82%); }
+#portal-secao .dividida { gap: clamp(42px, 7vw, 104px); }
+#portal-secao .moldura { transform: rotate(1deg); }
+#portal-secao .moldura:hover { transform: rotate(0deg) translateY(-6px); }
+#pacotes .sub { max-width: 46ch; }
+#pacotes .pacotes-grade { max-width: 1120px; margin-left: auto; margin-right: auto; }
+#pacotes .pacote.destaque { transform: translateY(-12px); }
+#faq .faq-grade { align-items: start; gap: clamp(48px, 8vw, 120px); }
+#faq .faq-grade > :first-child { position: sticky; top: 120px; }
+#ficha .ficha-grade { gap: 12px; }
+#ficha .ficha-bloco { min-height: 210px; }
+#contato .cta-final { padding-block: clamp(72px, 9vw, 118px); }
+#contato .cta-final .titulo { font-size: clamp(38px, 6.2vw, 76px); letter-spacing: -.06em; }
+footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto; padding-inline: clamp(22px, 5vw, 64px); }
+
+@media (max-width: 1100px) {
+  .hero { padding-top: 136px; }
+  .hero h1 { font-size: clamp(48px, 7.4vw, 76px); }
+  .hero-painel { width: min(64vw, 650px); margin-top: -188px; }
+  .servicos-grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .servico { min-height: 260px; }
+  #servicos .servicos-cab::after { display: none; }
+}
+@media (max-width: 900px) {
+  .hero { text-align: center; }
+  .hero .conteudo-hero { text-align: center; }
+  .hero h1 { max-width: 12ch; margin-inline: auto; }
+  .hero .sub { margin-inline: auto; }
+  .hero-ctas, .hero-nota { justify-content: center; }
+  .hero-painel { width: auto; max-width: 900px; margin: -150px auto 0; padding-inline: 22px; }
+  .hero-painel .prova { text-align: center; padding-left: 0; }
+  #faq .faq-grade > :first-child { position: static; }
+  #portal-secao .moldura { transform: none; }
+}
+@media (max-width: 560px) {
+  .hero { padding-top: 116px; }
+  .hero .conteudo-hero { padding-inline: 18px; }
+  .hero h1 { font-size: clamp(43px, 12vw, 58px); letter-spacing: -.045em; }
+  .hero-painel { margin-top: -94px; padding-inline: 18px; }
+  .hero-painel .moldura { padding: 8px; }
+  .faixa { margin-top: 68px; }
+  .servicos-grade { grid-template-columns: 1fr; margin-top: 36px; }
+  .servico { min-height: 222px; }
+  .servico .olho { margin-top: 22px; }
+  #portfolio .servicos-cab, #protocolo .servicos-cab { grid-template-columns: 1fr; }
+  #portfolio .servicos-cab > p { justify-self: start; margin-top: 16px; }
+  .portfolio-grade:not(.portfolio-vazio) { grid-template-columns: 1fr; }
+  .portfolio-grade:not(.portfolio-vazio) .portfolio-item:first-child { grid-row: auto; min-height: 220px; }
+  .portfolio-grade:not(.portfolio-vazio) .portfolio-item:first-child .portfolio-alt { min-height: 220px; }
+  #pacotes .pacote.destaque { transform: none; }
+  #faq .faq-grade { gap: 24px; }
+  #contato .cta-final { padding-inline: 20px; }
+}
 </style>
 </head>
 <body>

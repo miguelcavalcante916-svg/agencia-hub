@@ -75,3 +75,9 @@ As capturas reduzidas confirmam que o site mobile mantém logo, hero, headline, 
 O protocolo do site mantém a metáfora de quatro marchas com linha horizontal, headline forte e cards equilibrados; sem movimento, a ordem continua clara e o CTA flutuante não encobre conteúdo essencial.
 
 O módulo de clientes mantém busca, segmentos, tabela, contatos, status, projetos e ações por linha com contraste suficiente. A nova camada de cartões/tabelas não alterou a densidade funcional do painel.
+
+## Redesign estrutural v2
+
+A nova captura desktop confirma a troca real de composição: o hero deixou de ser centralizado e passou a usar headline editorial de grande escala à esquerda, espaço negativo intencional à direita e o painel do AgênciaHub ancorado como prova visual. A navegação continua limpa e as cores oficiais permanecem inalteradas.
+
+No mobile, o layout retorna de forma controlada para uma composição central, mantendo headline, descrição, CTAs, nota e painel dentro da largura útil. A mudança não é apenas de motion: tipografia, grid, ritmo de seções e destaque de portfólio/protocolo também foram reconfigurados por breakpoint.
