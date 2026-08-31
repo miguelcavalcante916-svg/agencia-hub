@@ -1455,8 +1455,10 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
 
 @media (prefers-reduced-motion: reduce) {
   .hero-3d-cluster, .hero-3d-ring-a, .hero-3d-ring-b, .hero-3d-ring-c, .hero-3d-cube { animation: none !important; }
-  .hero-3d-cluster { transform: rotateX(58deg) rotateZ(-18deg); }
+  .hero-3d-cluster { transform: rotateX(58deg) rotateZ(-18deg); rotate: none; }
   .hero-3d-cube { transform: rotateX(-18deg) rotateY(24deg) translateZ(82px); }
+  .section-3d-object { rotate: none; translate: none; }
+  .section-3d-section[data-scroll-focus="active"] .section-3d-object { opacity: .22; }
 }
 @media (max-width: 900px) {
   .hero-3d-scene { width: min(62vw, 470px); right: -9vw; top: 22%; opacity: .58; }
@@ -1471,7 +1473,7 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
 .section-3d-section > .container,
 .section-3d-section > .protocolo-palco,
 .section-3d-section > .brilho { position: relative; z-index: 1; }
-.section-3d-object { position: absolute; z-index: 0; pointer-events: none; transform-style: preserve-3d; will-change: transform, translate; translate: 0 var(--scroll-shift, 0px); transition: translate .28s cubic-bezier(.22,1,.36,1); opacity: .66; }
+.section-3d-object { position: absolute; z-index: 0; pointer-events: none; transform-style: preserve-3d; will-change: transform, translate, rotate; translate: 0 var(--scroll-shift, 0px); rotate: calc(var(--cursor-roll, 0deg) + var(--scroll-roll, 0deg)); transition: translate .28s cubic-bezier(.22,1,.36,1), rotate .42s cubic-bezier(.22,1,.36,1); opacity: .66; }
 .service-3d-orbit { right: 5%; top: 12%; width: 230px; height: 230px; perspective: 900px; transform: rotateX(58deg) rotateZ(-22deg); }
 .service-3d-core { position: absolute; left: 35%; top: 35%; width: 30%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 28% 24%, #e8edff, #8ea6ff 13%, #4361ee 42%, #07102c 78%); box-shadow: 0 0 42px rgba(67,97,238,.46), inset -15px -18px 24px rgba(0,0,0,.36); transform: translateZ(38px); }
 .service-3d-ring { position: absolute; inset: 12%; border: 1px solid rgba(142,166,255,.48); border-radius: 50%; transform-style: preserve-3d; }
@@ -2552,6 +2554,9 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
         var progresso = limitar((centro - r.top) / faixa, 0, 1);
         var deslocamento = (progresso - .5) * cena.profundidade;
         cena.alvo.style.setProperty('--scroll-shift', deslocamento.toFixed(2) + 'px');
+        if (cena.alvo.classList.contains('section-3d-object')) {
+          cena.alvo.style.setProperty('--scroll-roll', ((progresso - .5) * cena.profundidade * .22).toFixed(2) + 'deg');
+        }
       });
       capitulos.forEach(function (capitulo) {
         var r = capitulo.getBoundingClientRect();
@@ -2570,6 +2575,32 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
     window.addEventListener('scroll', agendar, { passive: true });
     window.addEventListener('resize', agendar, { passive: true });
     pintar();
+  })();
+
+  (function () {
+    var objetos3d = Array.prototype.slice.call(document.querySelectorAll('.section-3d-object, .hero-3d-cluster'));
+    if (!objetos3d.length || !podeMover || !temHoverFino) return;
+    var pendente = false, ultimo = null;
+    function limitar(v, min, max) { return Math.min(Math.max(v, min), max); }
+    function pintar() {
+      pendente = false;
+      if (!ultimo) return;
+      objetos3d.forEach(function (objeto) {
+        var r = objeto.getBoundingClientRect();
+        if (r.bottom < -120 || r.top > window.innerHeight + 120) return;
+        var centro = r.left + r.width / 2;
+        var distancia = limitar((ultimo.clientX - centro) / Math.max(window.innerWidth, 1), -1, 1);
+        objeto.style.setProperty('--cursor-roll', (distancia * 3.5).toFixed(2) + 'deg');
+      });
+    }
+    document.addEventListener('pointermove', function (event) {
+      ultimo = event;
+      if (!pendente) { pendente = true; requestAnimationFrame(pintar); }
+    }, { passive: true });
+    window.addEventListener('blur', function () {
+      objetos3d.forEach(function (objeto) { objeto.style.setProperty('--cursor-roll', '0deg'); });
+      ultimo = null;
+    });
   })();
 
   (function () {
