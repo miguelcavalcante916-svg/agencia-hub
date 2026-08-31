@@ -24,6 +24,7 @@
   ];
 
   var rotaAtual = null;
+  var motionBound = typeof WeakSet !== 'undefined' ? new WeakSet() : null;
 
   function contadores() {
     return {
@@ -57,6 +58,24 @@
   function fecharSidebarMobile() {
     document.getElementById('sidebar').classList.remove('aberta');
     document.getElementById('sidebar-backdrop').hidden = true;
+  }
+
+  function ligarMotionView(raiz) {
+    if (!raiz || !motionBound || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    var alvos = raiz.querySelectorAll('.card, .tile, .tabela-wrap, .kanban-col, .portal-cta');
+    alvos.forEach(function (el) {
+      if (motionBound.has(el)) return;
+      motionBound.add(el);
+      el.addEventListener('pointermove', function (event) {
+        var r = el.getBoundingClientRect();
+        el.style.setProperty('--card-x', ((event.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+        el.style.setProperty('--card-y', ((event.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+      }, { passive: true });
+      el.addEventListener('pointerleave', function () {
+        el.style.removeProperty('--card-x');
+        el.style.removeProperty('--card-y');
+      });
+    });
   }
 
   function navegar() {
@@ -98,6 +117,7 @@
     el.classList.remove('entrando');
     void el.offsetWidth;
     el.classList.add('entrando');
+    ligarMotionView(el);
   }
 
   // Qual tela está aberta agora (usado por telas que respondem depois de um tempo)
@@ -106,8 +126,10 @@
   // Rerenderiza a tela atual (chamado após qualquer alteração de dados)
   AH.rerender = function () {
     if (!rotaAtual) return;
-    AH.views[rotaAtual.view].render(document.getElementById('view'));
+    var raiz = document.getElementById('view');
+    AH.views[rotaAtual.view].render(raiz);
     montarNav();
+    ligarMotionView(raiz);
   };
 
   function iniciar() {

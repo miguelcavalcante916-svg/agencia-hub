@@ -932,3 +932,205 @@ body.modo-portal { scroll-behavior: smooth; }
 .trava-erro[hidden] { display: none; }
 .trava-nota { margin: 0; font-size: 12.5px; color: var(--texto-3); line-height: 1.55; }
 .trava-nota b { color: var(--texto-2); }
+
+
+/* ============================================================
+   Cavalcante motion layer — AgênciaHub
+   Movimento funcional para um painel de trabalho mais claro,
+   responsivo e conectado à identidade do site.
+   ============================================================ */
+body:not(.modo-portal)::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .48;
+  background-image:
+    linear-gradient(rgba(88,120,255,.032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(88,120,255,.032) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 92% 80% at 50% 0%, #000 0%, transparent 82%);
+  animation: hub-grid-drift 18s linear infinite;
+}
+.app, .trava { position: relative; z-index: 1; }
+
+.sidebar {
+  isolation: isolate;
+  background:
+    radial-gradient(240px 480px at 0% 10%, rgba(67,97,238,.12), transparent 70%),
+    linear-gradient(180deg, #0a1024 0%, #050914 100%);
+}
+.sidebar::before {
+  content: "";
+  position: absolute;
+  inset: 18% auto 18% -1px;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, var(--accent-2), var(--accent), transparent);
+  opacity: .68;
+  transform-origin: 50% 0;
+  animation: hub-sidebar-scan 7s ease-in-out infinite;
+}
+.sidebar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(255,255,255,.04), transparent 20%, transparent 72%, rgba(88,120,255,.04));
+  opacity: .45;
+}
+.brand, .nav, .sidebar-footer { position: relative; z-index: 1; }
+.brand { transition: transform .45s var(--ease), filter .45s ease; }
+.brand:hover { transform: translateX(3px); filter: drop-shadow(0 0 18px rgba(88,120,255,.25)); }
+.brand-logo::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border: 1px solid rgba(88,120,255,.28);
+  border-radius: 10px;
+  opacity: 0;
+  transform: scale(.72);
+  transition: opacity .35s ease, transform .55s var(--ease);
+}
+.brand:hover .brand-logo::before { opacity: 1; transform: scale(1); }
+
+.nav-item { position: relative; overflow: hidden; }
+.nav-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  border-radius: 99px;
+  background: var(--accent-2);
+  box-shadow: 0 0 14px rgba(142,166,255,.72);
+  opacity: 0;
+  transform: scaleY(.2);
+  transition: opacity .3s ease, transform .45s var(--ease);
+}
+.nav-item.ativo::before { opacity: 1; transform: scaleY(1); }
+.nav-item.ativo { box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 28px -20px rgba(67,97,238,.7); }
+.nav-item .nav-cont { transition: transform .35s var(--ease), background .35s ease; }
+.nav-item:hover .nav-cont { transform: scale(1.08); background: var(--surface-3); }
+
+.main { position: relative; }
+.main::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(56vw, 820px);
+  height: 360px;
+  pointer-events: none;
+  background: radial-gradient(ellipse at top right, rgba(67,97,238,.11), transparent 68%);
+  opacity: .7;
+}
+.topbar { isolation: isolate; }
+.topbar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2), transparent 72%);
+  opacity: .45;
+  transform-origin: 0 50%;
+  transform: scaleX(.12);
+  transition: transform .8s var(--ease);
+}
+.topbar:focus-within::after, .topbar:hover::after { transform: scaleX(1); }
+.page-title { text-shadow: 0 10px 30px rgba(0,0,0,.28); }
+
+.view > * { will-change: transform, opacity; }
+.view.entrando > * { animation: hub-view-in .68s var(--ease) both; }
+.view.entrando > *:nth-child(2) { animation-delay: .06s; }
+.view.entrando > *:nth-child(3) { animation-delay: .11s; }
+.view.entrando > *:nth-child(4) { animation-delay: .16s; }
+.view.entrando > *:nth-child(5) { animation-delay: .21s; }
+.view.entrando > *:nth-child(n+6) { animation-delay: .25s; }
+
+.card, .tile, .tabela-wrap, .kanban-col, .chat-entrada, .portal-cta {
+  position: relative;
+  overflow: hidden;
+}
+.card::before, .tile::before, .tabela-wrap::before, .kanban-col::before, .portal-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(16rem 10rem at var(--card-x, 50%) var(--card-y, 0%), rgba(142,166,255,.12), transparent 72%);
+  opacity: 0;
+  transition: opacity .45s ease;
+}
+.card:hover::before, .tile:hover::before, .tabela-wrap:hover::before, .kanban-col:hover::before, .portal-cta:hover::before { opacity: 1; }
+.card, .tile, .tabela-wrap, .kanban-col { transition: transform .4s var(--ease), border-color .35s ease, box-shadow .45s var(--ease); }
+.card:hover, .tabela-wrap:hover { border-color: rgba(142,166,255,.28); box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 24px 56px -30px rgba(0,0,0,.65); }
+.tile:hover { transform: translateY(-4px); }
+.tile .tile-valor { text-shadow: 0 0 26px rgba(142,166,255,.08); }
+
+.toolbar, .segmentos { transition: border-color .35s ease, box-shadow .45s var(--ease); }
+.toolbar:focus-within, .segmentos:focus-within { border-color: rgba(142,166,255,.38); box-shadow: 0 12px 35px -28px rgba(67,97,238,.8); }
+.segmentos button { position: relative; overflow: hidden; }
+.segmentos button::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 70%;
+  height: 2px;
+  border-radius: 99px;
+  background: var(--accent-2);
+  transform: translateX(-50%) scaleX(0);
+  transition: transform .4s var(--ease);
+}
+.segmentos button.ativo::after { transform: translateX(-50%) scaleX(1); }
+
+.tabela tbody tr { transition: background .25s ease, transform .3s var(--ease); }
+.tabela tbody tr:hover { transform: translateX(3px); }
+.tabela .acoes .btn { transition: opacity .2s ease, transform .3s var(--ease), filter .2s ease; }
+.tabela tr:hover .acoes .btn { transform: translateX(-2px); }
+
+.kanban-col { background: linear-gradient(180deg, rgba(10,23,48,.94), rgba(6,12,28,.96)); }
+.kanban-col-cab { transition: background .35s ease; }
+.kanban-col:hover .kanban-col-cab { background: rgba(67,97,238,.08); }
+.kanban-col.arrastando-sobre { box-shadow: 0 0 0 1px var(--accent), 0 20px 54px -28px rgba(67,97,238,.8); animation: kanban-target-pulse 1.15s ease-in-out infinite; }
+.cartao { transform-style: preserve-3d; }
+.cartao:hover { box-shadow: 0 18px 42px -22px rgba(0,0,0,.72); }
+
+.grafico .barra-visual { transform-origin: 50% 100%; filter: drop-shadow(0 8px 12px rgba(67,97,238,.12)); }
+.grafico .barra:hover .barra-visual { filter: brightness(1.22) drop-shadow(0 8px 16px rgba(88,120,255,.4)); }
+.grafico-tooltip { animation: hub-tooltip-in .25s var(--ease) both; }
+
+.modal-backdrop { background: rgba(4,6,12,.72); backdrop-filter: blur(9px) saturate(125%); }
+.modal { box-shadow: 0 36px 110px -24px rgba(0,0,0,.85), 0 0 0 1px rgba(142,166,255,.06); }
+.modal::before {
+  content: "";
+  position: absolute;
+  left: 10%; right: 10%; top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-2), transparent);
+  opacity: .7;
+}
+.toast { border-color: rgba(142,166,255,.25); box-shadow: 0 18px 50px -24px rgba(67,97,238,.72); }
+
+@keyframes hub-grid-drift { to { background-position: 72px 72px, 72px 72px; } }
+@keyframes hub-sidebar-scan { 0%, 100% { transform: scaleY(.35) translateY(-40%); opacity: .18; } 50% { transform: scaleY(1) translateY(0); opacity: .82; } }
+@keyframes hub-view-in { from { opacity: 0; transform: translateY(18px) scale(.992); filter: blur(5px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes kanban-target-pulse { 0%, 100% { background-color: rgba(67,97,238,.07); } 50% { background-color: rgba(67,97,238,.14); } }
+@keyframes hub-tooltip-in { from { opacity: 0; transform: translate(-50%, calc(-100% - 5px)) scale(.94); } }
+
+@media (max-width: 860px) {
+  body:not(.modo-portal)::before { background-size: 58px 58px; opacity: .36; }
+  .main::before { width: 100vw; height: 260px; opacity: .55; }
+  .topbar { box-shadow: 0 14px 40px -30px rgba(67,97,238,.7); }
+  .view.entrando > * { animation-duration: .52s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:not(.modo-portal)::before, .sidebar::before { animation: none !important; }
+  .view > *, .card, .tile, .tabela-wrap, .kanban-col, .cartao, .nav-item, .btn { will-change: auto; }
+  .view.entrando > * { animation: none !important; }
+  .kanban-col.arrastando-sobre { animation: none; }
+}
