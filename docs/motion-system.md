@@ -52,3 +52,7 @@ No AgênciaHub, cards, tiles, tabelas, colunas do kanban e CTA do portal recebem
 ## Campo 3D do hero
 
 O hero recebeu uma cena 3D nativa composta por uma esfera com iluminação radial, três anéis orbitais, um cubo com seis faces e uma etiqueta técnica. O conjunto usa `transform-style: preserve-3d`, `perspective`, `translateZ`, animação de órbita e inclinação interpolada pelo ponteiro; o horizonte WebGL existente continua como base ambiental. Em telas menores, a cena reduz escala/opacidade; com movimento reduzido, todas as rotações são congeladas em uma pose estável.
+
+## Expansão 3D por capítulos
+
+Além do campo 3D do hero, o site agora possui objetos tridimensionais específicos por seção: órbita para serviços, placa de projeto para portfólio, trilha de nós para o protocolo, lattice para o portal, pilha volumétrica para pacotes e badge orbital para o CTA final. Cada objeto usa `preserve-3d`, perspectiva, `translateZ` e deslocamento independente ligado ao scroll. Todos são decorativos, não capturam ponteiro, ficam atrás do conteúdo e reduzem escala/opacidade no mobile.
