@@ -1134,3 +1134,16 @@ body:not(.modo-portal)::before {
   .view.entrando > * { animation: none !important; }
   .kanban-col.arrastando-sobre { animation: none; }
 }
+
+
+/* ---------- scroll choreography compartilhada ---------- */
+[data-scroll-motion] {
+  translate: 0 var(--scroll-shift, 0px);
+  will-change: translate;
+  transition: translate .2s cubic-bezier(.22,1,.36,1);
+}
+[data-scroll-motion="slow"] { transition-duration: .32s; }
+[data-scroll-motion="still"] { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  [data-scroll-motion] { translate: none; will-change: auto; transition: none; }
+}

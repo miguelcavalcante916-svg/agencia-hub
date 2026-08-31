@@ -89,3 +89,11 @@ A mini-navbar flutuante está funcionando no desktop e a seção de serviços ga
 ## Correção final do breakpoint
 
 A headline de serviços agora quebra em três linhas naturais no mobile (`Tudo que sua / marca precisa, / com um time só.`), eliminando a coluna estreita artificial. No desktop, a mini-navbar flutuante permanece equilibrada, o painel mockup continua ancorado à direita e o índice vertical de serviços funciona como assinatura editorial.
+
+## Coreografia de scroll
+
+As capturas em `scrollY=0` e `scrollY=1200` confirmam o novo comportamento: o hero e o painel têm deslocamentos de profundidade diferentes, a mini-navbar assume o formato compacto ao rolar e o título/índice de serviços chegam em uma transição contínua. A composição permanece estável, sem deslocamento horizontal ou perda de contraste.
+
+## Scroll no AgênciaHub
+
+A captura em rolagem do dashboard mantém todos os cards, gráfico, agenda, prazos e atalhos alinhados. O deslocamento aplicado é curto e independente do `transform`, então melhora a sensação de profundidade sem deslocar o conteúdo de trabalho nem interferir em ações críticas.

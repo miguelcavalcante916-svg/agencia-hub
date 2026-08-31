@@ -1163,6 +1163,20 @@ section.grade:nth-of-type(odd)::before { animation-delay: -4s; }
 }
 
 /* ============================================================
+   Scroll choreography — profundidade guiada pela rolagem
+   ============================================================ */
+[data-scroll-motion] {
+  translate: 0 var(--scroll-shift, 0px);
+  will-change: translate;
+  transition: translate .22s cubic-bezier(.22,1,.36,1);
+}
+[data-scroll-motion="slow"] { transition-duration: .36s; }
+[data-scroll-motion="still"] { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  [data-scroll-motion] { translate: none; will-change: auto; transition: none; }
+}
+
+/* ============================================================
    Cavalcante structural redesign — layout editorial
    A mudança aqui é de composição, não apenas de efeito:
    mais contraste de escala, assimetria controlada e capítulos
@@ -2283,6 +2297,51 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
 
   /* ---------- camada de movimento Cavalcante ---------- */
   document.documentElement.setAttribute('data-motion', podeMover ? 'full' : 'reduced');
+
+  /* ---------- coreografia de scroll ----------
+     Cada capítulo tem uma profundidade própria. O cálculo usa a caixa da
+     seção âncora, não a caixa já traduzida do elemento, evitando feedback
+     visual e mantendo uma única escrita de estilo por frame. */
+  (function () {
+    if (!podeMover) return;
+    var cenas = [
+      ['.hero .conteudo-hero', '.hero', -16, 'slow'],
+      ['.hero-painel', '.hero', -30, 'slow'],
+      ['#servicos .titulo', '#servicos', 14, 'slow'],
+      ['#portfolio .portfolio-grade', '#portfolio', -20, 'slow'],
+      ['#protocolo .marchas', '#protocolo', 18, 'slow'],
+      ['#portal-secao .moldura', '#portal-secao', -16, 'slow'],
+      ['#pacotes .pacotes-grade', '#pacotes', 13, 'slow'],
+      ['#faq .faq-grade', '#faq', -11, 'slow'],
+      ['#contato .cta-final', '#contato', -18, 'slow']
+    ].map(function (item) {
+      var alvo = document.querySelector(item[0]);
+      var ancora = document.querySelector(item[1]);
+      if (!alvo || !ancora) return null;
+      alvo.setAttribute('data-scroll-motion', item[3]);
+      return { alvo: alvo, ancora: ancora, profundidade: item[2] };
+    }).filter(Boolean);
+
+    var pendente = false, ultimoScroll = -1;
+    function limitar(v, min, max) { return Math.min(Math.max(v, min), max); }
+    function pintar() {
+      pendente = false;
+      var centro = window.innerHeight * .58;
+      cenas.forEach(function (cena) {
+        var r = cena.ancora.getBoundingClientRect();
+        var faixa = Math.max(window.innerHeight + r.height, 1);
+        var progresso = limitar((centro - r.top) / faixa, 0, 1);
+        var deslocamento = (progresso - .5) * cena.profundidade;
+        cena.alvo.style.setProperty('--scroll-shift', deslocamento.toFixed(2) + 'px');
+      });
+    }
+    function agendar() {
+      if (!pendente) { pendente = true; requestAnimationFrame(pintar); }
+    }
+    window.addEventListener('scroll', agendar, { passive: true });
+    window.addEventListener('resize', agendar, { passive: true });
+    pintar();
+  })();
 
   (function () {
     var spotlight = document.querySelector('.site-spotlight');

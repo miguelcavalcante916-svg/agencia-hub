@@ -25,6 +25,10 @@
 
   var rotaAtual = null;
   var motionBound = typeof WeakSet !== 'undefined' ? new WeakSet() : null;
+  var scrollMotionBound = typeof WeakSet !== 'undefined' ? new WeakSet() : null;
+  var scrollMotionItems = [];
+  var scrollMotionPending = false;
+  var scrollMotionStarted = false;
 
   function contadores() {
     return {
@@ -78,6 +82,39 @@
     });
   }
 
+  function ligarScrollMotion(raiz) {
+    if (!raiz || !scrollMotionBound || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    var itens = raiz.querySelectorAll('.card, .tile, .tabela-wrap, .kanban-col, .portal-cta');
+    itens.forEach(function (el) {
+      if (scrollMotionBound.has(el)) return;
+      scrollMotionBound.add(el);
+      el.setAttribute('data-scroll-motion', el.classList.contains('portal-cta') ? 'slow' : 'normal');
+      var profundidade = el.classList.contains('tile') ? 5 : el.classList.contains('portal-cta') ? -8 : 3;
+      scrollMotionItems.push({ el: el, profundidade: profundidade });
+    });
+    if (scrollMotionStarted) return;
+    scrollMotionStarted = true;
+    function limitar(v, min, max) { return Math.min(Math.max(v, min), max); }
+    function pintarScroll() {
+      scrollMotionPending = false;
+      var centro = window.innerHeight * .58;
+      scrollMotionItems = scrollMotionItems.filter(function (item) {
+        if (!document.documentElement.contains(item.el)) return false;
+        var r = item.el.getBoundingClientRect();
+        var distancia = (centro - (r.top + r.height / 2)) / Math.max(window.innerHeight, 1);
+        var deslocamento = limitar(distancia * item.profundidade, -8, 8);
+        item.el.style.setProperty('--scroll-shift', deslocamento.toFixed(2) + 'px');
+        return true;
+      });
+    }
+    function agendarScroll() {
+      if (!scrollMotionPending) { scrollMotionPending = true; requestAnimationFrame(pintarScroll); }
+    }
+    window.addEventListener('scroll', agendarScroll, { passive: true });
+    window.addEventListener('resize', agendarScroll, { passive: true });
+    pintarScroll();
+  }
+
   function navegar() {
     var hash = location.hash || '#/dashboard';
     // link de portal colado na mesma aba → recarrega no modo público
@@ -118,6 +155,7 @@
     void el.offsetWidth;
     el.classList.add('entrando');
     ligarMotionView(el);
+    ligarScrollMotion(el);
   }
 
   // Qual tela está aberta agora (usado por telas que respondem depois de um tempo)
@@ -130,6 +168,7 @@
     AH.views[rotaAtual.view].render(raiz);
     montarNav();
     ligarMotionView(raiz);
+    ligarScrollMotion(raiz);
   };
 
   function iniciar() {

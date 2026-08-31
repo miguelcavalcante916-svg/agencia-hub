@@ -42,3 +42,9 @@ O motion será implementado principalmente com `transform`, `opacity`, `filter` 
 | Portfólio | [Project Showcase](https://21st.dev/@jatin-yadav05/components/project-showcase) | Primeiro trabalho com maior presença e demais entradas em composição compacta, mantendo o fallback do Instagram. |
 | Fechamento | [Motion Footer](https://21st.dev/@easemize/components/motion-footer) | CTA tipográfico, faixa contínua e assinatura de marca sem importar GSAP ou aurora genérica. |
 | Fundo | [Elegant Dark Pattern](https://21st.dev/@jatin-yadav05/components/elegant-dark-pattern) | Grid, scanline e profundidade reaproveitados em CSS nativo, com marinho e azul oficiais. |
+
+## Motion guiado pelo scroll
+
+No site, nove cenas respondem à posição do cursor de rolagem em um único `requestAnimationFrame`: conteúdo do hero, painel do AgênciaHub, título de serviços, showcase, timeline, preview do portal, pacotes, FAQ e CTA final. Cada cena recebe uma profundidade curta entre 11 e 30 pixels e usa `translate`, não `transform`, para coexistir com tilt, hover e transições de layout.
+
+No AgênciaHub, cards, tiles, tabelas, colunas do kanban e CTA do portal recebem uma variação ainda menor, limitada a 8 pixels. O listener é global, os elementos são registrados uma única vez por `WeakSet` e o movimento é desativado automaticamente quando o sistema sinaliza `prefers-reduced-motion: reduce`.
