@@ -2,7 +2,11 @@
   const root = document.documentElement;
   const header = document.querySelector('.site-head');
   const work = document.querySelector('.work');
-  const portal = document.querySelector('.portal');
+  const reel = document.querySelector('.reel');
+  // Production media slots. Keep empty until the real assets are delivered.
+  const SHOWREEL_DESKTOP = '';
+  const SHOWREEL_MOBILE = '';
+  const SHOWREEL_POSTER = '';
   const knight = document.querySelector('.knight');
   const finale = document.querySelector('.finale');
   const workLive = document.querySelector('#work-live');
@@ -71,6 +75,13 @@
     },
   };
 
+  const hideUnavailableChapters = () => {
+    if (!reel || (!SHOWREEL_DESKTOP && !SHOWREEL_MOBILE)) reel?.setAttribute('hidden', '');
+    if (!work || window.__portfolioItems?.length) return;
+    work.setAttribute('hidden', '');
+    document.querySelectorAll('a[href="#work"], a[href="#prova"], a[href="#evidence"]').forEach(link => link.remove());
+  };
+
   const setPortfolio = async () => {
     try {
       const response = await fetch('portfolio.json', { cache: 'no-store' });
@@ -78,7 +89,10 @@
       const data = await response.json();
       const items = Array.isArray(data.itens) ? data.itens.filter(item => item && item.url) : [];
       window.__portfolioItems = items;
-      if (!items.length) return;
+      if (!items.length) {
+        hideUnavailableChapters();
+        return;
+      }
 
       const first = items[0];
       const title = String(first.titulo || 'Trabalho Cavalcante');
@@ -125,5 +139,6 @@
     }
   }, { passive: true });
 
+  hideUnavailableChapters();
   setPortfolio();
 })();

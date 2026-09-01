@@ -39,3 +39,7 @@ Os cabeçalhos públicos do AgênciaHub usam `X-Frame-Options: DENY` e `frame-an
 A composição desktop do showreel temporário funciona como uma cena editorial, com frames, varredura, partículas e tipografia de alto impacto, sem usar linguagem de placeholder. No mobile, a arte central mantém boa presença, mas a captura em rolagem intermediária revelou sobreposição entre o header, o label `Scene 04 / Horse to showreel` e o CTA `Falar`; esse breakpoint deve ganhar espaço superior e z-index/contraste ajustados antes da publicação final.
 
 A correção mobile foi aplicada: `reel-kicker` agora respeita uma faixa própria abaixo do header. A captura final confirma que navegação, label da cena 04, showreel visual e caption permanecem separados e legíveis.
+
+## Briefing 6 — produção sem conteúdo fictício
+
+A home foi ajustada para ocultar o showreel quando `SHOWREEL_DESKTOP` e `SHOWREEL_MOBILE` estão vazios, remover o Work quando `portfolio.json` não possui itens verificáveis e retirar os links públicos para capítulos indisponíveis. A sequência visível foi normalizada para Arrival, Think/Create/Scale, Portal, Knight Move e Start a Project. A validação estrutural e o smoke test da home passaram sem erros de runtime; a presença da logo, o Portal e os CTAs permanecem preservados.
