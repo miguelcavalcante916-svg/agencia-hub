@@ -659,7 +659,7 @@
 
     <section class="chapter reel" id="showreel" aria-labelledby="reel-title" hidden>
       <div class="sticky-stage reel-stage">
-        <span class="reel-kicker">Scene 05 / Showreel</span>
+        <span class="reel-kicker" id="reel-scene-label">Scene 05 / Showreel</span>
         <div class="reel-window">
           <video class="reel-video" id="showreel-video" muted loop playsinline preload="metadata" aria-label="Showreel audiovisual da Agência Cavalcante"></video>
           <div class="reel-film-study" aria-hidden="true"><span class="film-frame frame-a"></span><span class="film-frame frame-b"></span><span class="film-frame frame-c"></span><i class="film-scan"></i></div>
@@ -678,7 +678,7 @@
       <span class="anchor-alias" id="prova"></span>
       <span class="anchor-alias" id="portfolio"></span>
       <div class="sticky-stage work-stage">
-        <span class="chapter-index">Scene 05 / Work</span>
+        <span class="chapter-index" id="work-scene-label">Scene 05 / Work</span>
         <h2 class="work-word" id="work-title">Work<span>moves.</span></h2>
         <div class="work-planes" aria-hidden="true">
           <div class="work-plane" data-label="Strategy / Direction"></div>
@@ -694,7 +694,7 @@
 
     <section class="chapter evidence" id="evidence" hidden aria-labelledby="evidence-title">
       <div>
-        <span class="chapter-index" style="position:static;color:rgba(5,9,20,.48)">Scene 06 / Evidence</span>
+        <span class="chapter-index" id="evidence-scene-label" style="position:static;color:rgba(5,9,20,.48)">Scene 06 / Evidence</span>
         <h2 id="evidence-title">Prova,<br>não promessa.</h2>
         <div id="evidence-live"></div>
       </div>
@@ -703,7 +703,7 @@
     <section class="chapter portal" id="portal" aria-labelledby="portal-title">
       <span class="anchor-alias" id="portal-secao"></span>
       <div class="sticky-stage portal-stage">
-        <span class="chapter-index">Scene 06 / No black box</span>
+        <span class="chapter-index" id="portal-scene-label">Scene 06 / No black box</span>
         <h2 class="portal-headline" id="portal-title">Marketing<span>sem caixa-preta.</span></h2>
         <div class="portal-device" aria-label="Prévia real do AgênciaHub">
           <div class="portal-screen">
@@ -731,7 +731,7 @@
     <section class="chapter knight" id="method" aria-labelledby="knight-title">
       <span class="anchor-alias" id="protocolo"></span>
       <div class="sticky-stage knight-stage">
-        <span class="chapter-index">Scene 07 / Knight move</span>
+        <span class="chapter-index" id="knight-scene-label">Scene 07 / Knight move</span>
         <h2 class="knight-title" id="knight-title">A próxima jogada<span> tem método.</span></h2>
         <div class="knight-map" aria-hidden="true">
           <svg class="knight-line" viewBox="0 0 1000 600" preserveAspectRatio="none">
@@ -757,7 +757,7 @@
       <span class="anchor-alias" id="contato"></span>
       <img class="finale-symbol" src="app/img/logo.svg" alt="">
       <div class="finale-inner">
-        <span class="finale-kicker">Scene 08 / Start a project</span>
+        <span class="finale-kicker" id="finale-scene-label">Scene 08 / Start a project</span>
         <h2 id="finale-title">Sua próxima campanha<span>pode começar aqui.</span></h2>
         <a class="finale-cta" href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Quero%20come%C3%A7ar%20um%20projeto%20com%20a%20Cavalcante." target="_blank" rel="noopener" data-cta-origin="finale">Começar um projeto</a>
       </div>
@@ -782,6 +782,8 @@
       const arrival = document.querySelector('.arrival');
       const method = document.querySelector('.method');
       const reel = document.querySelector('.reel');
+      const portalScene = document.querySelector('.portal');
+      const knightScene = document.querySelector('.knight');
       const phases = [...document.querySelectorAll('.phase')];
       const phaseNav = [...document.querySelectorAll('.phase-nav span')];
       const cursorDot = document.querySelector('.cursor-dot');
@@ -837,7 +839,9 @@
           phaseNav[index].classList.toggle('is-active', opacity > .65);
         });
 
-        const r = sectionProgress(reel, smoothY);
+        const r = reel && !reel.hidden ? sectionProgress(reel, smoothY) : 0;
+        const portalProgress = portalScene ? sectionProgress(portalScene, smoothY) : 0;
+        const knightProgress = knightScene ? sectionProgress(knightScene, smoothY) : 0;
         root.style.setProperty('--reel-open', ease(range(r, .06, .72)).toFixed(4));
 
         ringX += (pointerX - ringX) * .16;
@@ -845,7 +849,7 @@
         cursorDot.style.transform = `translate3d(${pointerX}px,${pointerY}px,0) translate(-50%,-50%)`;
         cursorRing.style.transform = `translate3d(${ringX}px,${ringY}px,0) translate(-50%,-50%)`;
 
-        const frameState = { arrival: a, method: m, reel: r, pointerX, pointerY, smoothY };
+        const frameState = { arrival: a, method: m, reel: r, portal: portalProgress, knight: knightProgress, pointerX, pointerY, smoothY };
         window.CavalcanteV0State = frameState;
         if (window.CavalcantePermanent && typeof window.CavalcantePermanent.update === 'function') {
           window.CavalcantePermanent.update(frameState);
@@ -892,7 +896,10 @@
       requestAnimationFrame(update);
     })();
   </script>
-  <script src="cinematic-production.js?v=1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+  <script src="cinematic-production.js?v=1" defer></script>
+  <script src="cinematic-scroll.js?v=1" defer></script>
 
   <script type="module">
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js';
@@ -1005,12 +1012,14 @@
       const render = time => {
         requestAnimationFrame(render);
         if (!visible) return;
-        const state = window.CavalcanteV0State || { arrival: 0, method: 0, reel: 0, pointerX: innerWidth / 2, pointerY: innerHeight / 2 };
+        const state = window.CavalcanteV0State || { arrival: 0, method: 0, reel: 0, portal: 0, knight: 0, pointerX: innerWidth / 2, pointerY: innerHeight / 2 };
         const px = (state.pointerX / innerWidth - .5) * 2;
         const py = (state.pointerY / innerHeight - .5) * 2;
         const a = state.arrival;
         const m = state.method;
         const r = state.reel;
+        const p = state.portal || 0;
+        const k = state.knight || 0;
         const arrivalWeight = 1 - clamp(m * 5);
         const methodWeight = clamp(m * 5) * (1 - clamp(r * 4));
 
@@ -1026,6 +1035,15 @@
           targetScale = mix(targetScale, .82, methodWeight);
         }
 
+        const portalWeight = clamp(p * 3.2) * (1 - clamp(k * 1.35));
+        const knightWeight = clamp(k * 1.35);
+        targetX = mix(targetX, -1.25 + Math.sin(p * Math.PI) * 1.8, portalWeight);
+        targetY = mix(targetY, .4, portalWeight);
+        targetScale = mix(targetScale, .9, portalWeight);
+        targetX = mix(targetX, 1.65, knightWeight);
+        targetY = mix(targetY, -.55, knightWeight);
+        targetScale = mix(targetScale, .78, knightWeight);
+
         horse.position.x += (targetX + px * .16 - horse.position.x) * .055;
         horse.position.y += (targetY - py * .12 - horse.position.y) * .055;
         horse.scale.setScalar(mix(targetScale, 2.5, ease(r)));
@@ -1033,7 +1051,8 @@
         horse.rotation.x += ((-py * .08 + Math.sin(m * Math.PI) * .12) - horse.rotation.x) * .045;
         horse.rotation.z += ((a * -.13 + m * .22) - horse.rotation.z) * .045;
 
-        const opacity = 1 - ease(clamp(r * 1.18));
+        const showreelOpacity = r > 0 ? 1 - ease(clamp(r * 1.18)) : 1;
+        const opacity = showreelOpacity * (1 - clamp(p * .13));
         horse.visible = opacity > .015;
         horse.children.forEach(child => { if (child.material) child.material.opacity = child === horse.children[0] ? .98 * opacity : .12 * opacity; });
         pathMaterial.opacity = .28 * (1 - clamp(r * 2));

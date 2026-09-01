@@ -434,3 +434,29 @@
 @media (max-width: 760px) {
   .reel-kicker { top: 104px; left: 18px; z-index: 2; }
 }
+
+/* Scroll velocity response: subtle, reversible and non-blocking. */
+.global-webgl { filter: blur(calc(var(--scroll-speed, 0) * 1.2px)); }
+.phase-symbols, .portal-layer::before, .work-plane::after { filter: blur(calc(var(--scroll-speed, 0) * .45px)); }
+.chapter-index, .reel-overlays, .arrival-meta { letter-spacing: calc(.18em + var(--scroll-speed, 0) * .012em); }
+@media (prefers-reduced-motion: reduce) {
+  .global-webgl, .phase-symbols, .portal-layer::before, .work-plane::after { filter: none !important; }
+}
+
+.motion-debug-panel {
+  position: fixed;
+  z-index: 120;
+  right: 14px;
+  bottom: 14px;
+  width: 220px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,.22);
+  background: rgba(3,6,13,.82);
+  color: rgba(255,255,255,.78);
+  font: 500 9px/1.7 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .08em;
+  pointer-events: none;
+  white-space: pre;
+  backdrop-filter: blur(12px);
+}
+@media (max-width: 760px) { .motion-debug-panel { right: 10px; bottom: 10px; width: 180px; font-size: 8px; } }

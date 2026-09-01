@@ -3,6 +3,7 @@
   const header = document.querySelector('.site-head');
   const work = document.querySelector('.work');
   const reel = document.querySelector('.reel');
+  const portal = document.querySelector('.portal');
   // Production media slots. Keep empty until the real assets are delivered.
   const SHOWREEL_DESKTOP = '';
   const SHOWREEL_MOBILE = '';
@@ -80,15 +81,27 @@
     if (!work || window.__portfolioItems?.length) return;
     work.setAttribute('hidden', '');
     document.querySelectorAll('a[href="#work"], a[href="#prova"], a[href="#evidence"]').forEach(link => link.remove());
+    const evidenceLabel = document.querySelector('#evidence-scene-label');
+    const portalLabel = document.querySelector('#portal-scene-label');
+    const knightLabel = document.querySelector('#knight-scene-label');
+    const finaleLabel = document.querySelector('#finale-scene-label');
+    evidenceLabel?.replaceChildren(document.createTextNode('Scene 05 / Evidence'));
+    portalLabel?.replaceChildren(document.createTextNode('Scene 05 / No black box'));
+    knightLabel?.replaceChildren(document.createTextNode('Scene 06 / Knight move'));
+    finaleLabel?.replaceChildren(document.createTextNode('Scene 07 / Start a project'));
   };
 
   const setPortfolio = async () => {
     try {
       const response = await fetch('portfolio.json', { cache: 'no-store' });
-      if (!response.ok) return;
+      if (!response.ok) {
+        hideUnavailableChapters();
+        return;
+      }
       const data = await response.json();
       const items = Array.isArray(data.itens) ? data.itens.filter(item => item && item.url) : [];
       window.__portfolioItems = items;
+      if (items.length && work) work.removeAttribute('hidden');
       if (!items.length) {
         hideUnavailableChapters();
         return;
@@ -111,7 +124,7 @@
         evidenceLive.textContent = `${proofItems.length} evidência${proofItems.length > 1 ? 's' : ''} verificável${proofItems.length > 1 ? 'eis' : ''}`;
       }
     } catch {
-      /* O portfólio vazio não interrompe a experiência. */
+      hideUnavailableChapters();
     }
   };
 
@@ -139,6 +152,5 @@
     }
   }, { passive: true });
 
-  hideUnavailableChapters();
   setPortfolio();
 })();
