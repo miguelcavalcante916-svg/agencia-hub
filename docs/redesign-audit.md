@@ -105,3 +105,7 @@ A primeira dobra mantém a presença da marca com headline e painel em camadas. 
 ## Campo 3D do hero
 
 A cena 3D agora é visível no hero com esfera sombreada, três anéis orbitais, cubo com seis faces e rótulo técnico discreto. No desktop, ela ocupa o espaço narrativo à direita e permanece atrás do painel do AgênciaHub; no mobile, reduz opacidade e escala para não disputar com a headline. A cena responde ao ponteiro em dois eixos, acompanha o scroll por profundidade e fica estática no modo de movimento reduzido.
+
+## Logo oficial como núcleo 3D
+
+A logo oficial Cavalcante substituiu o planeta no campo 3D do hero. No desktop, o emblema aparece em relevo no centro dos anéis, com sombra de extrusão, brilho diagonal e contorno em losango; no mobile, mantém proporção e contraste sem cobrir a headline ou o CTA. O desenho utilizado é o mesmo SVG oficial do cabeçalho e do rodapé.
