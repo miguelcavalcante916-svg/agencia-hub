@@ -109,3 +109,29 @@ A cena 3D agora é visível no hero com esfera sombreada, três anéis orbitais,
 ## Logo oficial como núcleo 3D
 
 A logo oficial Cavalcante substituiu o planeta no campo 3D do hero. No desktop, o emblema aparece em relevo no centro dos anéis, com sombra de extrusão, brilho diagonal e contorno em losango; no mobile, mantém proporção e contraste sem cobrir a headline ou o CTA. O desenho utilizado é o mesmo SVG oficial do cabeçalho e do rodapé.
+
+## Briefing aplicado — QA desktop
+
+A nova primeira dobra comunica estratégia, audiovisual e performance com uma headline de posicionamento forte, CTA de crescimento e espaço visual para showreel. A seção de prova social usa uma logo cloud mínima com placeholders explícitos, sem inventar clientes. O capítulo seguinte apresenta Pensar, Criar e Escalar em escala tipográfica e mantém o campo 3D como apoio, sem voltar ao formato de landing page genérica.
+
+## Briefing aplicado — QA mobile
+
+No mobile, a headline mantém impacto sem ficar ilegível e os CTAs de crescimento e cases permanecem claros. O showreel real ainda deve ser fornecido para substituir o slot preparado. A prova social usa uma composição de dois por dois para os logos, com placeholder transparente, e a transição para Pensar/Criar/Escalar preserva o ritmo vertical e a mini-navbar.
+
+## Briefing aplicado — leitura desktop final
+
+A nova primeira dobra comunica o posicionamento em segundos, com headline de impacto, CTA para crescimento, CTA para cases, campo 3D e espaço reservado para showreel. A navegação agora usa `Cases` em vez de `Portfólio`. O capítulo seguinte apresenta prova social de forma honesta, mas ainda depende dos logos e mídias reais da agência para ocupar o espaço visual com força audiovisual. O bloco Pensar/Criar/Escalar cria a transição editorial e mantém o 3D como assinatura de movimento.
+
+## Briefing aplicado — leitura mobile final
+
+A primeira dobra mobile mantém a headline forte, a navegação compacta, os CTAs e a assinatura Cavalcante. O capítulo intermediário apresenta Pensar/Criar/Escalar com leitura confortável e cartão de estratégia abaixo. O resultado ainda pode subir significativamente quando o slot de showreel for substituído por um vídeo de 15–30 segundos e quando os placeholders de logos, cases e depoimentos receberem materiais reais.
+
+## Cases e prova — QA final
+
+No desktop, o capítulo de cases já apresenta a ideia `O trabalho é a prova`, o fluxo de história e uma moldura visual dedicada. No mobile, os pilares de serviço permanecem legíveis e empilhados sem overflow. A experiência está pronta para receber capas, vídeos, logos e métricas reais; os placeholders continuam intencionais para evitar qualquer prova inventada.
+
+## Validação visual final da rodada do briefing
+
+A abertura desktop comunica imediatamente a proposta `Sua marca não precisa de mais conteúdo. Precisa ser impossível de ignorar.`, mantém o símbolo Cavalcante em 3D e oferece CTA de crescimento e CTA de cases. Os serviços foram reorganizados em Pensar, Criar e Escalar, com copy mais específica. O capítulo de cases agora funciona como narrativa de prova e não como simples galeria. No mobile, a composição permanece legível e os CTAs continuam acessíveis.
+
+A versão está preparada para receber showreel, logos, capas de cases, métricas reais e depoimentos. Esses assets são a próxima etapa necessária para substituir os placeholders e levar o impacto audiovisual ao nível máximo descrito no briefing.

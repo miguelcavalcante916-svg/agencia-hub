@@ -1664,6 +1664,64 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
 @media (max-width:560px) { .hero-3d-logo { inset:8%; width:84%; height:84%; filter:drop-shadow(4px 7px 0 rgba(6,12,28,.72)) drop-shadow(0 0 18px rgba(67,97,238,.78)); } }
 @media (prefers-reduced-motion:reduce) { .hero-3d-logo { transform:translateZ(62px) rotateZ(-8deg); } }
 </style>
+<style>
+/* Briefing premium: mídia, prova e narrativa entram antes de qualquer excesso de cards. */
+.hero h1 { max-width:12.5ch; }
+.hero-painel { position:relative; z-index:3; }
+.showreel-slot { position:absolute; z-index:4; left:-118px; top:-154px; width:286px; min-height:178px; padding:24px 24px 20px; display:flex; flex-direction:column; justify-content:space-between; gap:10px; overflow:hidden; border:1px solid rgba(142,166,255,.48); border-radius:18px; background:linear-gradient(145deg,rgba(20,36,87,.92),rgba(6,12,28,.92)); box-shadow:0 32px 70px -28px rgba(0,0,0,.9),0 0 44px rgba(67,97,238,.25); transform:perspective(900px) rotateY(12deg) rotateZ(-3deg) translateZ(80px); transform-style:preserve-3d; }
+.showreel-slot::before { content:""; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.16),transparent 26%,transparent 70%,rgba(88,120,255,.2)); pointer-events:none; }
+.showreel-slot-glow { position:absolute; width:160px; height:160px; right:-45px; bottom:-60px; border-radius:50%; background:rgba(67,97,238,.46); filter:blur(30px); }
+.showreel-kicker { position:relative; color:var(--azul-claro); font-size:10px; letter-spacing:.18em; text-transform:uppercase; }
+.showreel-slot strong { position:relative; max-width:18ch; color:var(--tinta); font:800 clamp(18px,2vw,25px)/1.05 var(--fonte-titulo); letter-spacing:-.04em; }
+.showreel-slot small { position:relative; color:var(--tinta-3); font-size:10px; letter-spacing:.12em; }
+.showreel-play { position:absolute; right:20px; bottom:19px; width:32px; height:32px; display:grid; place-items:center; border:1px solid rgba(219,228,255,.46); border-radius:50%; color:white; font-size:10px; font-style:normal; }
+.prova-social { padding:clamp(86px,12vw,170px) 0; overflow:hidden; }
+.prova-social-grid { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(420px,.9fr); gap:clamp(40px,8vw,150px); align-items:end; }
+.prova-social .titulo { max-width:11ch; }
+.prova-logos { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border-top:1px solid var(--borda); border-left:1px solid var(--borda); }
+.prova-logos span { min-height:92px; display:grid; place-items:center; padding:16px; border-right:1px solid var(--borda); border-bottom:1px solid var(--borda); color:rgba(255,255,255,.38); font:800 12px/1 var(--fonte-titulo); letter-spacing:.12em; }
+.prova-logos span:hover { color:var(--tinta); background:rgba(88,120,255,.08); }
+.prova-logos small { grid-column:1/-1; padding:16px 18px; color:var(--tinta-3); font-size:10px; letter-spacing:.15em; }
+.case-story { margin-top:42px; padding:26px 28px 30px; display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.5fr); gap:36px; align-items:end; border-top:1px solid rgba(142,166,255,.48); border-bottom:1px solid var(--borda); background:linear-gradient(115deg,rgba(22,37,95,.46),rgba(6,12,28,.12)); transform:perspective(1400px) rotateX(1deg); transform-style:preserve-3d; }
+.case-story h3 { margin-top:10px; max-width:12ch; font:800 clamp(26px,4vw,54px)/.98 var(--fonte-titulo); letter-spacing:-.055em; }
+.case-story-flow { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
+.case-story-flow span { min-height:74px; padding:12px 0; color:var(--tinta-3); border-top:1px solid rgba(255,255,255,.15); font-size:11px; text-transform:uppercase; letter-spacing:.1em; }
+.case-story-flow b { display:block; margin-top:14px; color:var(--tinta); font-size:12px; font-weight:600; letter-spacing:0; text-transform:none; }
+#servicos .servicos-cab { grid-template-columns:minmax(0,1fr); }
+#servicos .servicos-cab::after { content:"01 PENSAR · 02 CRIAR · 03 ESCALAR"; writing-mode:horizontal-tb; justify-self:start; margin-top:20px; }
+#servicos .servicos-cab .sub { max-width:38rem; margin-top:22px; }
+#depoimentos { padding:clamp(90px,12vw,170px) 0; overflow:hidden; }
+.depoimentos-head { max-width:700px; }
+.depoimentos-grid { margin-top:54px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.depoimento-placeholder { min-height:250px; padding:28px; display:flex; flex-direction:column; justify-content:space-between; border:1px dashed rgba(142,166,255,.35); background:rgba(16,18,25,.36); }
+.depoimento-placeholder > span { color:var(--azul-claro); font-size:10px; letter-spacing:.16em; }
+.depoimento-placeholder blockquote { max-width:24ch; color:var(--tinta-2); font:700 clamp(21px,2.5vw,34px)/1.05 var(--fonte-titulo); letter-spacing:-.045em; }
+.depoimento-placeholder small { color:var(--tinta-3); font-size:11px; }
+#pacotes .pacote-nome { letter-spacing:.22em; }
+#pacotes .sub { max-width:40rem; }
+@media (max-width:900px) {
+  .hero h1 { max-width:11ch; }
+  .showreel-slot { position:relative; left:auto; top:auto; width:100%; min-height:146px; margin:0 0 18px; transform:none; }
+  .hero-painel { width:min(92vw,650px); margin:26px auto 0; }
+  .prova-social-grid, .case-story { grid-template-columns:1fr; }
+  .prova-logos { margin-top:22px; }
+  .case-story-flow { grid-template-columns:repeat(2,1fr); }
+  .case-story-flow span:last-child { grid-column:1/-1; }
+  .depoimentos-grid { grid-template-columns:1fr; }
+}
+@media (max-width:560px) {
+  .hero h1 { font-size:clamp(40px,12.3vw,58px); }
+  .prova-social-grid { gap:30px; }
+  .prova-logos span { min-height:72px; font-size:10px; }
+  .case-story { padding:22px 18px 24px; }
+  .case-story-flow { gap:8px; }
+  .case-story-flow span { min-height:68px; font-size:9px; }
+  .depoimento-placeholder { min-height:210px; padding:22px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .showreel-slot, .case-story { transform:none; }
+}
+</style>
 </head>
 <body>
 <div class="progresso-leitura" aria-hidden="true"></div>
@@ -1687,7 +1745,7 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
     </a>
     <nav class="principal" aria-label="Seções">
       <a href="#servicos">Serviços</a>
-      <a href="#portfolio">Portfólio</a>
+      <a href="#portfolio">Cases</a>
       <a href="#portal-secao">Portal</a>
       <a href="#protocolo">Protocolo</a>
       <a href="#pacotes">Pacotes</a>
@@ -1704,7 +1762,7 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
   <div class="menu-mobile" id="menu-mobile">
     <div class="container">
       <a href="#servicos">Serviços</a>
-      <a href="#portfolio">Portfólio</a>
+      <a href="#portfolio">Cases</a>
       <a href="#portal-secao">Portal</a>
       <a href="#protocolo">Protocolo</a>
       <a href="#pacotes">Pacotes</a>
@@ -1720,27 +1778,27 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
 <div class="cursor-orbit" aria-hidden="true"><span></span></div>
 <div class="scroll-progress" aria-hidden="true"><i></i></div>
 <section class="hero grade" id="inicio">
-  <div class="hero-rail" aria-hidden="true"><span>01 / 09</span><i></i><span>SCROLL TO EXPLORE</span></div>
+  <div class="hero-rail" aria-hidden="true"><span>01 / 11</span><i></i><span>SCROLL TO EXPLORE</span></div>
   <div class="container conteudo-hero">
     <a class="selo" href="#portal-secao">
       Portal do Cliente — acompanhe tudo pelo celular
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
     </a>
-    <h1>Sua marca merece mais<br><span class="gradiente">que apenas aparecer.</span></h1>
-    <p class="sub">Marketing estratégico e produção audiovisual num único fluxo — da ideia à campanha no ar.</p>
+    <h1>Sua marca não precisa de mais conteúdo.<br><span class="gradiente">Precisa ser impossível de ignorar.</span></h1>
+    <p class="sub">Estratégia, audiovisual e performance trabalhando juntos para transformar atenção em crescimento.</p>
     <div class="hero-ctas">
       <a class="btn btn-azul" href="#contato" data-whats data-msg="Olá! Quero um diagnóstico gratuito para a minha marca.">
-        Quero um diagnóstico gratuito
+        Quero crescer minha marca
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
       </a>
-      <a class="btn btn-fantasma" href="#protocolo">
+      <a class="btn btn-fantasma" href="#portfolio">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>
-        Ver como trabalhamos
+        Ver nossos trabalhos
       </a>
     </div>
     <div class="hero-nota">
       <span><i class="ponto-pulso"></i>Resposta em até 24h</span>
-      <span>Sem compromisso</span>
+      <span>Estratégia · audiovisual · performance</span>
     </div>
   </div>
 
@@ -1755,6 +1813,13 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
   </div>
 
   <div class="hero-painel">
+    <div class="showreel-slot revelar visivel" data-content-needed="showreel">
+      <div class="showreel-slot-glow"></div>
+      <span class="showreel-kicker">SHOWREEL / 15–30S</span>
+      <strong>O trabalho precisa falar antes da explicação.</strong>
+      <small>[ENVIAR SHOWREEL DA CAVALCANTE]</small>
+      <i class="showreel-play" aria-hidden="true">▶</i>
+    </div>
     <div class="moldura viga-borda revelar visivel">
       <div class="mock" aria-hidden="true">
         <div class="mock-topo"><i></i><i></i><i></i></div>
@@ -1804,51 +1869,72 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
   </div>
 </section>
 
+<!-- ======================= PROVA SOCIAL ======================= -->
+<section id="prova" class="prova-social grade" data-chapter="02">
+  <div class="container prova-social-grid">
+    <div class="revelar">
+      <span class="olho">02 / Prova</span>
+      <h2 class="titulo titulo-secao">Marcas que já confiaram<br>na Cavalcante.</h2>
+      <p class="sub">Logos reais entram aqui para mostrar quem já colocou sua comunicação em nossas mãos.</p>
+    </div>
+    <div class="prova-logos revelar" aria-label="Área reservada para logos reais de clientes" data-content-needed="client-logos">
+      <span>[LOGO REAL]</span><span>[LOGO REAL]</span><span>[LOGO REAL]</span><span>[LOGO REAL]</span>
+      <small>ENVIAR LOGOS DOS CLIENTES</small>
+    </div>
+  </div>
+</section>
+
 <!-- ======================= SERVIÇOS ======================= -->
-<section id="servicos" class="grade section-3d-section" data-chapter="02">
+<section id="servicos" class="grade section-3d-section" data-chapter="03">
   <div class="section-3d-object service-3d-orbit" aria-hidden="true"><span class="service-3d-core"></span><span class="service-3d-ring service-3d-ring-a"></span><span class="service-3d-ring service-3d-ring-b"></span></div>
   <span class="brilho" style="top:20%;left:-180px;width:420px;height:420px;background:rgba(67,97,238,.12)"></span>
   <div class="container">
     <div class="servicos-cab">
       <div>
-        <h2 class="titulo">Tudo que sua marca precisa,<br>com um time só.</h2>
+        <span class="olho">03 / Posicionamento</span>
+        <h2 class="titulo">Pensar.<br>Criar.<br><span class="gradiente">Escalar.</span></h2>
+        <p class="sub">Conteúdo chama atenção. Estratégia transforma atenção em resultado — com um time que pensa, cria e coloca a campanha no ar.</p>
       </div>
     </div>
     <div class="servicos-grade revelar revelar-itens">
       <div class="cartao servico">
         <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg></span>
-        <span class="olho">Marketing digital</span>
-        <h3>Estratégia que gera resultado, não só postagem bonita.</h3>
+        <span class="olho">PENSAR / Estratégia</span>
+        <h3>Clareza antes do calendário. Estratégia para decidir o que merece atenção.</h3>
       </div>
       <div class="cartao servico">
         <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m15 8 4.5-2.5v13L15 16"/><rect x="2.5" y="6" width="12.5" height="12" rx="2.5"/></svg></span>
-        <span class="olho">Produção audiovisual</span>
-        <h3>Filmes institucionais, publicitários e conteúdo com alma.</h3>
+        <span class="olho">CRIAR / Audiovisual</span>
+        <h3>Filmes, reels e campanhas que seguram o olhar até o fim.</h3>
       </div>
       <div class="cartao servico">
         <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9c0-1.1-.9-2-2-2h-2a2 2 0 0 1-2-2V6a2.9 2.9 0 0 0-3-3z"/><circle cx="8" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="7.5" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/></svg></span>
-        <span class="olho">Identidade visual</span>
-        <h3>Uma marca que se sustenta em qualquer canal.</h3>
+        <span class="olho">CRIAR / Marca</span>
+        <h3>Uma marca que mantém a mesma força em qualquer canal.</h3>
       </div>
       <div class="cartao servico">
         <span class="servico-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span>
-        <span class="olho">Tráfego pago</span>
-        <h3>Campanhas que vendem enquanto você dorme.</h3>
+        <span class="olho">ESCALAR / Performance</span>
+        <h3>Mídia, distribuição e leitura para escalar o que funciona.</h3>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ======================= PORTFÓLIO (Instagram) ======================= -->
-<section id="portfolio" class="grade section-3d-section" data-chapter="03">
+<section id="portfolio" class="grade section-3d-section" data-chapter="04">
   <div class="section-3d-object portfolio-3d-card" aria-hidden="true"><span></span><i></i><b>WORK / 04</b></div>
   <div class="container">
     <div class="servicos-cab">
       <div>
-        <span class="olho">Trabalhos</span>
-        <h2 class="titulo titulo-secao">O que já está<br>no ar.</h2>
+        <span class="olho">04 / Cases e resultados</span>
+        <h2 class="titulo titulo-secao">O trabalho é a<br><span class="gradiente">prova.</span></h2>
       </div>
-      <p class="sub">Cada projeto entra aqui no dia em que estreia. O quadro cresce por entrega, não por promessa.</p>
+      <p class="sub">Cases reais entram aqui como histórias: cliente, problema, estratégia, execução e resultado. Sem promessa vazia.</p>
+    </div>
+    <div class="case-story revelar" data-content-needed="case-details">
+      <div><span class="olho">Case em foco / estrutura pronta</span><h3>Do briefing à campanha no ar.</h3></div>
+      <div class="case-story-flow"><span>Cliente <b>[INSERIR]</b></span><span>Problema <b>[INSERIR]</b></span><span>Estratégia <b>[INSERIR]</b></span><span>Execução <b>[INSERIR]</b></span><span>Resultado <b>[MÉTRICA REAL]</b></span></div>
     </div>
     <div class="portfolio-grade revelar" id="portfolio-grade"></div>
     <!-- EDITE: @ do Instagram -->
@@ -1863,7 +1949,7 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
      previsibilidade antes de criatividade — ele quer saber o que acontece
      depois que chamar no WhatsApp. É também aqui que "diagnóstico
      gratuito", repetido 3 vezes no site e nunca definido, ganha formato. -->
-<section id="protocolo" class="grade section-3d-section" data-chapter="04">
+<section id="protocolo" class="grade section-3d-section" data-chapter="05">
   <div class="section-3d-object protocol-3d-track" aria-hidden="true"><span class="protocol-3d-node protocol-3d-node-a"></span><span class="protocol-3d-node protocol-3d-node-b"></span><span class="protocol-3d-node protocol-3d-node-c"></span><span class="protocol-3d-line"></span></div>
   <div class="protocolo-palco">
   <div class="container protocolo-preso">
@@ -1905,12 +1991,12 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
   </div>
 </section>
 
-<section id="portal-secao" class="section-3d-section" data-chapter="05">
+<section id="portal-secao" class="section-3d-section" data-chapter="06">
   <div class="section-3d-object portal-3d-lattice" aria-hidden="true"><span></span><i></i><b></b></div>
   <div class="container dividida">
     <div class="texto revelar">
       <span class="olho">Portal do cliente</span>
-      <h2 class="titulo titulo-secao">Você acompanha tudo,<br>sem precisar perguntar.</h2>
+      <h2 class="titulo titulo-secao">Marketing sem<br><span class="gradiente">caixa-preta.</span></h2>
       <p>Cada cliente recebe um link exclusivo no WhatsApp com o andamento de tudo — sem precisar cobrar ninguém.</p>
       <ul class="lista-check">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Barra de progresso de cada projeto</li>
@@ -1953,17 +2039,18 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
 </section>
 
 <!-- ======================= PACOTES ======================= -->
-<section id="pacotes" class="grade section-3d-section" data-chapter="06">
+<section id="pacotes" class="grade section-3d-section" data-chapter="07">
   <div class="section-3d-object packages-3d-stack" aria-hidden="true"><span></span><span></span><span></span></div>
   <span class="brilho" style="top:20%;left:50%;transform:translateX(-50%);width:760px;height:420px;background:rgba(67,97,238,.14)"></span>
   <div class="container" style="text-align:center">
-    <h2 class="titulo">Planos para cada momento<br>do seu negócio.</h2>
+    <span class="olho">07 / Soluções</span>
+    <h2 class="titulo">Uma solução para<br>cada movimento.</h2>
     <p class="sub" style="margin-left:auto;margin-right:auto">Cada marca tem uma necessidade. O valor sai depois do diagnóstico gratuito, sem pacote engessado.</p>
 
     <!-- EDITE: nomes, preços e itens dos pacotes -->
     <div class="pacotes-grade revelar revelar-itens" style="text-align:left">
       <div class="cartao pacote">
-        <span class="pacote-nome">ESSENCIAL</span>
+        <span class="pacote-nome">GROWTH</span>
         <div class="pacote-preco"><small>plano mensal</small><b>Sob medida</b></div>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Gestão de 2 redes sociais</li>
@@ -1971,12 +2058,12 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>1 vídeo curto mensal</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Relatório mensal no portal</li>
         </ul>
-        <a class="btn btn-fantasma" href="#contato" data-whats data-msg="Olá! Tenho interesse no pacote Essencial.">Começar Essencial</a>
+        <a class="btn btn-fantasma" href="#contato" data-whats data-msg="Olá! Quero entender a solução Growth da Cavalcante.">Conhecer Growth</a>
       </div>
 
       <div class="cartao pacote destaque">
         <span class="pacote-selo">NOSSA INDICAÇÃO</span>
-        <span class="pacote-nome">PROFISSIONAL</span>
+        <span class="pacote-nome">AUDIOVISUAL</span>
         <div class="pacote-preco"><small>plano mensal</small><b>Sob medida</b></div>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Gestão completa de redes</li>
@@ -1985,11 +2072,11 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Gestão de tráfego pago</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Portal do cliente exclusivo</li>
         </ul>
-        <a class="btn btn-azul" href="#contato" data-whats data-msg="Olá! Tenho interesse no pacote Profissional.">Começar Profissional</a>
+        <a class="btn btn-azul" href="#contato" data-whats data-msg="Olá! Quero entender a solução Audiovisual da Cavalcante.">Conhecer Audiovisual</a>
       </div>
 
       <div class="cartao pacote">
-        <span class="pacote-nome">PREMIUM</span>
+        <span class="pacote-nome">FULL SERVICE</span>
         <div class="pacote-preco"><small>projeto completo</small><b>360º</b></div>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Estratégia completa da marca</li>
@@ -1997,14 +2084,14 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Cobertura de eventos e drone</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Identidade visual inclusa</li>
         </ul>
-        <a class="btn btn-fantasma" href="#contato" data-whats data-msg="Olá! Quero saber mais sobre o pacote Premium.">Falar com o time</a>
+        <a class="btn btn-fantasma" href="#contato" data-whats data-msg="Olá! Quero falar sobre uma solução Full Service para a minha marca.">Falar com o time</a>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ======================= FAQ ======================= -->
-<section id="faq" data-chapter="07">
+<section id="faq" data-chapter="08">
   <div class="container faq-grade">
     <div class="revelar">
       <h2 class="titulo" style="font-size:clamp(28px,4vw,42px)">O que costumam perguntar<br>antes de começar.</h2>
@@ -2036,7 +2123,7 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
 <!-- A página inteira era anônima: nenhum nome de pessoa, nenhum e-mail,
      nenhum endereço, nenhum horário. Para negócio local isso converte mais
      que case — e é prova 100% real, que já existe hoje, de graça. -->
-<section id="ficha" class="grade" data-chapter="08">
+<section id="ficha" class="grade" data-chapter="09">
   <div class="container">
     <div class="ficha-grade revelar revelar-itens">
       <div class="cartao ficha-bloco">
@@ -2059,17 +2146,33 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
   </div>
 </section>
 
-<section id="contato" data-chapter="09">
+<!-- ======================= DEPOIMENTOS ======================= -->
+<section id="depoimentos" class="depoimentos grade" data-chapter="10">
+  <div class="container">
+    <div class="depoimentos-head revelar">
+      <span class="olho">10 / Prova social</span>
+      <h2 class="titulo titulo-secao">Quem trabalha com a gente<br>precisa poder contar.</h2>
+      <p class="sub">A estrutura está pronta para depoimentos reais em texto, foto ou vídeo. Nenhuma frase foi inventada.</p>
+    </div>
+    <div class="depoimentos-grid revelar revelar-itens">
+      <article class="depoimento-placeholder"><span>DEPOIMENTO REAL / A INSERIR</span><blockquote>“[INSERIR DEPOIMENTO REAL DO CLIENTE]”</blockquote><small>Nome · empresa · cargo</small></article>
+      <article class="depoimento-placeholder"><span>VÍDEO-CASE / A INSERIR</span><blockquote>“[ENVIAR VÍDEO OU TRANSCRIÇÃO]”</blockquote><small>Cliente · projeto</small></article>
+    </div>
+  </div>
+</section>
+
+<section id="contato" data-chapter="11">
   <div class="container">
     <div class="cartao cta-final revelar">
       <div class="section-3d-object cta-3d-badge" aria-hidden="true"><span></span><i></i><b>CAVALCANTE</b></div>
       <span class="brilho"></span>
-      <h2 class="titulo">Bora conversar<br>sobre a sua marca?</h2>
-      <p class="sub" style="margin-left:auto;margin-right:auto">Diagnóstico gratuito, sem compromisso, pelo WhatsApp.</p>
+      <span class="olho">11 / Próximo movimento</span>
+      <h2 class="titulo">Sua próxima campanha<br><span class="gradiente">pode começar aqui.</span></h2>
+      <p class="sub" style="margin-left:auto;margin-right:auto">Conte onde sua marca está hoje. Nós mostramos os próximos movimentos.</p>
       <div class="hero-ctas">
         <a class="btn btn-azul" href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Quero%20um%20diagn%C3%B3stico%20gratuito%20para%20a%20minha%20empresa." data-whats data-msg="Olá! Quero um diagnóstico gratuito para a minha empresa.">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg>
-          Chamar no WhatsApp
+          Quero meu diagnóstico
         </a>
       </div>
     </div>
@@ -2778,6 +2881,36 @@ main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-sh
       });
     });
   }
+
+  /* Analytics preparado, sem IDs inventados: se GA4/GTM/Meta forem adicionados
+     depois, o dataLayer já recebe eventos com origem legível. */
+  (function () {
+    function rastrear(nome, dados) {
+      var detalhe = dados || {};
+      if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        window.dataLayer.push(Object.assign({ event: nome }, detalhe));
+      }
+      document.dispatchEvent(new CustomEvent('cavalcante:' + nome, { detail: detalhe }));
+    }
+    document.querySelectorAll('[data-whats]').forEach(function (el) {
+      var secao = el.closest('section');
+      var origem = (el.getAttribute('data-cta-origin') || (secao && secao.id) || 'header').replace(/[^a-z0-9_-]/gi, '_');
+      el.setAttribute('data-cta-origin', origem);
+      el.addEventListener('click', function () { rastrear('whatsapp_click', { origin: origem }); }, { passive: true });
+    });
+    var marcos = { 50: false, 90: false };
+    window.addEventListener('scroll', function () {
+      var alcance = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      var percentual = window.scrollY / alcance * 100;
+      [50, 90].forEach(function (marco) {
+        if (!marcos[marco] && percentual >= marco) { marcos[marco] = true; rastrear('scroll_' + marco, { percent: marco }); }
+      });
+    }, { passive: true });
+    document.querySelectorAll('video').forEach(function (video) {
+      video.addEventListener('play', function () { rastrear('video_play', { id: video.id || 'video' }); }, { once: true, passive: true });
+      video.addEventListener('ended', function () { rastrear('showreel_complete', { id: video.id || 'video' }); }, { passive: true });
+    });
+  })();
 
   fetch('portfolio.json', { cache: 'no-store' })
     .then(function (r) { return r.json(); })
