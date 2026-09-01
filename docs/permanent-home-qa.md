@@ -33,3 +33,9 @@ A cena de chegada publicada corresponde à versão local: headline, símbolo Cav
 ## Correção do Portal — produção segura
 
 Os cabeçalhos públicos do AgênciaHub usam `X-Frame-Options: DENY` e `frame-ancestors 'none'`, portanto a incorporação por iframe foi removida. A cena agora apresenta um retrato visual seguro e sem dados operacionais: navegação, módulos Projetos/Aprovações/Mídia, gráfico abstrato e feed estrutural. Desktop e mobile mantêm a profundidade, a perspectiva e o CTA do Portal sem depender de conteúdo embutido ou revelar números do sistema.
+
+## Visual study da cena 04
+
+A composição desktop do showreel temporário funciona como uma cena editorial, com frames, varredura, partículas e tipografia de alto impacto, sem usar linguagem de placeholder. No mobile, a arte central mantém boa presença, mas a captura em rolagem intermediária revelou sobreposição entre o header, o label `Scene 04 / Horse to showreel` e o CTA `Falar`; esse breakpoint deve ganhar espaço superior e z-index/contraste ajustados antes da publicação final.
+
+A correção mobile foi aplicada: `reel-kicker` agora respeita uma faixa própria abaixo do header. A captura final confirma que navegação, label da cena 04, showreel visual e caption permanecem separados e legíveis.
