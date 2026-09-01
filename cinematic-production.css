@@ -11,6 +11,8 @@
 .site-head .head-nav, .site-head .brand, .site-head .head-cta { transition: opacity .45s var(--ease), transform .45s var(--ease); }
 .site-head.is-finale .head-nav { opacity: 0; transform: translateY(-18px); pointer-events: none; }
 .site-head.is-finale .brand, .site-head.is-finale .head-cta { opacity: .42; }
+.menu-toggle { display: none; }
+.mobile-menu { display: none; }
 
 .work {
   height: 300vh;
@@ -356,6 +358,18 @@
 .site-footer a:hover { color: white; }
 
 @media (max-width: 760px) {
+  .site-head { grid-template-columns: 1fr auto auto; }
+  .menu-toggle { display: inline-flex; align-items: center; gap: 8px; justify-self: end; padding: 8px 0; border: 0; background: none; color: inherit; font-size: 0; text-transform: uppercase; }
+  .menu-toggle span { display: block; width: 17px; height: 1px; margin: 2px 0; background: currentColor; transition: transform .35s var(--ease), opacity .35s; }
+  .menu-toggle b { font-size: 8px; font-weight: 500; letter-spacing: .16em; }
+  .menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+  .menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+  .mobile-menu { position: fixed; inset: 0; z-index: 35; display: grid; align-content: center; gap: 5vh; padding: 100px 18px 60px; background: #050914; color: white; }
+  .mobile-menu[hidden] { display: none; }
+  .mobile-menu a { font: 800 clamp(44px, 15vw, 74px)/.8 Urbanist, sans-serif; letter-spacing: -.07em; text-transform: uppercase; }
+  .mobile-menu a:nth-child(even) { color: var(--blue-soft); }
+  .menu-open { overflow: hidden; }
   .work { height: 250vh; }
   .work-word { left: 18px; top: 34%; font-size: 30vw; }
   .work-planes { inset: 23vh -20vw 16vh 32vw; }

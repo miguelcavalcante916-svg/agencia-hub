@@ -588,8 +588,16 @@
       <a href="#expertise">Expertise</a>
       <a href="#work">Work</a>
     </nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span><b>Menu</b></button>
     <a class="head-cta" href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Quero%20come%C3%A7ar%20um%20projeto%20com%20a%20Cavalcante." target="_blank" rel="noopener" data-cta-origin="header">Start a project</a>
   </header>
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Navegação mobile" hidden>
+    <a href="#arrival">Index</a>
+    <a href="#expertise">Expertise</a>
+    <a href="#work">Work</a>
+    <a href="#portal">Portal</a>
+    <a href="#contact">Start a project ↗</a>
+  </nav>
 
   <div class="progress-rail" aria-hidden="true"><span></span></div>
   <div class="cursor-dot" aria-hidden="true"></div>
@@ -778,6 +786,9 @@
       const cursorDot = document.querySelector('.cursor-dot');
       const cursorRing = document.querySelector('.cursor-ring');
       const arrivalCta = document.querySelector('.arrival-cta');
+      const arrivalIndex = document.querySelector('#arrival .chapter-index');
+      const menuToggle = document.querySelector('.menu-toggle');
+      const mobileMenu = document.querySelector('#mobile-menu');
       const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       let targetY = scrollY;
@@ -802,6 +813,7 @@
         const aExit = ease(range(a, .12, .54));
         const aSecond = ease(range(a, .31, .66)) * (1 - range(a, .82, 1));
         root.style.setProperty('--arrival-a', aExit.toFixed(4));
+        if (arrivalIndex) arrivalIndex.textContent = a > .57 ? 'Scene 02 / Impossible to ignore' : 'Scene 01 / Arrival';
         root.style.setProperty('--arrival-b', aSecond.toFixed(4));
         root.style.setProperty('--arrival-shift', ease(range(a, .06, .7)).toFixed(4));
         root.style.setProperty('--arrival-grid', ease(range(a, .18, .62)).toFixed(4));
@@ -848,6 +860,21 @@
       document.querySelectorAll('a, button').forEach(element => {
         element.addEventListener('mouseenter', () => document.body.classList.add('is-link'));
         element.addEventListener('mouseleave', () => document.body.classList.remove('is-link'));
+      });
+
+      menuToggle?.addEventListener('click', () => {
+        const open = menuToggle.getAttribute('aria-expanded') === 'true';
+        menuToggle.setAttribute('aria-expanded', String(!open));
+        document.body.classList.toggle('menu-open', !open);
+        if (mobileMenu) mobileMenu.hidden = open;
+      });
+
+      document.querySelectorAll('.mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+          menuToggle?.setAttribute('aria-expanded', 'false');
+          document.body.classList.remove('menu-open');
+          if (mobileMenu) mobileMenu.hidden = true;
+        });
       });
 
       document.querySelectorAll('a[href^="#"]').forEach(link => {
