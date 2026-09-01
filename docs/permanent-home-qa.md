@@ -43,3 +43,7 @@ A correção mobile foi aplicada: `reel-kicker` agora respeita uma faixa própri
 ## Briefing 6 — produção sem conteúdo fictício
 
 A home foi ajustada para ocultar o showreel quando `SHOWREEL_DESKTOP` e `SHOWREEL_MOBILE` estão vazios, remover o Work quando `portfolio.json` não possui itens verificáveis e retirar os links públicos para capítulos indisponíveis. A sequência visível foi normalizada para Arrival, Think/Create/Scale, Portal, Knight Move e Start a Project. A validação estrutural e o smoke test da home passaram sem erros de runtime; a presença da logo, o Portal e os CTAs permanecem preservados.
+
+## Verificação pública pós-briefing 7
+
+Após a promoção para `main`, `https://agenciacavalcante.com/` respondeu com o título e a narrativa permanentes. A página pública mantém Arrival, Think/Create/Scale, Portal, Knight Move e CTA final; a captura da primeira dobra mostra o cavalo/logo persistente em composição WebGL atrás da headline. As marcações verdes da captura pertencem à instrumentação do navegador conectado e não são elementos do site publicado.
