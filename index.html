@@ -1567,6 +1567,91 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
   #contato .cta-final { padding-inline: 20px; }
 }
 </style>
+<style>
+/* Cavalcante / art direction international — scenes, camera and editorial scale */
+.cursor-orbit { position: fixed; left: 0; top: 0; width: 34px; height: 34px; z-index: 90; pointer-events: none; border: 1px solid rgba(219,228,255,.5); border-radius: 50%; opacity: 0; mix-blend-mode: screen; transform: translate3d(-100px,-100px,0); transition: opacity .35s ease, width .35s cubic-bezier(.22,1,.36,1), height .35s cubic-bezier(.22,1,.36,1), border-color .35s ease; }
+.cursor-orbit::before, .cursor-orbit::after { content:""; position:absolute; left:50%; top:50%; background:var(--azul-claro); transform:translate(-50%,-50%); box-shadow:0 0 18px rgba(142,166,255,.85); }
+.cursor-orbit::before { width:4px; height:4px; border-radius:50%; }
+.cursor-orbit::after { width:1px; height:50px; transform:translate(-50%,-50%) rotate(45deg); opacity:.42; }
+.cursor-orbit span { position:absolute; inset:7px; border:1px solid rgba(142,166,255,.26); border-radius:50%; animation:cursor-orbita 3.5s linear infinite; }
+@keyframes cursor-orbita { to { transform:rotate(360deg); } }
+body.cursor-ativo .cursor-orbit { opacity:.8; }
+body.cursor-sobre .cursor-orbit { width:54px; height:54px; border-color:rgba(142,166,255,.82); }
+.scroll-progress { position:fixed; left:0; top:0; width:100%; height:2px; z-index:100; background:rgba(142,166,255,.08); pointer-events:none; }
+.scroll-progress i { display:block; width:var(--page-progress,0%); height:100%; background:linear-gradient(90deg,var(--azul),var(--azul-claro),#dbe4ff); box-shadow:0 0 16px rgba(142,166,255,.8); }
+.hero-rail { position:absolute; left:clamp(18px,3vw,48px); top:50%; z-index:5; display:flex; align-items:center; gap:16px; color:rgba(219,228,255,.5); font-size:9px; font-weight:800; letter-spacing:.22em; writing-mode:vertical-rl; transform:translateY(-50%) rotate(180deg); }
+.hero-rail i { display:block; width:1px; height:74px; background:linear-gradient(180deg,transparent,var(--azul-claro),transparent); animation:rail-pulso 2.8s ease-in-out infinite; }
+.hero-rail span:last-child { font-size:8px; opacity:.72; }
+@keyframes rail-pulso { 0%,100% { transform:scaleY(.45); opacity:.38; } 50% { transform:scaleY(1); opacity:1; } }
+main section[data-chapter] { --scene-progress:.5; --scene-drift:0px; position:relative; }
+main section[data-chapter]::after { content:attr(data-chapter); position:absolute; right:clamp(22px,4vw,64px); top:clamp(28px,6vw,86px); z-index:2; color:rgba(142,166,255,.38); font-family:var(--fonte-titulo); font-size:10px; font-weight:800; letter-spacing:.22em; }
+main section[data-scroll-focus="active"]::after { color:rgba(219,228,255,.82); text-shadow:0 0 18px rgba(142,166,255,.65); }
+main section[data-scroll-focus="active"] .section-3d-object { opacity:.84; }
+main section[data-chapter] .section-3d-object { translate:0 calc(var(--scroll-shift,0px) + var(--scene-drift,0px)); }
+#servicos, #portfolio, #protocolo, #portal-secao, #pacotes, #faq, #ficha, #contato { overflow:hidden; }
+#servicos { padding-top:clamp(150px,18vh,250px); padding-bottom:clamp(150px,18vh,250px); }
+#portfolio { padding-top:clamp(140px,17vh,230px); padding-bottom:clamp(150px,18vh,260px); }
+#protocolo { min-height:100vh; padding-top:clamp(150px,21vh,280px); padding-bottom:clamp(150px,21vh,280px); }
+#portal-secao { padding-top:clamp(130px,17vh,230px); padding-bottom:clamp(130px,17vh,230px); }
+#pacotes { padding-top:clamp(150px,19vh,270px); padding-bottom:clamp(150px,19vh,270px); }
+#faq { padding-top:clamp(130px,16vh,220px); padding-bottom:clamp(130px,16vh,220px); }
+#ficha { padding-top:clamp(110px,15vh,210px); padding-bottom:clamp(110px,15vh,210px); }
+#contato { padding-top:clamp(100px,14vh,190px); padding-bottom:clamp(100px,14vh,190px); }
+#servicos .servicos-cab h2, #portfolio .servicos-cab h2, #protocolo .servicos-cab h2 { max-width:9ch; font-size:clamp(44px,6.5vw,92px); line-height:.9; letter-spacing:-.07em; text-wrap:balance; }
+#servicos .servicos-grade { gap:1px; background:rgba(142,166,255,.16); border:1px solid rgba(142,166,255,.16); perspective:1200px; }
+#servicos .servico { border-radius:0; border:0; min-height:340px; background:linear-gradient(145deg,rgba(17,27,72,.75),rgba(6,12,28,.92)); }
+#servicos .servico:nth-child(2) { transform:translateY(28px); }
+#servicos .servico:nth-child(3) { transform:translateY(-12px); }
+#servicos .servico:nth-child(4) { transform:translateY(38px); }
+#servicos .servico:hover { z-index:3; transform:translateY(-10px) !important; }
+#portfolio .portfolio-grade { perspective:1200px; }
+#portfolio .portfolio-item:first-child { transform:translateZ(34px); }
+#portfolio .portfolio-item:nth-child(2) { transform:translateY(22px) translateZ(12px); }
+#portfolio .portfolio-item:nth-child(3) { transform:translateY(-18px) translateZ(22px); }
+#protocolo .protocolo-palco { min-height:72vh; display:flex; align-items:center; }
+#protocolo .marchas { perspective:1200px; }
+#protocolo .marcha:nth-child(1) { transform:translateX(-28px) rotateY(7deg); }
+#protocolo .marcha:nth-child(2) { transform:translateX(12px) translateY(32px) rotateY(-5deg); }
+#protocolo .marcha:nth-child(3) { transform:translateX(-8px) translateY(-12px) rotateY(4deg); }
+#protocolo .marcha:nth-child(4) { transform:translateX(28px) translateY(42px) rotateY(-7deg); }
+#protocolo .marcha:hover { transform:translateX(0) translateY(-10px) rotateY(0deg) !important; }
+#portal-secao .dividida { align-items:center; }
+#portal-secao .dividida > .revelar:last-child { transform:perspective(1300px) rotateY(-8deg) rotateZ(1deg); }
+#portal-secao .dividida > .revelar:last-child:hover { transform:perspective(1300px) rotateY(0deg) rotateZ(0deg) translateY(-10px); }
+#pacotes .pacotes-grade { perspective:1200px; align-items:stretch; }
+#pacotes .pacote:nth-child(1) { transform:rotateY(7deg) rotateZ(-1deg); }
+#pacotes .pacote:nth-child(2) { transform:translateY(-28px) translateZ(30px); }
+#pacotes .pacote:nth-child(3) { transform:rotateY(-7deg) rotateZ(1deg); }
+#pacotes .pacote:hover { transform:translateY(-16px) translateZ(34px) rotateY(0deg) rotateZ(0deg); }
+#faq .faq-item { border-radius:0; border-left:0; border-right:0; }
+#contato .cta-final { min-height:56vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; transform-style:preserve-3d; }
+#contato .cta-final .titulo { max-width:9ch; font-size:clamp(52px,8vw,118px); line-height:.86; }
+@media (max-width:900px) {
+  .hero-rail { left:10px; opacity:.55; }
+  main section[data-chapter]::after { right:22px; top:28px; }
+  #servicos .servico:nth-child(n), #protocolo .marcha:nth-child(n), #portfolio .portfolio-item:nth-child(n), #pacotes .pacote:nth-child(n) { transform:none; }
+  #protocolo .protocolo-palco { min-height:auto; }
+}
+@media (max-width:560px) {
+  .hero-rail { display:none; }
+  main section[data-chapter]::after { font-size:8px; opacity:.6; }
+  #contato .cta-final { min-height:62vh; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .cursor-orbit, .scroll-progress { display:none; }
+  .hero-rail i, .cursor-orbit span { animation:none; }
+  main section[data-chapter] .section-3d-object { translate:none; }
+  #servicos .servico:nth-child(n), #protocolo .marcha:nth-child(n), #portfolio .portfolio-item:nth-child(n), #pacotes .pacote:nth-child(n), #portal-secao .dividida > .revelar:last-child { transform:none !important; }
+}
+</style>
+<style>
+/* Corrige o palco sticky do protocolo: a altura pertence ao palco, não ao
+   alinhamento flex, para o conteúdo ficar visível durante a passagem. */
+@media (min-width:901px) and (prefers-reduced-motion:no-preference) {
+  #protocolo .protocolo-palco { display:block; height:230vh; min-height:0; }
+  #protocolo .protocolo-preso { top:88px; }
+}
+</style>
 </head>
 <body>
 <div class="progresso-leitura" aria-hidden="true"></div>
@@ -1620,7 +1705,10 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
 
 <!-- ======================= HERO (eclipse) ======================= -->
 <main id="conteudo" tabindex="-1">
+<div class="cursor-orbit" aria-hidden="true"><span></span></div>
+<div class="scroll-progress" aria-hidden="true"><i></i></div>
 <section class="hero grade" id="inicio">
+  <div class="hero-rail" aria-hidden="true"><span>01 / 09</span><i></i><span>SCROLL TO EXPLORE</span></div>
   <div class="container conteudo-hero">
     <a class="selo" href="#portal-secao">
       Portal do Cliente — acompanhe tudo pelo celular
@@ -1703,7 +1791,7 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
 </section>
 
 <!-- ======================= SERVIÇOS ======================= -->
-<section id="servicos" class="grade section-3d-section">
+<section id="servicos" class="grade section-3d-section" data-chapter="02">
   <div class="section-3d-object service-3d-orbit" aria-hidden="true"><span class="service-3d-core"></span><span class="service-3d-ring service-3d-ring-a"></span><span class="service-3d-ring service-3d-ring-b"></span></div>
   <span class="brilho" style="top:20%;left:-180px;width:420px;height:420px;background:rgba(67,97,238,.12)"></span>
   <div class="container">
@@ -1738,7 +1826,7 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
 </section>
 
 <!-- ======================= PORTFÓLIO (Instagram) ======================= -->
-<section id="portfolio" class="grade section-3d-section">
+<section id="portfolio" class="grade section-3d-section" data-chapter="03">
   <div class="section-3d-object portfolio-3d-card" aria-hidden="true"><span></span><i></i><b>WORK / 04</b></div>
   <div class="container">
     <div class="servicos-cab">
@@ -1761,7 +1849,7 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
      previsibilidade antes de criatividade — ele quer saber o que acontece
      depois que chamar no WhatsApp. É também aqui que "diagnóstico
      gratuito", repetido 3 vezes no site e nunca definido, ganha formato. -->
-<section id="protocolo" class="grade section-3d-section">
+<section id="protocolo" class="grade section-3d-section" data-chapter="04">
   <div class="section-3d-object protocol-3d-track" aria-hidden="true"><span class="protocol-3d-node protocol-3d-node-a"></span><span class="protocol-3d-node protocol-3d-node-b"></span><span class="protocol-3d-node protocol-3d-node-c"></span><span class="protocol-3d-line"></span></div>
   <div class="protocolo-palco">
   <div class="container protocolo-preso">
@@ -1803,7 +1891,7 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
   </div>
 </section>
 
-<section id="portal-secao" class="section-3d-section">
+<section id="portal-secao" class="section-3d-section" data-chapter="05">
   <div class="section-3d-object portal-3d-lattice" aria-hidden="true"><span></span><i></i><b></b></div>
   <div class="container dividida">
     <div class="texto revelar">
@@ -1851,7 +1939,7 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
 </section>
 
 <!-- ======================= PACOTES ======================= -->
-<section id="pacotes" class="grade section-3d-section">
+<section id="pacotes" class="grade section-3d-section" data-chapter="06">
   <div class="section-3d-object packages-3d-stack" aria-hidden="true"><span></span><span></span><span></span></div>
   <span class="brilho" style="top:20%;left:50%;transform:translateX(-50%);width:760px;height:420px;background:rgba(67,97,238,.14)"></span>
   <div class="container" style="text-align:center">
@@ -1902,7 +1990,7 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
 </section>
 
 <!-- ======================= FAQ ======================= -->
-<section id="faq">
+<section id="faq" data-chapter="07">
   <div class="container faq-grade">
     <div class="revelar">
       <h2 class="titulo" style="font-size:clamp(28px,4vw,42px)">O que costumam perguntar<br>antes de começar.</h2>
@@ -1934,7 +2022,7 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
 <!-- A página inteira era anônima: nenhum nome de pessoa, nenhum e-mail,
      nenhum endereço, nenhum horário. Para negócio local isso converte mais
      que case — e é prova 100% real, que já existe hoje, de graça. -->
-<section id="ficha" class="grade">
+<section id="ficha" class="grade" data-chapter="08">
   <div class="container">
     <div class="ficha-grade revelar revelar-itens">
       <div class="cartao ficha-bloco">
@@ -1957,7 +2045,7 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
   </div>
 </section>
 
-<section id="contato">
+<section id="contato" data-chapter="09">
   <div class="container">
     <div class="cartao cta-final revelar">
       <div class="section-3d-object cta-3d-badge" aria-hidden="true"><span></span><i></i><b>CAVALCANTE</b></div>
@@ -2510,6 +2598,47 @@ footer .rodape-linha { max-width: var(--largura-editorial); margin-inline: auto;
 
   /* ---------- camada de movimento Cavalcante ---------- */
   document.documentElement.setAttribute('data-motion', podeMover ? 'full' : 'reduced');
+
+  /* Câmera global: mantém cursor, régua e foco de capítulo sincronizados com
+     a narrativa, sem criar listeners concorrentes por seção. */
+  (function () {
+    var cursor = document.querySelector('.cursor-orbit');
+    var progress = document.querySelector('.scroll-progress i');
+    if (!podeMover) return;
+    var pointerFrame = false, progressFrame = false;
+    var px = -100, py = -100;
+    function renderCursor() {
+      pointerFrame = false;
+      if (!cursor || !temHoverFino) return;
+      cursor.style.transform = 'translate3d(' + (px - 17) + 'px,' + (py - 17) + 'px,0)';
+    }
+    function renderProgress() {
+      progressFrame = false;
+      if (!progress) return;
+      var alcance = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      var p = Math.min(Math.max(window.scrollY / alcance, 0), 1);
+      progress.style.width = (p * 100).toFixed(3) + '%';
+    }
+    if (cursor && temHoverFino) {
+      document.body.classList.add('cursor-ativo');
+      document.addEventListener('pointermove', function (event) {
+        px = event.clientX; py = event.clientY;
+        if (!pointerFrame) { pointerFrame = true; requestAnimationFrame(renderCursor); }
+      }, { passive: true });
+      document.querySelectorAll('a, button, .cartao').forEach(function (el) {
+        el.addEventListener('pointerenter', function () { document.body.classList.add('cursor-sobre'); }, { passive: true });
+        el.addEventListener('pointerleave', function () { document.body.classList.remove('cursor-sobre'); }, { passive: true });
+      });
+      window.addEventListener('blur', function () { document.body.classList.remove('cursor-sobre'); });
+    }
+    if (progress) {
+      window.addEventListener('scroll', function () {
+        if (!progressFrame) { progressFrame = true; requestAnimationFrame(renderProgress); }
+      }, { passive: true });
+      window.addEventListener('resize', renderProgress, { passive: true });
+      renderProgress();
+    }
+  })();
 
   /* ---------- coreografia de scroll ----------
      Cada capítulo tem uma profundidade própria. O cálculo usa a caixa da
