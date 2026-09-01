@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050914">
+  <meta name="description" content="Cavalcante — The Next Move. V0 cinematográfica do novo site.">
+  <title>Cavalcante — The Next Move · V0</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@700;800&family=Lexend:wght@400;500;600&display=swap">
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f6f8ff;
+      --muted: rgba(236, 241, 255, .62);
+      --faint: rgba(236, 241, 255, .16);
+      --navy: #050914;
+      --navy-2: #071126;
+      --blue: #5975ff;
+      --blue-soft: #91a3ff;
+      --line: rgba(125, 151, 255, .22);
+      --ease: cubic-bezier(.16, 1, .3, 1);
+      --pad: clamp(22px, 4vw, 64px);
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--navy); scroll-behavior: auto; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      overflow-x: clip;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(56, 83, 180, .12), transparent 36%),
+        var(--navy);
+      color: var(--ink);
+      font-family: Lexend, sans-serif;
+      cursor: none;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      pointer-events: none;
+      opacity: .16;
+      mix-blend-mode: soft-light;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .sr-only { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
+
+    .preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      background: #03060d;
+      transition: opacity .55s var(--ease), visibility .55s;
+    }
+    .preloader-word {
+      display: flex;
+      align-items: baseline;
+      gap: .08em;
+      font: 800 clamp(36px, 7vw, 86px)/1 Urbanist, sans-serif;
+      letter-spacing: -.06em;
+      text-transform: uppercase;
+      overflow: hidden;
+    }
+    .preloader-word span {
+      display: inline-block;
+      animation: loader-letter .72s var(--ease) both;
+      animation-delay: calc(var(--i) * 55ms);
+    }
+    .preloader-word span:nth-last-child(-n+5) { color: var(--blue-soft); }
+    body.is-ready .preloader { opacity: 0; visibility: hidden; }
+    @keyframes loader-letter {
+      from { transform: translateY(110%) rotate(8deg); opacity: 0; }
+      to { transform: translateY(0) rotate(0); opacity: 1; }
+    }
+
+    .site-head {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 22px var(--pad);
+      mix-blend-mode: difference;
+      pointer-events: none;
+    }
+    .brand,
+    .head-nav,
+    .head-cta { pointer-events: auto; }
+    .brand {
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font: 700 13px/1 Lexend, sans-serif;
+      letter-spacing: -.01em;
+    }
+    .brand img { width: 23px; height: 36px; object-fit: contain; filter: brightness(0) invert(1); }
+    .brand small { display: block; margin-top: 4px; color: rgba(255,255,255,.55); font-size: 8px; letter-spacing: .22em; text-transform: uppercase; }
+    .head-nav { display: flex; align-items: center; gap: 28px; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+    .head-nav a { position: relative; padding: 8px 0; }
+    .head-nav a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: 2px; height: 1px; background: currentColor; transition: right .35s var(--ease); }
+    .head-nav a:hover::after, .head-nav a:focus-visible::after { right: 0; }
+    .head-cta { justify-self: end; display: inline-flex; align-items: center; gap: 12px; font-size: 10px; letter-spacing: .13em; text-transform: uppercase; }
+    .head-cta::after { content: "↗"; display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid rgba(255,255,255,.55); border-radius: 50%; transition: transform .35s var(--ease), background .35s, color .35s; }
+    .head-cta:hover::after { transform: rotate(45deg); background: #fff; color: #000; }
+
+    .progress-rail {
+      position: fixed;
+      z-index: 40;
+      left: 22px;
+      top: 50%;
+      width: 1px;
+      height: min(30vh, 240px);
+      transform: translateY(-50%);
+      background: rgba(255,255,255,.12);
+    }
+    .progress-rail span {
+      display: block;
+      width: 100%;
+      height: calc(var(--page-progress, 0) * 100%);
+      background: var(--blue-soft);
+      box-shadow: 0 0 18px rgba(117, 145, 255, .8);
+    }
+    .progress-rail::before,
+    .progress-rail::after { position: absolute; left: 9px; font: 500 8px/1 Lexend, sans-serif; letter-spacing: .2em; color: rgba(255,255,255,.4); }
+    .progress-rail::before { content: "01"; top: 0; }
+    .progress-rail::after { content: "04"; bottom: 0; }
+
+    .cursor-dot,
+    .cursor-ring {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 90;
+      pointer-events: none;
+      border-radius: 50%;
+      transform: translate3d(-50%, -50%, 0);
+      mix-blend-mode: difference;
+    }
+    .cursor-dot { width: 5px; height: 5px; background: white; }
+    .cursor-ring { width: 42px; height: 42px; border: 1px solid rgba(255,255,255,.72); transition: width .3s var(--ease), height .3s var(--ease), background .3s; }
+    body.is-link .cursor-ring { width: 62px; height: 62px; background: rgba(255,255,255,.14); }
+
+    .global-webgl,
+    .horse-fallback {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .global-webgl { opacity: 0; transition: opacity .8s var(--ease); }
+    body.three-ready .global-webgl { opacity: 1; }
+    .horse-fallback {
+      display: grid;
+      place-items: center;
+      opacity: .3;
+      transition: opacity .6s;
+    }
+    .horse-fallback img {
+      width: min(34vw, 360px);
+      height: min(54vh, 560px);
+      filter: brightness(0) invert(1) drop-shadow(0 0 54px rgba(83, 111, 255, .55));
+    }
+    body.three-ready .horse-fallback { opacity: 0; }
+
+    main { position: relative; isolation: isolate; }
+    .chapter { position: relative; }
+    .sticky-stage {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      overflow: hidden;
+    }
+    .chapter-index {
+      position: absolute;
+      z-index: 12;
+      top: 105px;
+      left: var(--pad);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font: 500 9px/1 Lexend, sans-serif;
+      letter-spacing: .24em;
+      color: rgba(255,255,255,.48);
+      text-transform: uppercase;
+    }
+    .chapter-index::before { content: ""; width: 26px; height: 1px; background: currentColor; }
+
+    .arrival { height: 340vh; }
+    .arrival-stage {
+      background:
+        linear-gradient(90deg, transparent 49.94%, rgba(110,135,255,.12) 50%, transparent 50.06%),
+        linear-gradient(0deg, transparent 49.94%, rgba(110,135,255,.08) 50%, transparent 50.06%),
+        radial-gradient(circle at 50% 48%, rgba(57, 86, 207, .11), transparent 34%);
+    }
+    .arrival-stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(103,126,219,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(103,126,219,.08) 1px, transparent 1px);
+      background-size: clamp(48px, 7vw, 110px) clamp(48px, 7vw, 110px);
+      mask-image: radial-gradient(circle at center, #000 0 22%, transparent 68%);
+      opacity: calc(.1 + var(--arrival-grid, 0) * .75);
+      transform: perspective(900px) rotateX(calc(62deg * var(--arrival-grid, 0))) scale(calc(1 + var(--arrival-grid, 0) * .35));
+      transform-origin: 50% 64%;
+    }
+    .arrival-stage::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 28vh;
+      background: linear-gradient(transparent, rgba(4,8,19,.92));
+      pointer-events: none;
+    }
+
+    .hero-copy {
+      position: absolute;
+      left: var(--pad);
+      right: var(--pad);
+      top: 50%;
+      transform: translateY(-50%);
+      font: 800 clamp(56px, 9.7vw, 178px)/.78 Urbanist, sans-serif;
+      letter-spacing: -.075em;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+    .hero-copy span { display: block; }
+    .hero-copy.back { z-index: 3; color: rgba(247,249,255,.94); text-align: left; }
+    .hero-copy.front { z-index: 8; color: var(--blue-soft); text-align: right; }
+    .hero-copy.back .line-a { transform: translate3d(calc(var(--arrival-shift, 0) * -8vw), calc(var(--arrival-a, 0) * -13vh), 0); opacity: calc(1 - var(--arrival-a, 0)); }
+    .hero-copy.back .line-b { margin-left: 14vw; transform: translate3d(calc(var(--arrival-shift, 0) * 7vw), calc(var(--arrival-a, 0) * 12vh), 0); opacity: calc(1 - var(--arrival-a, 0)); }
+    .hero-copy.front { opacity: var(--arrival-b, 0); transform: translateY(calc(-50% + (1 - var(--arrival-b, 0)) * 20vh)) scale(calc(.92 + var(--arrival-b, 0) * .08)); }
+    .hero-copy.front .line-d { margin-right: 12vw; }
+
+    .arrival-meta {
+      position: absolute;
+      z-index: 11;
+      left: var(--pad);
+      bottom: 32px;
+      display: flex;
+      gap: 32px;
+      font-size: 9px;
+      letter-spacing: .18em;
+      color: rgba(255,255,255,.48);
+      text-transform: uppercase;
+    }
+    .arrival-status {
+      position: absolute;
+      z-index: 11;
+      right: var(--pad);
+      bottom: 32px;
+      font-size: 9px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    .arrival-status i { display: inline-block; width: 7px; height: 7px; margin-right: 9px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 16px var(--blue); animation: pulse 1.8s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: .32; transform: scale(.72); } }
+
+    .arrival-cta {
+      position: absolute;
+      z-index: 12;
+      left: 50%;
+      bottom: 11vh;
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      transform: translate(-50%, calc((1 - var(--arrival-cta, 0)) * 36px));
+      opacity: var(--arrival-cta, 0);
+      padding: 17px 20px 17px 24px;
+      border: 1px solid rgba(255,255,255,.42);
+      border-radius: 100px;
+      background: rgba(4,8,20,.4);
+      backdrop-filter: blur(12px);
+      font-size: 10px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      pointer-events: auto;
+    }
+    .arrival-cta::after { content: "↗"; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: white; color: #050914; font-size: 15px; }
+
+    .move-path {
+      position: absolute;
+      z-index: 4;
+      inset: 13vh 8vw 10vh auto;
+      width: min(36vw, 520px);
+      height: min(52vh, 520px);
+      opacity: var(--arrival-grid, 0);
+    }
+    .move-path path { fill: none; stroke: rgba(132,153,255,.4); stroke-width: 1; stroke-dasharray: 5 10; vector-effect: non-scaling-stroke; }
+    .move-path circle { fill: var(--blue-soft); filter: drop-shadow(0 0 8px var(--blue)); }
+
+    .method { height: 360vh; background: #050914; }
+    .method-stage {
+      background:
+        radial-gradient(circle at calc(20% + var(--method-x, 0) * 60%) 52%, rgba(57,83,190,.22), transparent 28%),
+        linear-gradient(120deg, #050914, #08132b 48%, #050914);
+    }
+    .method-stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .35;
+      background:
+        repeating-linear-gradient(90deg, transparent 0 8vw, rgba(113,137,236,.11) 8vw calc(8vw + 1px)),
+        repeating-linear-gradient(0deg, transparent 0 8vw, rgba(113,137,236,.08) 8vw calc(8vw + 1px));
+      transform: translate3d(calc(var(--method-grid-x, 0) * -3vw), calc(var(--method-grid-y, 0) * 2vh), 0) scale(1.15);
+    }
+    .phase {
+      position: absolute;
+      z-index: 9;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 110px var(--pad) 54px;
+      opacity: var(--phase-opacity, 0);
+      transform: translate3d(0, calc((1 - var(--phase-opacity, 0)) * 12vh), 0);
+      pointer-events: none;
+    }
+    .phase-word {
+      font: 800 clamp(70px, 13vw, 210px)/.75 Urbanist, sans-serif;
+      letter-spacing: -.08em;
+      text-transform: uppercase;
+    }
+    .phase-word span { display: block; }
+    .phase-word span:last-child { color: var(--blue-soft); }
+    .phase-copy { align-self: end; justify-self: end; max-width: 360px; padding-bottom: 10vh; }
+    .phase-copy strong { display: block; margin-bottom: 18px; font: 600 10px/1 Lexend, sans-serif; letter-spacing: .22em; text-transform: uppercase; color: var(--blue-soft); }
+    .phase-copy p { margin: 0; font: 400 clamp(18px, 2vw, 28px)/1.35 Lexend, sans-serif; letter-spacing: -.035em; color: rgba(255,255,255,.8); }
+    .phase-symbols { position: absolute; inset: 0; overflow: hidden; }
+    .phase-symbols span {
+      position: absolute;
+      display: block;
+      border: 1px solid rgba(123,145,255,.28);
+      opacity: calc(var(--phase-opacity, 0) * .9);
+      transform: rotate(var(--r)) translate3d(0, calc((1 - var(--phase-opacity, 0)) * 80px), 0);
+    }
+    .phase-symbols span:nth-child(1) { width: 22vw; height: 14vw; right: 9vw; top: 18vh; --r: -8deg; }
+    .phase-symbols span:nth-child(2) { width: 14vw; height: 9vw; right: 26vw; top: 29vh; --r: 12deg; }
+    .phase-symbols span:nth-child(3) { width: 1px; height: 42vh; right: 19vw; top: 11vh; background: linear-gradient(transparent, var(--blue-soft), transparent); --r: 20deg; }
+    .phase[data-phase="create"] .phase-symbols span { border-radius: 50%; }
+    .phase[data-phase="scale"] .phase-symbols span:nth-child(1) { clip-path: polygon(0 88%, 18% 60%, 40% 70%, 62% 24%, 78% 42%, 100% 0, 100% 100%, 0 100%); background: linear-gradient(160deg, rgba(95,120,255,.5), transparent); border: 0; }
+
+    .phase-nav {
+      position: absolute;
+      z-index: 12;
+      left: var(--pad);
+      right: var(--pad);
+      bottom: 28px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .phase-nav span { padding-top: 12px; border-top: 1px solid rgba(255,255,255,.15); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.35); transition: color .3s, border-color .3s; }
+    .phase-nav span.is-active { color: white; border-color: var(--blue-soft); }
+
+    .reel { height: 250vh; background: #e9ebef; color: #050914; }
+    .reel-stage { display: grid; place-items: center; background: #e9ebef; }
+    .reel-kicker {
+      position: absolute;
+      z-index: 3;
+      top: 34px;
+      left: var(--pad);
+      font-size: 9px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(5,9,20,.58);
+    }
+    .reel-window {
+      position: relative;
+      z-index: 10;
+      width: calc(16vw + var(--reel-open, 0) * 84vw);
+      height: calc(18vh + var(--reel-open, 0) * 82vh);
+      overflow: hidden;
+      border-radius: calc((1 - var(--reel-open, 0)) * 42px);
+      background: #050914;
+      color: #fff;
+      box-shadow: 0 32px 100px rgba(3,6,16,calc(.15 + var(--reel-open, 0) * .25));
+      transform: translate3d(0, calc((1 - var(--reel-open, 0)) * 18vh), 0) rotate(calc((1 - var(--reel-open, 0)) * -5deg));
+    }
+    .reel-window::before {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      background:
+        conic-gradient(from 180deg at 50% 50%, transparent, rgba(91,117,255,.55), transparent 32%, rgba(255,255,255,.1), transparent 62%),
+        radial-gradient(circle at 55% 45%, rgba(89,117,255,.3), transparent 28%),
+        repeating-linear-gradient(100deg, transparent 0 16px, rgba(255,255,255,.025) 17px);
+      animation: reel-field 8s linear infinite;
+    }
+    @keyframes reel-field { to { transform: rotate(360deg) scale(1.08); } }
+    .reel-window::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent, rgba(3,6,14,.58));
+    }
+    .reel-type {
+      position: absolute;
+      z-index: 2;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      font: 800 clamp(56px, 13vw, 220px)/.75 Urbanist, sans-serif;
+      letter-spacing: -.08em;
+      text-transform: uppercase;
+    }
+    .reel-type span { display: block; color: var(--blue-soft); }
+    .reel-overlays {
+      position: absolute;
+      z-index: 3;
+      inset: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      font-size: 9px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.62);
+    }
+    .reel-pending {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .reel-pending::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #ffba63; box-shadow: 0 0 12px rgba(255,186,99,.7); }
+    .reel-caption {
+      position: absolute;
+      z-index: 2;
+      left: var(--pad);
+      bottom: 34px;
+      max-width: 330px;
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.5;
+      color: rgba(5,9,20,.55);
+      opacity: calc(1 - var(--reel-open, 0));
+    }
+
+    .v0-boundary {
+      position: relative;
+      min-height: 100svh;
+      display: grid;
+      align-items: end;
+      padding: 14vh var(--pad) 5vh;
+      background: #050914;
+    }
+    .v0-boundary h2 { margin: 0; max-width: 1050px; font: 800 clamp(60px, 10vw, 170px)/.82 Urbanist, sans-serif; letter-spacing: -.075em; text-transform: uppercase; }
+    .v0-boundary h2 span { color: var(--blue-soft); }
+    .boundary-bottom { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-top: 10vh; padding-top: 22px; border-top: 1px solid var(--faint); }
+    .boundary-bottom p { max-width: 520px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .boundary-links { display: flex; gap: 14px; }
+    .boundary-links a { padding: 14px 18px; border: 1px solid rgba(255,255,255,.26); border-radius: 100px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+    .boundary-links a.primary { background: #fff; color: #050914; }
+
+    :focus-visible { outline: 2px solid var(--blue-soft); outline-offset: 5px; }
+
+    @media (max-width: 760px) {
+      body { cursor: auto; }
+      .cursor-dot, .cursor-ring, .head-nav, .progress-rail { display: none; }
+      .site-head { grid-template-columns: 1fr auto; padding: 18px 18px; }
+      .head-cta { font-size: 0; }
+      .head-cta::before { content: "Falar"; font-size: 10px; }
+      .head-cta::after { width: 30px; height: 30px; }
+      .brand small { display: none; }
+      .chapter-index { top: 86px; left: 18px; }
+      .hero-copy { left: 18px; right: 18px; font-size: clamp(52px, 16vw, 76px); line-height: .84; }
+      .hero-copy.back .line-b { margin-left: 0; }
+      .hero-copy.front { text-align: left; }
+      .hero-copy.front .line-d { margin-right: 0; }
+      .arrival { height: 270vh; }
+      .arrival-meta { left: 18px; bottom: 20px; gap: 12px; font-size: 7px; }
+      .arrival-meta span:last-child { display: none; }
+      .arrival-status { right: 18px; bottom: 20px; font-size: 7px; }
+      .arrival-cta { left: 18px; right: 18px; bottom: 11vh; justify-content: space-between; transform: translateY(calc((1 - var(--arrival-cta, 0)) * 30px)); }
+      .move-path { width: 68vw; height: 44vh; right: -16vw; top: 24vh; }
+      .horse-fallback img { width: 45vw; height: 42vh; }
+      .method { height: 300vh; }
+      .phase { grid-template-columns: 1fr; align-content: center; padding: 92px 18px 72px; }
+      .phase-word { font-size: clamp(72px, 23vw, 110px); }
+      .phase-copy { justify-self: start; align-self: end; max-width: 310px; padding: 0 0 10vh; }
+      .phase-copy p { font-size: 17px; }
+      .phase-symbols span:nth-child(1) { width: 56vw; height: 36vw; right: -8vw; top: 18vh; }
+      .phase-symbols span:nth-child(2) { width: 34vw; height: 22vw; right: 25vw; top: 31vh; }
+      .phase-nav { left: 18px; right: 18px; gap: 8px; }
+      .phase-nav span { font-size: 7px; }
+      .reel-window { width: calc(24vw + var(--reel-open, 0) * 76vw); }
+      .reel-type { font-size: clamp(54px, 19vw, 86px); }
+      .reel-overlays { inset: 18px; font-size: 7px; }
+      .reel-overlays span:nth-child(2) { display: none; }
+      .reel-caption { left: 18px; bottom: 22px; right: 18px; }
+      .v0-boundary { padding: 13vh 18px 28px; }
+      .v0-boundary h2 { font-size: clamp(58px, 18vw, 92px); }
+      .boundary-bottom { flex-direction: column; align-items: stretch; }
+      .boundary-links { flex-direction: column; }
+      .boundary-links a { text-align: center; }
+    }
+
+    @media (hover: none), (pointer: coarse) {
+      body { cursor: auto; }
+      .cursor-dot, .cursor-ring { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+      .preloader { display: none; }
+      .global-webgl { display: none; }
+      .horse-fallback { opacity: .22 !important; }
+      .arrival { height: auto !important; }
+      .arrival-stage { position: relative; min-height: 100svh; height: auto; display: grid; align-content: center; padding: 120px var(--pad) 90px; }
+      .hero-copy { position: relative; inset: auto; transform: none !important; }
+      .hero-copy.back { opacity: 1 !important; }
+      .hero-copy.front { opacity: 1 !important; margin-top: 30px; text-align: left; }
+      .arrival-cta { position: relative; inset: auto; justify-self: start; margin-top: 46px; transform: none !important; opacity: 1 !important; }
+      .arrival-meta, .arrival-status, .move-path { display: none; }
+      .phase { position: relative; min-height: 100svh; opacity: 1 !important; transform: none !important; }
+      .method { height: auto; }
+      .method-stage { position: relative; height: auto; overflow: visible; }
+      .phase-nav { display: none; }
+      .reel { height: 100svh; }
+      .reel-window { width: 100vw !important; height: 100svh !important; border-radius: 0 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="preloader" aria-hidden="true">
+    <div class="preloader-word">
+      <span style="--i:0">C</span><span style="--i:1">A</span><span style="--i:2">V</span><span style="--i:3">A</span><span style="--i:4">L</span><span style="--i:5">C</span><span style="--i:6">A</span><span style="--i:7">N</span><span style="--i:8">T</span><span style="--i:9">E</span>
+    </div>
+  </div>
+
+  <header class="site-head" aria-label="Navegação principal">
+    <a class="brand" href="#arrival" aria-label="Cavalcante — início">
+      <img src="app/img/logo.svg" alt="">
+      <span>Agência Cavalcante<small>Marketing · Audiovisual</small></span>
+    </a>
+    <nav class="head-nav" aria-label="Capítulos">
+      <a href="#arrival">Index</a>
+      <a href="#expertise">Expertise</a>
+      <a href="#showreel">Work</a>
+    </nav>
+    <a class="head-cta" href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Quero%20come%C3%A7ar%20um%20projeto%20com%20a%20Cavalcante." target="_blank" rel="noopener" data-cta-origin="v0_header">Start a project</a>
+  </header>
+
+  <div class="progress-rail" aria-hidden="true"><span></span></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+  <canvas id="horse-canvas" class="global-webgl" aria-hidden="true"></canvas>
+  <div class="horse-fallback" aria-hidden="true"><img src="app/img/logo.svg" alt=""></div>
+
+  <main>
+    <section class="chapter arrival" id="arrival" aria-labelledby="arrival-title">
+      <div class="sticky-stage arrival-stage">
+        <span class="chapter-index">Scene 01 / Arrival</span>
+        <h1 id="arrival-title" class="hero-copy back">
+          <span class="line-a">Sua marca</span>
+          <span class="line-b">não precisa de mais conteúdo.</span>
+          <span class="sr-only">Precisa ser impossível de ignorar.</span>
+        </h1>
+        <div class="hero-copy front" aria-hidden="true">
+          <span class="line-c">Precisa ser</span>
+          <span class="line-d">impossível de ignorar.</span>
+        </div>
+        <svg class="move-path" viewBox="0 0 600 600" aria-hidden="true">
+          <path d="M80 470H340V130H520" pathLength="1" style="stroke-dashoffset:calc(1 - var(--arrival-grid, 0));stroke-dasharray:1"/>
+          <circle cx="80" cy="470" r="4"/><circle cx="340" cy="470" r="4"/><circle cx="340" cy="130" r="4"/><circle cx="520" cy="130" r="4"/>
+        </svg>
+        <a class="arrival-cta" href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Quero%20tornar%20minha%20marca%20imposs%C3%ADvel%20de%20ignorar." target="_blank" rel="noopener" data-cta-origin="v0_arrival">Falar com a Cavalcante</a>
+        <div class="arrival-meta" aria-hidden="true"><span>Strategy</span><span>Film</span><span>Performance</span><span>Technology</span></div>
+        <div class="arrival-status"><i></i>Scroll to move</div>
+      </div>
+    </section>
+
+    <section class="chapter method" id="expertise" aria-labelledby="method-title">
+      <div class="sticky-stage method-stage">
+        <span class="chapter-index">Scene 03 / The system</span>
+        <h2 id="method-title" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Pensar, Criar e Escalar</h2>
+
+        <article class="phase" data-phase="think">
+          <div class="phase-symbols" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div class="phase-word"><span>Pen</span><span>sar.</span></div>
+          <div class="phase-copy"><strong>01 / Direction</strong><p>Clareza antes do calendário. A próxima jogada começa antes da câmera.</p></div>
+        </article>
+
+        <article class="phase" data-phase="create">
+          <div class="phase-symbols" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div class="phase-word"><span>Cri</span><span>ar.</span></div>
+          <div class="phase-copy"><strong>02 / Production</strong><p>Frames, som, direção e movimento transformam estratégia em algo impossível de ignorar.</p></div>
+        </article>
+
+        <article class="phase" data-phase="scale">
+          <div class="phase-symbols" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div class="phase-word"><span>Esca</span><span>lar.</span></div>
+          <div class="phase-copy"><strong>03 / Distribution</strong><p>Mídia, leitura e otimização colocam o trabalho certo diante das pessoas certas.</p></div>
+        </article>
+
+        <div class="phase-nav" aria-hidden="true"><span>Pensar</span><span>Criar</span><span>Escalar</span></div>
+      </div>
+    </section>
+
+    <section class="chapter reel" id="showreel" aria-labelledby="reel-title">
+      <div class="sticky-stage reel-stage">
+        <span class="reel-kicker">Scene 04 / Horse to showreel</span>
+        <div class="reel-window" data-development-only="true">
+          <div class="reel-type" id="reel-title">Show<span>reel.</span></div>
+          <div class="reel-overlays">
+            <span class="reel-pending">Mídia real pendente</span>
+            <span>Film · Strategy · Content · Performance</span>
+            <span>Muted / 00:30</span>
+          </div>
+        </div>
+        <p class="reel-caption">Na versão final, o vídeo real da Cavalcante ocupará este palco. O placeholder existe apenas nesta branch de preview.</p>
+      </div>
+    </section>
+
+    <section class="v0-boundary" aria-labelledby="boundary-title">
+      <div>
+        <span class="chapter-index" style="position:static">V0 / Checkpoint</span>
+        <h2 id="boundary-title">Daqui em diante,<br><span>o trabalho vira prova.</span></h2>
+        <div class="boundary-bottom">
+          <p>Esta v0 demonstra a nova arquitetura das cenas 01–04. Depois da aprovação, cases fullscreen, Evidence, Portal em layers, Knight Move Method e o CTA final serão incorporados à mesma câmera.</p>
+          <div class="boundary-links">
+            <a href="index.html">Comparar versão atual</a>
+            <a class="primary" href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Quero%20continuar%20a%20nova%20experi%C3%AAncia%20Cavalcante." target="_blank" rel="noopener" data-cta-origin="v0_boundary">Aprovar direção ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+      const range = (value, start, end) => clamp((value - start) / (end - start));
+      const ease = value => 1 - Math.pow(1 - value, 3);
+      const root = document.documentElement;
+      const arrival = document.querySelector('.arrival');
+      const method = document.querySelector('.method');
+      const reel = document.querySelector('.reel');
+      const phases = [...document.querySelectorAll('.phase')];
+      const phaseNav = [...document.querySelectorAll('.phase-nav span')];
+      const cursorDot = document.querySelector('.cursor-dot');
+      const cursorRing = document.querySelector('.cursor-ring');
+      const arrivalCta = document.querySelector('.arrival-cta');
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      let targetY = scrollY;
+      let smoothY = scrollY;
+      let pointerX = innerWidth / 2;
+      let pointerY = innerHeight / 2;
+      let ringX = pointerX;
+      let ringY = pointerY;
+
+      const sectionProgress = (section, y) => {
+        const distance = Math.max(1, section.offsetHeight - innerHeight);
+        return clamp((y - section.offsetTop) / distance);
+      };
+
+      const update = () => {
+        targetY = scrollY;
+        smoothY += (targetY - smoothY) * (reduced ? 1 : .085);
+        const pageDistance = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+        root.style.setProperty('--page-progress', clamp(smoothY / pageDistance).toFixed(4));
+
+        const a = sectionProgress(arrival, smoothY);
+        const aExit = ease(range(a, .12, .54));
+        const aSecond = ease(range(a, .31, .66)) * (1 - range(a, .82, 1));
+        root.style.setProperty('--arrival-a', aExit.toFixed(4));
+        root.style.setProperty('--arrival-b', aSecond.toFixed(4));
+        root.style.setProperty('--arrival-shift', ease(range(a, .06, .7)).toFixed(4));
+        root.style.setProperty('--arrival-grid', ease(range(a, .18, .62)).toFixed(4));
+        const ctaVisibility = ease(range(a, .63, .78)) * (1 - range(a, .9, 1));
+        root.style.setProperty('--arrival-cta', ctaVisibility.toFixed(4));
+        if (!reduced) {
+          const ctaAvailable = ctaVisibility > .18;
+          arrivalCta.tabIndex = ctaAvailable ? 0 : -1;
+          arrivalCta.setAttribute('aria-hidden', String(!ctaAvailable));
+        }
+
+        const m = sectionProgress(method, smoothY);
+        root.style.setProperty('--method-x', m.toFixed(4));
+        root.style.setProperty('--method-grid-x', (m * 2 - 1).toFixed(4));
+        root.style.setProperty('--method-grid-y', Math.sin(m * Math.PI * 2).toFixed(4));
+        const centers = [.16, .5, .84];
+        centers.forEach((center, index) => {
+          const opacity = clamp(1 - Math.abs(m - center) / .22);
+          phases[index].style.setProperty('--phase-opacity', ease(opacity).toFixed(4));
+          phaseNav[index].classList.toggle('is-active', opacity > .65);
+        });
+
+        const r = sectionProgress(reel, smoothY);
+        root.style.setProperty('--reel-open', ease(range(r, .06, .72)).toFixed(4));
+
+        ringX += (pointerX - ringX) * .16;
+        ringY += (pointerY - ringY) * .16;
+        cursorDot.style.transform = `translate3d(${pointerX}px,${pointerY}px,0) translate(-50%,-50%)`;
+        cursorRing.style.transform = `translate3d(${ringX}px,${ringY}px,0) translate(-50%,-50%)`;
+
+        window.CavalcanteV0State = { arrival: a, method: m, reel: r, pointerX, pointerY, smoothY };
+        requestAnimationFrame(update);
+      };
+
+      addEventListener('pointermove', event => {
+        pointerX = event.clientX;
+        pointerY = event.clientY;
+      }, { passive: true });
+
+      document.querySelectorAll('a, button').forEach(element => {
+        element.addEventListener('mouseenter', () => document.body.classList.add('is-link'));
+        element.addEventListener('mouseleave', () => document.body.classList.remove('is-link'));
+      });
+
+      document.querySelectorAll('a[href^="#"]').forEach(link => {
+        link.addEventListener('click', event => {
+          const target = document.querySelector(link.getAttribute('href'));
+          if (!target) return;
+          event.preventDefault();
+          scrollTo({ top: target.offsetTop, behavior: reduced ? 'auto' : 'smooth' });
+        });
+      });
+
+      setTimeout(() => document.body.classList.add('is-ready'), reduced ? 0 : 850);
+      requestAnimationFrame(update);
+    })();
+  </script>
+
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js';
+
+    const canvas = document.querySelector('#horse-canvas');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const coarse = matchMedia('(pointer: coarse)').matches;
+    const lowPower = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || (navigator.deviceMemory && navigator.deviceMemory <= 4);
+
+    if (!reduced && canvas) {
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !lowPower, powerPreference: 'high-performance' });
+      renderer.setPixelRatio(Math.min(devicePixelRatio, lowPower || coarse ? 1.2 : 1.75));
+      renderer.setSize(innerWidth, innerHeight, false);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(34, innerWidth / innerHeight, .1, 100);
+      camera.position.set(0, 0, 11);
+
+      const horse = new THREE.Group();
+      scene.add(horse);
+
+      const pathMaterial = new THREE.LineBasicMaterial({ color: 0x7189ff, transparent: true, opacity: .28 });
+      const pathGeometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(-3.2, -2.2, -.8),
+        new THREE.Vector3(.6, -2.2, -.8),
+        new THREE.Vector3(.6, 2.2, -.8),
+        new THREE.Vector3(3.0, 2.2, -.8)
+      ]);
+      const knightPath = new THREE.Line(pathGeometry, pathMaterial);
+      scene.add(knightPath);
+
+      const nodeMaterial = new THREE.PointsMaterial({ color: 0x9badff, size: .08, transparent: true, opacity: .9 });
+      const nodeGeometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(-3.2, -2.2, -.8), new THREE.Vector3(.6, -2.2, -.8),
+        new THREE.Vector3(.6, 2.2, -.8), new THREE.Vector3(3.0, 2.2, -.8)
+      ]);
+      scene.add(new THREE.Points(nodeGeometry, nodeMaterial));
+
+      const starCount = lowPower || coarse ? 260 : 620;
+      const starPositions = new Float32Array(starCount * 3);
+      for (let i = 0; i < starCount; i++) {
+        starPositions[i * 3] = (Math.random() - .5) * 18;
+        starPositions[i * 3 + 1] = (Math.random() - .5) * 12;
+        starPositions[i * 3 + 2] = -2 - Math.random() * 7;
+      }
+      const starGeometry = new THREE.BufferGeometry();
+      starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+      const stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0x7189ff, size: .018, transparent: true, opacity: .34 }));
+      scene.add(stars);
+
+      const source = new Image();
+      source.src = 'app/img/logo.svg';
+      source.onload = () => {
+        const sampleCanvas = document.createElement('canvas');
+        sampleCanvas.width = 180;
+        sampleCanvas.height = 284;
+        const context = sampleCanvas.getContext('2d', { willReadFrequently: true });
+        context.drawImage(source, 0, 0, sampleCanvas.width, sampleCanvas.height);
+        const pixels = context.getImageData(0, 0, sampleCanvas.width, sampleCanvas.height).data;
+        const step = lowPower || coarse ? 5 : 3;
+        const positions = [];
+        const colors = [];
+        const color = new THREE.Color();
+
+        for (let y = 0; y < sampleCanvas.height; y += step) {
+          for (let x = 0; x < sampleCanvas.width; x += step) {
+            const alpha = pixels[(y * sampleCanvas.width + x) * 4 + 3];
+            if (alpha < 80 || Math.random() > .83) continue;
+            const nx = (x / sampleCanvas.width - .5) * 4.25;
+            const ny = (.5 - y / sampleCanvas.height) * 6.7;
+            const depth = (Math.random() - .5) * .55 + Math.sin(y * .05) * .08;
+            positions.push(nx, ny, depth);
+            color.setHSL(.62 + Math.random() * .025, .78, .64 + Math.random() * .24);
+            colors.push(color.r, color.g, color.b);
+          }
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        const material = new THREE.PointsMaterial({ size: coarse ? .045 : .038, vertexColors: true, transparent: true, opacity: .98, depthWrite: false, blending: THREE.AdditiveBlending });
+        const points = new THREE.Points(geometry, material);
+        horse.add(points);
+
+        const echoMaterial = material.clone();
+        echoMaterial.size *= 1.75;
+        echoMaterial.opacity = .12;
+        const echo = new THREE.Points(geometry, echoMaterial);
+        echo.position.z = -.42;
+        horse.add(echo);
+
+        document.body.classList.add('three-ready');
+      };
+
+      let visible = true;
+      document.addEventListener('visibilitychange', () => { visible = !document.hidden; });
+
+      const resize = () => {
+        camera.aspect = innerWidth / innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(innerWidth, innerHeight, false);
+      };
+      addEventListener('resize', resize, { passive: true });
+
+      const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+      const mix = (a, b, t) => a + (b - a) * t;
+      const ease = value => 1 - Math.pow(1 - clamp(value), 3);
+
+      const render = time => {
+        requestAnimationFrame(render);
+        if (!visible) return;
+        const state = window.CavalcanteV0State || { arrival: 0, method: 0, reel: 0, pointerX: innerWidth / 2, pointerY: innerHeight / 2 };
+        const px = (state.pointerX / innerWidth - .5) * 2;
+        const py = (state.pointerY / innerHeight - .5) * 2;
+        const a = state.arrival;
+        const m = state.method;
+        const r = state.reel;
+        const arrivalWeight = 1 - clamp(m * 5);
+        const methodWeight = clamp(m * 5) * (1 - clamp(r * 4));
+
+        let targetX = mix(0, 2.2, ease(clamp((a - .24) / .5)));
+        let targetY = mix(.1, -1.25, ease(clamp((a - .12) / .45)));
+        let targetScale = mix(.72, 1.18, ease(clamp(a / .65)));
+
+        if (methodWeight > .01) {
+          const phaseX = m < .34 ? -1.9 : m < .67 ? .15 : 2.05;
+          const phaseY = m < .34 ? .72 : m < .67 ? -.32 : .82;
+          targetX = mix(targetX, phaseX, methodWeight);
+          targetY = mix(targetY, phaseY, methodWeight);
+          targetScale = mix(targetScale, .82, methodWeight);
+        }
+
+        horse.position.x += (targetX + px * .16 - horse.position.x) * .055;
+        horse.position.y += (targetY - py * .12 - horse.position.y) * .055;
+        horse.scale.setScalar(mix(targetScale, 2.5, ease(r)));
+        horse.rotation.y += ((px * .16 + a * .42 + m * 1.15) - horse.rotation.y) * .045;
+        horse.rotation.x += ((-py * .08 + Math.sin(m * Math.PI) * .12) - horse.rotation.x) * .045;
+        horse.rotation.z += ((a * -.13 + m * .22) - horse.rotation.z) * .045;
+
+        const opacity = 1 - ease(clamp(r * 1.18));
+        horse.visible = opacity > .015;
+        horse.children.forEach(child => { if (child.material) child.material.opacity = child === horse.children[0] ? .98 * opacity : .12 * opacity; });
+        pathMaterial.opacity = .28 * (1 - clamp(r * 2));
+        knightPath.rotation.z = Math.sin(time * .00018) * .025;
+        stars.rotation.z = time * .000018;
+        stars.position.y = Math.sin(time * .00025) * .08;
+        camera.position.x += (px * .12 - camera.position.x) * .035;
+        camera.position.y += (-py * .08 - camera.position.y) * .035;
+        camera.lookAt(0, 0, 0);
+        renderer.render(scene, camera);
+      };
+      requestAnimationFrame(render);
+    }
+  </script>
+</body>
+</html>
