@@ -195,7 +195,24 @@
   overflow: hidden;
 }
 .portal-screen { transform: translateZ(80px); }
-.portal-screen iframe { width: 100%; height: 100%; border: 0; pointer-events: none; filter: saturate(.78) contrast(.95); }
+.portal-ui { display: grid; grid-template-columns: 22% 1fr; width: 100%; height: 100%; background: #080d1d; color: #f5f7ff; }
+.portal-ui aside { padding: 6% 8%; border-right: 1px solid rgba(255,255,255,.1); background: #060a16; }
+.portal-ui-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 20%; font-size: clamp(8px, .9vw, 13px); font-weight: 600; }
+.portal-ui-brand img { width: clamp(16px, 2.2vw, 32px); filter: brightness(0) invert(1); }
+.portal-ui aside > i { display: block; width: 78%; height: 7px; margin: 13% 0; border-radius: 20px; background: rgba(255,255,255,.12); }
+.portal-ui aside > i:nth-of-type(2), .portal-ui aside > i:nth-of-type(5) { width: 54%; }
+.portal-ui aside > i:nth-of-type(3) { background: rgba(89,117,255,.62); box-shadow: 0 0 18px rgba(89,117,255,.24); }
+.portal-ui-main { padding: 5% 5% 4%; }
+.portal-ui-main header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5%; padding-bottom: 3%; border-bottom: 1px solid rgba(255,255,255,.09); font-size: clamp(8px, 1vw, 15px); }
+.portal-ui-main header b { color: rgba(255,255,255,.38); font-size: .72em; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+.portal-ui-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2%; }
+.portal-ui-metrics span { min-height: clamp(62px, 9vw, 128px); display: flex; align-items: end; padding: 8%; border: 1px solid rgba(255,255,255,.1); background: linear-gradient(145deg, rgba(89,117,255,.2), rgba(255,255,255,.025)); font-size: clamp(7px, .8vw, 12px); letter-spacing: .08em; text-transform: uppercase; }
+.portal-ui-chart { position: relative; height: 34%; display: flex; align-items: end; gap: 5%; margin-top: 4%; padding: 3% 4% 0; border: 1px solid rgba(255,255,255,.09); background: rgba(255,255,255,.02); }
+.portal-ui-chart::before { content: "Direção / Produção / Performance"; position: absolute; left: 4%; top: 12%; color: rgba(255,255,255,.36); font-size: clamp(5px, .55vw, 8px); letter-spacing: .12em; text-transform: uppercase; }
+.portal-ui-chart i { flex: 1; height: var(--h); background: linear-gradient(#6e88ff, #4057bd); box-shadow: 0 0 18px rgba(89,117,255,.18); }
+.portal-ui-chart i:nth-child(1) { --h: 22%; }.portal-ui-chart i:nth-child(2) { --h: 42%; }.portal-ui-chart i:nth-child(3) { --h: 35%; }.portal-ui-chart i:nth-child(4) { --h: 68%; }.portal-ui-chart i:nth-child(5) { --h: 52%; }.portal-ui-chart i:nth-child(6) { --h: 84%; }
+.portal-ui-feed { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 2%; margin-top: 3%; }
+.portal-ui-feed span { height: clamp(26px, 4vw, 56px); border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.035); }
 .portal-layer { display: grid; align-items: end; padding: 20px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: rgba(5, 9, 20, .54); }
 .portal-layer:nth-child(2) { transform: translate3d(calc(var(--portal-progress, 0) * -5vw), calc(var(--portal-progress, 0) * -5vh), -80px); }
 .portal-layer:nth-child(3) { transform: translate3d(calc(var(--portal-progress, 0) * 4vw), calc(var(--portal-progress, 0) * 3vh), -160px); }

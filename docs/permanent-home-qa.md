@@ -25,3 +25,11 @@ Pontos aprovados: etapa ativa identificável; nenhum card empilhado; CTA com ár
 ## Nota sobre capturas de movimento reduzido
 
 As capturas `permanent-reduced-portal.png` e `permanent-reduced-method.png` foram descartadas: o utilitário de screenshot não aplicou a emulação de `prefers-reduced-motion` e registrou a página com a altura e a coreografia normais. A validação correta foi executada pelo smoke test CDP dedicado, que confirmou `threeReady: false`, canvas oculto, ausência de overflow, todas as cenas presentes e zero erros de runtime no viewport móvel reduzido.
+
+## Verificação no domínio de produção
+
+A cena de chegada publicada corresponde à versão local: headline, símbolo Cavalcante, navegação e atmosfera foram entregues corretamente. A captura da cena Portal revelou uma divergência de produção: o iframe do AgênciaHub não renderizou e exibiu um documento quebrado/fallback, apesar de `/app/` responder com HTTP 200. Antes de encerrar a publicação, a cena deve receber uma representação visual estática ou uma captura real como fallback, evitando depender de incorporação por iframe.
+
+## Correção do Portal — produção segura
+
+Os cabeçalhos públicos do AgênciaHub usam `X-Frame-Options: DENY` e `frame-ancestors 'none'`, portanto a incorporação por iframe foi removida. A cena agora apresenta um retrato visual seguro e sem dados operacionais: navegação, módulos Projetos/Aprovações/Mídia, gráfico abstrato e feed estrutural. Desktop e mobile mantêm a profundidade, a perspectiva e o CTA do Portal sem depender de conteúdo embutido ou revelar números do sistema.
