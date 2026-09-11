@@ -78,16 +78,20 @@
       link.classList.add('work-cover-fallback');
       link.append(element('strong', '', item.titulo));
     }
-    link.append(element('span', 'work-number', `${String(index + 1).padStart(2, '0')} / FILMES & CAMPANHAS`));
+    const story = element('span', 'work-story');
+    story.append(element('span', 'work-number', `${String(index + 1).padStart(2, '0')} / ${item.categoria || 'Projeto Cavalcante'}`));
+    story.append(element('span', 'work-client', item.cliente || item.titulo));
+    story.append(element('span', 'work-project-title', item.titulo));
     const arrow = element('span', 'work-open', '↗'); arrow.setAttribute('aria-hidden', 'true'); link.append(arrow);
-    const caption = element('span', 'work-caption', item.capa ? 'Conhecer o projeto' : 'Ver o trabalho');
-    const arrow2 = element('span', '', '↗'); arrow2.setAttribute('aria-hidden', 'true'); caption.append(arrow2); link.append(caption);
+    const caption = element('span', 'work-caption', item.capa ? 'Explorar projeto' : 'Ver o trabalho');
+    const arrow2 = element('span', '', '↗'); arrow2.setAttribute('aria-hidden', 'true'); caption.append(arrow2); story.append(caption); link.append(story);
     const meta = element('div', 'work-meta'); meta.append(element('h3', '', item.cliente || item.titulo), element('p', '', item.categoria || 'Projeto Cavalcante'));
     article.append(link, meta); return article;
   }
   function renderWorks(announce = true) {
     const selected = filter === 'all' ? works : works.filter(item => item.grupo === filter);
     const visible = filter === 'all' && !expanded ? selected.slice(0, 3) : selected;
+    grid.classList.toggle('is-featured', filter === 'all' && !expanded);
     grid.replaceChildren(...visible.map(card));
     if (!visible.length) {
       const message = element('p', 'work-empty', 'Novos trabalhos por aqui em breve. Acompanhe nossas publicações no Instagram.'); grid.append(message);
@@ -161,7 +165,7 @@
     steps.forEach(step => observer.observe(step));
   }
   // Progressive enhancement: typography, navigation and case links work without WebGL.
-  const loadScene = () => import('./site-scene.js?v=20260910').then(scene => {
+  const loadScene = () => import('./site-scene.js?v=20260911-2').then(scene => {
     drawMethod = scene.initMethod($('#method-canvas'), reduceMotion); drawMethod(activeStep);
     if (!reduceMotion.matches && !navigator.connection?.saveData) scene.initHero($('#hero-canvas'), reduceMotion).catch(() => {});
   }).catch(() => {});

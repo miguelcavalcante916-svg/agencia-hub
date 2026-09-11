@@ -11,8 +11,8 @@ for i, item in enumerate(featured):
     cards.append(f'''<article class="work-card" data-group="{escape(item['grupo'])}">
       <a class="work-cover" href="{escape(item['url'])}" target="_blank" rel="noopener noreferrer" data-project="{escape(item['id'])}" aria-label="Conhecer o projeto {escape(item['titulo'])}">
         <img src="{escape(item['capa'])}" width="1080" height="1920" loading="lazy" decoding="async" alt="{escape(item['titulo'])} — {escape(item['cliente'])}">
-        <span class="work-number">0{i+1} / FILMES & CAMPANHAS</span><span class="work-open" aria-hidden="true">↗</span>
-        <span class="work-caption">Conhecer o projeto <span aria-hidden="true">↗</span></span>
+        <span class="work-story"><span class="work-number">0{i+1} / {escape(item['categoria'])}</span><span class="work-client">{escape(item['cliente'])}</span><span class="work-project-title">{escape(item['titulo'])}</span><span class="work-caption">Explorar projeto <span aria-hidden="true">↗</span></span></span>
+        <span class="work-open" aria-hidden="true">↗</span>
       </a>
       <div class="work-meta"><h3>{escape(item['cliente'])}</h3><p>{escape(item['categoria'])}</p></div>
     </article>''')
@@ -30,7 +30,7 @@ page = '''<!doctype html>
   <link rel="canonical" href="https://agenciacavalcante.com/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Agência Cavalcante">
-  <meta property="og:title" content="Agência Cavalcante — Sua marca. Impossível de ignorar.">
+  <meta property="og:title" content="Agência Cavalcante — Seu próximo grande movimento.">
   <meta property="og:description" content="Estratégia, audiovisual e mídia. Conheça os projetos e descubra a próxima jogada da sua marca.">
   <meta property="og:url" content="https://agenciacavalcante.com/">
   <meta property="og:image" content="https://agenciacavalcante.com/og.png">
@@ -41,11 +41,14 @@ page = '''<!doctype html>
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="assets/fonts/InstrumentSans-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/InstrumentSans-Bold.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="site.css?v=20260910">
-  <script src="site.js?v=20260910" defer></script>
+  <link rel="stylesheet" href="site.css?v=20260911-2">
+  <link rel="stylesheet" href="site-editorial.css?v=20260911-2">
+  <script src="site.js?v=20260911-2" defer></script>
+  <script src="site-motion.js?v=20260911-2" defer></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Agência Cavalcante","url":"https://agenciacavalcante.com/","image":"https://agenciacavalcante.com/og.png","description":"Estratégia de marketing, produção audiovisual, conteúdo e tráfego pago.","telephone":"+5584999492725","address":{"@type":"PostalAddress","addressLocality":"Alexandria","addressRegion":"RN","addressCountry":"BR"},"areaServed":["Alexandria","Rio Grande do Norte","Brasil"],"sameAs":["https://instagram.com/cavalcante.media"],"knowsAbout":["Marketing digital","Produção audiovisual","Tráfego pago","Identidade visual"]}</script>
 </head>
-<body>
+<body class="edition-two">
+  <div class="reading-progress" aria-hidden="true"><i></i></div>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
   <header class="site-header" id="site-header">
     <a class="brand" href="#arrival" aria-label="Agência Cavalcante — início"><img src="app/img/logo.svg" width="26" height="41" alt=""><span>Cavalcante<small>ESTRATÉGIA & AUDIOVISUAL</small></span></a>
@@ -55,19 +58,23 @@ page = '''<!doctype html>
   <nav class="mobile-menu" id="mobile-menu" aria-label="Navegação móvel" hidden><a href="#work"><span>01</span>Projetos ↗</a><a href="#expertise"><span>02</span>Serviços ↗</a><a href="#method"><span>03</span>Nosso método ↗</a><a href="#portal"><span>04</span>Portal do cliente ↗</a><a href="#contact"><span>05</span>Vamos conversar ↗</a><small>DE ALEXANDRIA/RN. PARA A SUA PRÓXIMA JOGADA.</small></nav>
   <main id="conteudo">
     <section class="hero dark-section" id="arrival" aria-labelledby="hero-title">
-      <div class="hero-topline"><span><i class="status-dot" aria-hidden="true"></i> CRIATIVIDADE COM DIREÇÃO.</span><span>ALEXANDRIA, RN · BRASIL</span></div>
-      <div class="hero-copy"><h1 id="hero-title">Sua marca.<br>Impossível<br><span>de ignorar.</span></h1><p>Estratégia de marketing, produção audiovisual e mídia para marcas que querem ocupar seu espaço.</p><div class="hero-actions"><a class="button button-light" href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20planejar%20a%20pr%C3%B3xima%20jogada%20da%20minha%20marca." target="_blank" rel="noopener noreferrer">Começar um projeto <span aria-hidden="true">↗</span></a><a class="text-link" href="#work">Explore os projetos <span aria-hidden="true">↓</span></a></div></div>
-      <div class="hero-art" id="hero-art" aria-hidden="true"><div class="orbital orbital-a"></div><div class="orbital orbital-b"></div><div class="hero-floor"></div><img class="hero-fallback" src="app/img/logo.svg" width="450" height="710" alt=""><canvas id="hero-canvas"></canvas><span class="art-label art-label-a">ESTRATÉGIA<br><i></i></span><span class="art-label art-label-b"><i></i>PRÓXIMO MOVIMENTO</span><span class="art-coordinate">23° / FORA DO ÓBVIO</span></div>
-      <div class="hero-bottom"><span>ESTRATÉGIA <b>·</b> FILMES <b>·</b> CONTEÚDO <b>·</b> MÍDIA</span><a href="#work">O trabalho fala. Role para ver <span aria-hidden="true">↓</span></a></div>
+      <div class="hero-topline"><span><i class="status-dot" aria-hidden="true"></i> INDEPENDENTE. CRIATIVA. ESTRATÉGICA.</span><span>ALEXANDRIA / RN — BRASIL</span></div>
+      <div class="hero-wordmark" aria-hidden="true">CAVALCANTE</div>
+      <div class="hero-copy"><span class="hero-kicker">ESTRATÉGIA É SÓ O COMEÇO.</span><h1 id="hero-title">Seu próximo<br>grande <em>movimento.</em></h1></div>
+      <div class="hero-art" id="hero-art" aria-hidden="true"><div class="hero-halo"></div><div class="orbital orbital-a"></div><div class="orbital orbital-b"></div><div class="hero-floor"></div><img class="hero-fallback" src="app/img/logo.svg" width="450" height="710" alt=""><canvas id="hero-canvas"></canvas></div>
+      <div class="hero-aside"><p>Ideias que ganham forma.<br>Marcas que movem pessoas.</p><span>Estratégia, audiovisual e presença digital.<br>Da primeira conversa ao próximo capítulo.</span><a class="button button-light" href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20planejar%20a%20pr%C3%B3xima%20jogada%20da%20minha%20marca." target="_blank" rel="noopener noreferrer">Vamos criar juntos <span aria-hidden="true">↗</span></a></div>
+      <div class="hero-bottom"><span>UM ESTÚDIO. MUITAS POSSIBILIDADES.</span><a href="#work">Explore nosso trabalho <span class="scroll-arrow" aria-hidden="true">↓</span></a><span class="hero-edition">ESTRATÉGIA & AUDIOVISUAL / 2026</span></div>
     </section>
+
+    <section class="manifesto-section light-section section-pad" aria-labelledby="manifesto-title"><div class="manifesto-meta"><span class="eyebrow">O QUE NOS MOVE</span><span class="manifesto-symbol" aria-hidden="true">↗</span></div><div><h2 id="manifesto-title" class="manifesto-text">Entre ser visto<br>e ser <em>lembrado,</em><br>existe uma boa ideia.</h2><div class="manifesto-bottom"><p>Encontramos o que torna sua marca única. E transformamos isso em estratégia, imagem e movimento.</p><a class="text-link" href="#expertise">Conheça a Cavalcante <span aria-hidden="true">↓</span></a></div></div></section>
 
     <section class="work-section light-section section-pad" id="work" aria-labelledby="work-title">
       <span id="portfolio" class="anchor-alias"></span><span id="prova" class="anchor-alias"></span><span id="evidence" class="anchor-alias"></span>
       <div class="section-eyebrow"><span>01 / PROJETOS SELECIONADOS</span><span>FEITO PELA CAVALCANTE ↙</span></div>
-      <div class="section-heading"><h2 id="work-title">Boas ideias.<br><em>Trabalho de verdade.</em></h2><p>Marcas, pessoas e histórias que colocamos em movimento. Conheça a direção por trás de cada entrega.</p></div>
+      <div class="section-heading"><h2 id="work-title">Feito para<br><em>ficar na memória.</em></h2><p>Um recorte do nosso olhar. Projetos reais, para marcas com histórias próprias.</p></div>
       <div class="work-filters" role="group" aria-label="Filtrar projetos por cliente"><button type="button" class="is-active" data-filter="all" aria-pressed="true">Todos os projetos</button><button type="button" data-filter="ct-fire" aria-pressed="false">CT Fire</button><button type="button" data-filter="black-suplementos" aria-pressed="false">Black Suplementos</button><button type="button" data-filter="parque-jose-juliao-diniz" aria-pressed="false">Parque José Julião Diniz</button></div>
       <p id="work-announcement" class="sr-only" role="status"></p>
-      <div class="work-grid" id="work-grid">__WORK_CARDS__</div>
+      <div class="work-grid is-featured" id="work-grid">__WORK_CARDS__</div>
       <div class="work-footer"><p>Da primeira ideia à publicação.<br><span>Direção em cada detalhe.</span></p><button class="button button-outline" type="button" id="more-work" hidden>Ver todos os trabalhos <span aria-hidden="true">↗</span></button><a class="text-link" href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener noreferrer">Acompanhe no Instagram <span aria-hidden="true">↗</span></a></div>
     </section>
 
