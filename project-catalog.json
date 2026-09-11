@@ -1,0 +1,158 @@
+{
+  "itens": [
+    {
+      "id": "work-001",
+      "url": "https://www.instagram.com/p/DYxpuoBvxgp/",
+      "titulo": "Lançamento da Vaquejada do Parque José Julião Diniz",
+      "cliente": "Parque José Julião Diniz",
+      "grupo": "parque-jose-juliao-diniz",
+      "capa": "assets/work/parque-jose-juliao-diniz-lancamento.jpg",
+      "descricao": "Estratégia, roteiro, gravação, edição e postagem.",
+      "categoria": "Campanha de lançamento",
+      "destaque": true
+    },
+    {
+      "id": "work-002",
+      "url": "https://www.instagram.com/p/DUeHIHsj1ht/",
+      "titulo": "Fire Summer — treino na areia",
+      "cliente": "CT Fire",
+      "grupo": "ct-fire",
+      "capa": "assets/work/ct-fire-summer.jpg",
+      "descricao": "Cobertura do evento Fire Summer: captação, direção e edição.",
+      "categoria": "Filme e conteúdo",
+      "destaque": true
+    },
+    {
+      "id": "work-003",
+      "url": "https://www.instagram.com/p/DUMDnSAD3Om/",
+      "titulo": "Fire Dança — aula coletiva",
+      "cliente": "CT Fire",
+      "grupo": "ct-fire",
+      "capa": "assets/work/ct-fire-danca.jpg",
+      "descricao": "Registro da modalidade Fire Dança no evento Mova-se: ritmo e energia da turma.",
+      "categoria": "Filme e conteúdo",
+      "destaque": false
+    },
+    {
+      "id": "work-004",
+      "url": "https://www.instagram.com/p/DULtAYBDn45/",
+      "titulo": "Cross Kids — Mova-se",
+      "cliente": "CT Fire",
+      "grupo": "ct-fire",
+      "capa": "assets/work/ct-fire-cross-kids.jpg",
+      "descricao": "Cobertura do Cross Kids: disciplina e diversão no movimento infantil.",
+      "categoria": "Filme e conteúdo",
+      "destaque": false
+    },
+    {
+      "id": "work-005",
+      "url": "https://www.instagram.com/p/DUTtJ6JD0Tz/",
+      "titulo": "Step — nova modalidade",
+      "cliente": "CT Fire",
+      "grupo": "ct-fire",
+      "capa": "assets/work/ct-fire-step.jpg",
+      "descricao": "Lançamento da modalidade Step no CT Fire: ritmo, intensidade e energia.",
+      "categoria": "Filme e conteúdo",
+      "destaque": false
+    },
+    {
+      "id": "work-006",
+      "url": "https://www.instagram.com/p/DTafnh7jewN/",
+      "titulo": "Mudar de nível",
+      "cliente": "CT Fire",
+      "grupo": "ct-fire",
+      "capa": "assets/work/ct-fire-mudar-de-nivel.jpg",
+      "descricao": "Conteúdo de posicionamento: mentalidade, disciplina e ambiente certo.",
+      "categoria": "Filme e conteúdo",
+      "destaque": false
+    },
+    {
+      "id": "work-007",
+      "url": "https://www.instagram.com/p/DUoOFCpDwnR/",
+      "titulo": "Permanência gera resultado",
+      "cliente": "CT Fire",
+      "grupo": "ct-fire",
+      "capa": "assets/work/ct-fire-permanencia.jpg",
+      "descricao": "Conteúdo de marca: a base é permanência, e permanência constrói resultado.",
+      "categoria": "Filme e conteúdo",
+      "destaque": false
+    },
+    {
+      "id": "work-008",
+      "url": "https://www.instagram.com/p/DUA50Fbjl7s/",
+      "titulo": "Continuar quando ninguém vê",
+      "cliente": "CT Fire",
+      "grupo": "ct-fire",
+      "capa": "assets/work/ct-fire-continuar.jpg",
+      "descricao": "Conteúdo de posicionamento sobre constância e disciplina diária.",
+      "categoria": "Filme e conteúdo",
+      "destaque": false
+    },
+    {
+      "id": "work-009",
+      "url": "https://www.instagram.com/p/DUdQaFGDmkl/",
+      "titulo": "Quem vive, sente a diferença",
+      "cliente": "CT Fire",
+      "grupo": "ct-fire",
+      "capa": "assets/work/ct-fire-quem-vive.jpg",
+      "descricao": "Conteúdo de marca: não é só o físico — é mentalidade e ambiente.",
+      "categoria": "Filme e conteúdo",
+      "destaque": false
+    },
+    {
+      "id": "work-010",
+      "url": "https://www.instagram.com/p/DTz6U7NDhYH/",
+      "titulo": "Evoluir é escolher o ambiente",
+      "cliente": "CT Fire",
+      "grupo": "ct-fire",
+      "capa": "assets/work/ct-fire-evoluir.jpg",
+      "descricao": "Conteúdo de posicionamento: treinar qualquer um treina, evoluir é escolha.",
+      "categoria": "Filme e conteúdo",
+      "destaque": false
+    },
+    {
+      "id": "work-011",
+      "url": "https://www.instagram.com/p/DUYopZBEYK5/",
+      "titulo": "O suplemento certo acelera resultado",
+      "cliente": "Black Suplementos",
+      "grupo": "black-suplementos",
+      "capa": "assets/work/black-suplemento-certo.jpg",
+      "descricao": "Conteúdo educativo: a escolha certa de suplementação potencializa o treino.",
+      "categoria": "Conteúdo de marca",
+      "destaque": true
+    },
+    {
+      "id": "work-012",
+      "url": "https://www.instagram.com/p/DUtHumdDYKr/",
+      "titulo": "Avaliação física gratuita",
+      "cliente": "Black Suplementos",
+      "grupo": "black-suplementos",
+      "capa": "assets/work/black-comenta-resultado.jpg",
+      "descricao": "Conteúdo de conversão: chamada para avaliação física e indicação personalizada.",
+      "categoria": "Conteúdo de marca",
+      "destaque": false
+    },
+    {
+      "id": "work-013",
+      "url": "https://www.instagram.com/p/DT3m8_5EvD9/",
+      "titulo": "Treino, alimentação e suplementação",
+      "cliente": "Black Suplementos",
+      "grupo": "black-suplementos",
+      "capa": "assets/work/black-comenta-objetivo.jpg",
+      "descricao": "Conteúdo educativo sobre os pilares do resultado: treino, dieta e suplemento.",
+      "categoria": "Conteúdo de marca",
+      "destaque": false
+    },
+    {
+      "id": "work-014",
+      "url": "https://www.instagram.com/p/DSXUg0ADTzl/",
+      "titulo": "Energia para treinar",
+      "cliente": "Black Suplementos",
+      "grupo": "black-suplementos",
+      "capa": "assets/work/black-falta-energia.jpg",
+      "descricao": "Conteúdo sobre performance: o suplemento certo e a importância do descanso.",
+      "categoria": "Conteúdo de marca",
+      "destaque": false
+    }
+  ]
+}

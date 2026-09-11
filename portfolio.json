@@ -1,7 +1,61 @@
 {
-  "_ajuda": "Este arquivo controla a seção de portfólio do site. Enquanto 'itens' estiver vazio, a seção não aparece no site (nem no menu) — assim ninguém vê um portfólio vazio. Para publicar: gere a lista no sistema (app -> Meu site), cole aqui no lugar de [] e salve. A Vercel republica sozinha em ~1 minuto.",
-  "_exemplo": [
-    { "url": "https://www.instagram.com/reel/CODIGO_DO_REEL/", "titulo": "Aftermovie — Nome do evento" }
-  ],
-  "itens": []
+  "_ajuda": "Trabalhos reais da Cavalcante. O formato url/titulo continua compatível com AgênciaHub > Meu site. Capas e detalhes são associados pelo project-catalog.json.",
+  "itens": [
+    {
+      "url": "https://www.instagram.com/p/DYxpuoBvxgp/",
+      "titulo": "Lançamento da Vaquejada do Parque José Julião Diniz"
+    },
+    {
+      "url": "https://www.instagram.com/p/DUeHIHsj1ht/",
+      "titulo": "Fire Summer — treino na areia"
+    },
+    {
+      "url": "https://www.instagram.com/p/DUYopZBEYK5/",
+      "titulo": "O suplemento certo acelera resultado"
+    },
+    {
+      "url": "https://www.instagram.com/p/DUMDnSAD3Om/",
+      "titulo": "Fire Dança — aula coletiva"
+    },
+    {
+      "url": "https://www.instagram.com/p/DULtAYBDn45/",
+      "titulo": "Cross Kids — Mova-se"
+    },
+    {
+      "url": "https://www.instagram.com/p/DUTtJ6JD0Tz/",
+      "titulo": "Step — nova modalidade"
+    },
+    {
+      "url": "https://www.instagram.com/p/DTafnh7jewN/",
+      "titulo": "Mudar de nível"
+    },
+    {
+      "url": "https://www.instagram.com/p/DUoOFCpDwnR/",
+      "titulo": "Permanência gera resultado"
+    },
+    {
+      "url": "https://www.instagram.com/p/DUA50Fbjl7s/",
+      "titulo": "Continuar quando ninguém vê"
+    },
+    {
+      "url": "https://www.instagram.com/p/DUdQaFGDmkl/",
+      "titulo": "Quem vive, sente a diferença"
+    },
+    {
+      "url": "https://www.instagram.com/p/DTz6U7NDhYH/",
+      "titulo": "Evoluir é escolher o ambiente"
+    },
+    {
+      "url": "https://www.instagram.com/p/DUtHumdDYKr/",
+      "titulo": "Avaliação física gratuita"
+    },
+    {
+      "url": "https://www.instagram.com/p/DT3m8_5EvD9/",
+      "titulo": "Treino, alimentação e suplementação"
+    },
+    {
+      "url": "https://www.instagram.com/p/DSXUg0ADTzl/",
+      "titulo": "Energia para treinar"
+    }
+  ]
 }

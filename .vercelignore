@@ -7,3 +7,7 @@ README.md
 proposta/
 
 # as funções serverless ficam em /api e são publicadas; nada a ignorar aqui
+
+# Local development and maintenance
+scripts/
+docs/
