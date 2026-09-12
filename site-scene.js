@@ -7,6 +7,7 @@ export async function initHero(canvas, motion) {
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.3;
   const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x070b14, .025);
   const camera = new THREE.PerspectiveCamera(35, 1, .1, 100); camera.position.set(0, 0, 12.8);
   const pmrem = new THREE.PMREMGenerator(renderer);
   const environment = new RoomEnvironment();
@@ -31,22 +32,45 @@ export async function initHero(canvas, motion) {
   for (let i = 0; i < 620; i++) { const angle = i * 2.39996, radius = 4.1 + (i % 21) * .08; positions[i * 3] = Math.cos(angle) * radius; positions[i * 3 + 1] = Math.sin(angle) * radius * .8; positions[i * 3 + 2] = -3 - (i % 17) / 4; }
   const pointsGeometry = new THREE.BufferGeometry(); pointsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   const points = new THREE.Points(pointsGeometry, new THREE.PointsMaterial({ color: 0xc1e6f8, size: .016, transparent: true, opacity: .4, depthWrite: false })); scene.add(points);
+  // A curved wire cyclorama gives the sculpture a continuous architectural space.
+  const roomVertices = [];
+  function surface(x, z) { return [x, -4.6 + Math.pow(Math.max(0, -z - 3), 2) * .032, z]; }
+  for (let x = -30; x <= 30; x += 1.5) {
+    for (let z = -34; z < 14; z += .6) roomVertices.push(...surface(x, z), ...surface(x, z + .6));
+  }
+  for (let z = -34; z <= 14; z += 1.5) {
+    for (let x = -30; x < 30; x += 1.5) roomVertices.push(...surface(x, z), ...surface(x + 1.5, z));
+  }
+  const roomGeometry = new THREE.BufferGeometry();
+  roomGeometry.setAttribute('position', new THREE.Float32BufferAttribute(roomVertices, 3));
+  const roomMaterial = new THREE.LineBasicMaterial({color:0x7390c7,transparent:true,opacity:.25,depthWrite:false});
+  const room = new THREE.LineSegments(roomGeometry, roomMaterial); scene.add(room);
+  const orbit = new THREE.Mesh(new THREE.TorusGeometry(5.1, .018, 8, 160), new THREE.MeshBasicMaterial({color:0xa7caf9,transparent:true,opacity:.6}));
+  orbit.rotation.set(1.25, .2, -.3); orbit.position.y = -.7; scene.add(orbit);
+  const shell = canvas.closest('.experience-shell');
+  let baseCamera = 12.8;
   let frame = 0, visible = true, pointerX = 0, pointerY = 0, lost = false, disposed = false;
   const render = time => {
     frame = 0; if (disposed || lost) return;
     const animate = visible && !document.hidden && !motion.matches;
     const t = motion.matches ? 0 : time * .00035;
-    const scroll = motion.matches ? 0 : Math.min(1, scrollY / canvas.closest('.hero').offsetHeight);
-    knight.rotation.y = -.36 + Math.sin(t) * .19 + pointerX * .2 + scroll * .65;
+    const scroll = motion.matches ? 0 : Math.max(0, Math.min(1, -shell.getBoundingClientRect().top / Math.max(1, shell.offsetHeight - innerHeight)));
+    camera.position.z = baseCamera - scroll * 2;
+    camera.position.x += ((pointerX * .5 + scroll * 1.3) - camera.position.x) * .04;
+    camera.lookAt(0, -.1 + scroll * .6, 0);
+    room.rotation.y = scroll * .12;
+    orbit.rotation.z = -.3 + scroll * .8 + t * .06;
+    knight.rotation.y = -.36 + Math.sin(t) * .19 + pointerX * .2 + scroll * 1.8;
     knight.rotation.x = -.08 + pointerY * .08;
     knight.rotation.z = -.12 + Math.sin(t * .7) * .025 - scroll * .12;
-    knight.position.y = motion.matches ? 0 : Math.sin(t * 1.4) * .11;
+    knight.position.y = (camera.aspect < .8 ? 1.4 : 0) + (motion.matches ? 0 : Math.sin(t * 1.4) * .11);
+    knight.scale.setScalar(camera.aspect < .8 ? .72 : 1);
     points.rotation.z = motion.matches ? 0 : t * .035;
     renderer.render(scene, camera);
     if (animate) frame = requestAnimationFrame(render);
   };
   const start = () => { if (!frame && !disposed && !lost && visible && !document.hidden) frame = requestAnimationFrame(render); };
-  const resize = () => { const { width, height } = canvas.getBoundingClientRect(); if (!width || !height) return; renderer.setSize(width, height, false); camera.aspect = width / height; camera.position.z = width / height < .8 ? 15 : 12.8; camera.updateProjectionMatrix(); start(); };
+  const resize = () => { const { width, height } = canvas.getBoundingClientRect(); if (!width || !height) return; renderer.setSize(width, height, false); camera.aspect = width / height; baseCamera = width / height < .8 ? 17 : 13.4; camera.position.z = baseCamera; camera.updateProjectionMatrix(); start(); };
   const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(canvas);
   const visibility = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; if (visible) start(); else { cancelAnimationFrame(frame); frame = 0; } }); visibility.observe(canvas);
   const onVisibility = () => { if (document.hidden) { cancelAnimationFrame(frame); frame = 0; } else start(); };
@@ -60,7 +84,7 @@ export async function initHero(canvas, motion) {
   addEventListener('pagehide', event => {
     if (event.persisted) return; disposed = true; cancelAnimationFrame(frame); resizeObserver.disconnect(); visibility.disconnect();
     document.removeEventListener('visibilitychange', onVisibility); motion.removeEventListener('change', start);
-    knight.children.forEach(mesh => mesh.geometry.dispose()); front.dispose(); edge.dispose(); pointsGeometry.dispose(); points.material.dispose(); environmentMap.dispose(); renderer.dispose();
+    knight.children.forEach(mesh => mesh.geometry.dispose()); front.dispose(); edge.dispose(); pointsGeometry.dispose(); points.material.dispose(); environmentMap.dispose(); roomGeometry.dispose(); roomMaterial.dispose(); orbit.geometry.dispose(); orbit.material.dispose(); renderer.dispose();
   }, { once: true });
 }
 

@@ -176,7 +176,7 @@
     steps.forEach(step => observer.observe(step));
   }
   // Progressive enhancement: typography, navigation and case links work without WebGL.
-  const loadScene = () => import('./site-scene.js?v=20260912-1').then(scene => {
+  const loadScene = () => import('./site-scene.js?v=20260912-3').then(scene => {
     drawMethod = scene.initMethod($('#method-canvas'), reduceMotion); drawMethod(activeStep);
     if (!reduceMotion.matches && !navigator.connection?.saveData) scene.initHero($('#hero-canvas'), reduceMotion).catch(() => {});
   }).catch(() => {});

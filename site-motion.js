@@ -19,7 +19,7 @@
     chapterLinks.forEach((link, index) => { if (index === active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current'); });
     const distance = document.documentElement.scrollHeight - innerHeight;
     progress.style.setProperty('--reading', distance > 0 ? scrollY / distance : 0);
-    hero.style.setProperty('--hero-progress', motion.matches ? 0 : Math.min(1, scrollY / hero.offsetHeight));
+    hero.style.setProperty('--hero-progress', motion.matches ? 0 : Math.max(0, Math.min(1, -hero.parentElement.getBoundingClientRect().top / Math.max(1, hero.parentElement.offsetHeight - innerHeight))));
   }
   function schedule() { if (!frame) frame = requestAnimationFrame(update); }
   addEventListener('scroll', schedule, { passive: true });
