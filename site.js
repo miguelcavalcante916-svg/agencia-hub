@@ -9,6 +9,16 @@
   addEventListener('scroll', updateHeader, { passive: true });
   updateHeader();
 
+  $$('.service').forEach(service => service.addEventListener('toggle', () => {
+    if (!service.open) return;
+    requestAnimationFrame(() => {
+      const summary = $('summary', service);
+      if (summary.getBoundingClientRect().top < header.offsetHeight + 16) {
+        summary.scrollIntoView({block: 'start', behavior: reduceMotion.matches ? 'instant' : 'smooth'});
+      }
+    });
+  }));
+
   const menu = $('#mobile-menu');
   const toggle = $('.menu-toggle');
   const background = [$('main'), $('.site-footer'), $('.chapter-nav')];
@@ -57,6 +67,23 @@
   let filter = 'all', expanded = false;
   const grid = $('#work-grid');
   const more = $('#more-work');
+  const galleryControls = $('.work-gallery-controls');
+  galleryControls.hidden = false;
+  function moveGallery(direction) {
+    const first = grid.firstElementChild;
+    if (!first) return;
+    const gap = parseFloat(getComputedStyle(grid).columnGap) || 0;
+    grid.scrollBy({left: direction * (first.getBoundingClientRect().width + gap), behavior: reduceMotion.matches ? 'instant' : 'smooth'});
+  }
+  $('#work-prev').addEventListener('click', () => moveGallery(-1));
+  $('#work-next').addEventListener('click', () => moveGallery(1));
+  function updateGalleryButtons() {
+    $('#work-prev').disabled = grid.scrollLeft < 2;
+    $('#work-next').disabled = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 2;
+  }
+  grid.addEventListener('scroll', updateGalleryButtons, {passive: true});
+  new ResizeObserver(updateGalleryButtons).observe(grid);
+
   const dialog = $('#project-dialog');
   let dialogTrigger = null;
   function element(tag, className, text) {
@@ -80,7 +107,7 @@
     const article = element('article', 'work-card'); article.dataset.group = item.grupo;
     const link = element('a', 'work-cover');
     link.href = item.url; link.target = '_blank'; link.rel = 'noopener noreferrer';
-    link.setAttribute('aria-label', `Conhecer o projeto ${item.titulo}`);
+    link.setAttribute('aria-label', `Explorar projeto ${item.titulo}`);
     if (item.capa) {
       link.dataset.project = item.id;
       const img = element('img'); img.src = item.capa; img.alt = `${item.titulo} — ${item.cliente}`;
@@ -102,7 +129,10 @@
   function renderWorks(announce = true) {
     const selected = filter === 'all' ? works : works.filter(item => item.grupo === filter);
     const visible = filter === 'all' && !expanded ? selected.slice(0, 3) : selected;
+    grid.scrollLeft = 0;
     grid.classList.toggle('is-featured', filter === 'all' && !expanded);
+    galleryControls.hidden = filter !== 'all' || expanded;
+    requestAnimationFrame(updateGalleryButtons);
     grid.replaceChildren(...visible.map(card));
     if (!visible.length) {
       const message = element('p', 'work-empty', 'Novos trabalhos por aqui em breve. Acompanhe nossas publicações no Instagram.'); grid.append(message);
@@ -176,7 +206,7 @@
     steps.forEach(step => observer.observe(step));
   }
   // Progressive enhancement: typography, navigation and case links work without WebGL.
-  const loadScene = () => import('./site-scene.js?v=20260912-3').then(scene => {
+  const loadScene = () => import('./site-scene.js?v=20260912-6').then(scene => {
     drawMethod = scene.initMethod($('#method-canvas'), reduceMotion); drawMethod(activeStep);
     if (!reduceMotion.matches && !navigator.connection?.saveData) scene.initHero($('#hero-canvas'), reduceMotion).catch(() => {});
   }).catch(() => {});

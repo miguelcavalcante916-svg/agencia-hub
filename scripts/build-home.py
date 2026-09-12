@@ -9,6 +9,8 @@ featured = [item for item in catalog if item.get('destaque')]
 
 ICONS = {
     'arrow': '<path d="M5 19 19 5M5 5h14v14"/>',
+    'left': '<path d="M21 12H3m7-7-7 7 7 7"/>',
+    'right': '<path d="M3 12h18m-7-7 7 7-7 7"/>',
     'down': '<path d="M12 3v18m-7-7 7 7 7-7"/>',
     'up': '<path d="M12 21V3m-7 7 7-7 7 7"/>',
     'plus': '<path d="M12 5v14M5 12h14"/>',
@@ -25,7 +27,7 @@ def icon(name):
 cards = []
 for i, item in enumerate(featured):
     cards.append(f'''<article class="work-card" data-group="{escape(item['grupo'])}">
-      <a class="work-cover" href="{escape(item['url'])}" target="_blank" rel="noopener noreferrer" data-project="{escape(item['id'])}" aria-label="Conhecer o projeto {escape(item['titulo'])}">
+      <a class="work-cover" href="{escape(item['url'])}" target="_blank" rel="noopener noreferrer" data-project="{escape(item['id'])}" aria-label="Explorar projeto {escape(item['titulo'])}">
         <img src="{escape(item['capa'])}" width="1080" height="1920" loading="lazy" decoding="async" alt="{escape(item['titulo'])} — {escape(item['cliente'])}">
         <span class="work-story"><span class="work-number">0{i+1} / {escape(item['categoria'])}</span><span class="work-client">{escape(item['cliente'])}</span><span class="work-project-title">{escape(item['titulo'])}</span><span class="work-caption">Explorar projeto <span aria-hidden="true">↗</span></span></span>
         <span class="work-open" aria-hidden="true">↗</span>
@@ -57,55 +59,56 @@ page = '''<!doctype html>
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="assets/fonts/InstrumentSans-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/InstrumentSans-Bold.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="site.css?v=20260912-3">
-  <link rel="stylesheet" href="site-editorial.css?v=20260912-3">
-  <script src="site.js?v=20260912-3" defer></script>
-  <script src="site-motion.js?v=20260912-3" defer></script>
+  <link rel="stylesheet" href="site-studio.css?v=20260912-6">
+  <script src="site.js?v=20260912-6" defer></script>
+  <script src="site-motion.js?v=20260912-6" defer></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Agência Cavalcante","url":"https://agenciacavalcante.com/","image":"https://agenciacavalcante.com/og.png","description":"Estratégia de marketing, produção audiovisual, conteúdo e tráfego pago.","telephone":"+5584999492725","address":{"@type":"PostalAddress","addressLocality":"Alexandria","addressRegion":"RN","addressCountry":"BR"},"areaServed":["Alexandria","Rio Grande do Norte","Brasil"],"sameAs":["https://instagram.com/cavalcante.media"],"knowsAbout":["Marketing digital","Produção audiovisual","Tráfego pago","Identidade visual"]}</script>
 </head>
-<body class="edition-two">
+<body class="studio-edition">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
   <nav class="chapter-nav" aria-label="Capítulos do site"><a href="#arrival" aria-label="Início" aria-current="location"><span>01</span><i></i><b>Início</b></a><a href="#work" aria-label="Projetos"><span>02</span><i></i><b>Projetos</b></a><a href="#expertise" aria-label="Serviços"><span>03</span><i></i><b>Serviços</b></a><a href="#method" aria-label="Método"><span>04</span><i></i><b>Método</b></a><a href="#contact" aria-label="Contato"><span>05</span><i></i><b>Contato</b></a></nav>
   <div class="reading-progress" aria-hidden="true"><i></i></div>
-  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
   <header class="site-header" id="site-header">
-    <a class="brand" href="#arrival" aria-label="Agência Cavalcante — início"><img src="app/img/logo.svg" width="26" height="41" alt=""><span>Cavalcante<small>ESTRATÉGIA & AUDIOVISUAL</small></span></a>
-    <nav class="desktop-nav" aria-label="Navegação principal"><a href="#work">Projetos</a><a href="#expertise">Serviços</a><a href="#method">Nosso método</a></nav>
+    <a class="brand" href="#arrival" aria-label="Agência Cavalcante — início"><img src="app/img/logo.svg" width="26" height="41" alt=""><span>CAVALCANTE</span></a>
+    <nav class="desktop-nav" aria-label="Navegação principal"><a href="#work">Projetos</a><a href="#expertise">Serviços</a><a href="#method">Método</a></nav>
     <div class="header-actions"><a class="header-contact" href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20conversar%20sobre%20um%20projeto%20com%20a%20Cavalcante." target="_blank" rel="noopener noreferrer"><span>Vamos conversar</span><span aria-hidden="true">↗</span></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Abrir menu"><span></span><span></span></button></div>
   </header>
   <nav class="mobile-menu" id="mobile-menu" aria-label="Navegação móvel" hidden><a href="#work"><span>01</span>Projetos ↗</a><a href="#expertise"><span>02</span>Serviços ↗</a><a href="#method"><span>03</span>Nosso método ↗</a><a href="#portal"><span>04</span>Portal do cliente ↗</a><a href="#contact"><span>05</span>Vamos conversar ↗</a><small>DE ALEXANDRIA/RN. PARA A SUA PRÓXIMA JOGADA.</small></nav>
   <main id="conteudo">
     <div class="experience-shell">
     <section class="hero dark-section" id="arrival" aria-labelledby="hero-title">
-      <div class="hero-topline"><span><i class="status-dot" aria-hidden="true"></i> INDEPENDENTE. CRIATIVA. ESTRATÉGICA.</span><span>ALEXANDRIA / RN — BRASIL</span></div>
-      <div class="hero-wordmark" aria-hidden="true">CAVALCANTE</div>
-      <div class="hero-copy"><span class="hero-kicker">ESTRATÉGIA É SÓ O COMEÇO.</span><h1 id="hero-title">Criatividade que<br>move <em>marcas.</em></h1></div>
+      <div class="hero-topline"><span>ESTÚDIO INDEPENDENTE</span><span>ALEXANDRIA, RN / BRASIL</span></div>
+      <div class="hero-wordmark" aria-hidden="true">CAVALCANTE</div><div class="hero-next-word" aria-hidden="true">PROJETOS</div>
+      <div class="hero-copy"><span class="hero-kicker">ESTRATÉGIA & AUDIOVISUAL</span><h1 id="hero-title">Criamos presença.<br>Provocamos movimento.</h1></div>
       <div class="hero-art" id="hero-art" aria-hidden="true"><div class="hero-halo"></div><div class="orbital orbital-a"></div><div class="orbital orbital-b"></div><div class="hero-floor"></div><img class="hero-fallback" src="app/img/logo.svg" width="450" height="710" alt=""><canvas id="hero-canvas"></canvas></div>
-      <div class="hero-aside"><p>Ideias que ganham forma.<br>Marcas que movem pessoas.</p><span>Estratégia, audiovisual e presença digital.<br>Da primeira conversa ao próximo capítulo.</span><a class="button button-light" href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20planejar%20a%20pr%C3%B3xima%20jogada%20da%20minha%20marca." target="_blank" rel="noopener noreferrer">Vamos criar juntos <span aria-hidden="true">↗</span></a></div>
-      <div class="hero-bottom"><span>UM ESTÚDIO. MUITAS POSSIBILIDADES.</span><a href="#work">Explore nosso trabalho <span class="scroll-arrow" aria-hidden="true">↓</span></a><span class="hero-edition">ESTRATÉGIA & AUDIOVISUAL / 2026</span></div>
+      <div class="hero-aside"><span class="hero-kicker">EM FOCO / PROJETO SELECIONADO</span><a class="hero-feature" href="#work"><img src="assets/work/ct-fire-summer.jpg" width="1080" height="1920" alt="" decoding="async"><span><strong>Fire Summer</strong><small>Direção, captação e edição.</small><span class="text-link">Conheça o projeto ↗</span></span></a></div>
+      <div class="hero-bottom"><span>DA PRIMEIRA IDEIA AO ÚLTIMO FRAME.</span><a href="#work">Explore nosso trabalho <span class="scroll-arrow" aria-hidden="true">↓</span></a><span class="hero-edition">ESTRATÉGIA & AUDIOVISUAL / 2026</span></div>
     </section>
 
     </div>
 
-    <section class="manifesto-section dark-section section-pad" id="vision" aria-labelledby="manifesto-title"><div class="manifesto-meta"><span class="eyebrow">O QUE NOS MOVE</span><span class="manifesto-symbol" aria-hidden="true">↗</span></div><div><h2 id="manifesto-title" class="manifesto-text"><span class="manifesto-line">Entre ser visto</span><span class="manifesto-line">e ser <em>lembrado,</em></span><span class="manifesto-line">existe uma boa ideia.</span></h2><div class="manifesto-bottom"><p>Encontramos o que torna sua marca única. E transformamos isso em estratégia, imagem e movimento.</p><a class="text-link" href="#expertise">Conheça a Cavalcante <span aria-hidden="true">↓</span></a></div></div></section>
-
     <section class="work-section light-section section-pad" id="work" aria-labelledby="work-title">
       <span id="portfolio" class="anchor-alias"></span><span id="prova" class="anchor-alias"></span><span id="evidence" class="anchor-alias"></span>
       <div class="section-eyebrow"><span>01 / PROJETOS SELECIONADOS</span><span>FEITO PELA CAVALCANTE ↙</span></div>
-      <div class="section-heading"><h2 id="work-title">Feito para<br><em>ficar na memória.</em></h2><p>Um recorte do nosso olhar. Projetos reais, para marcas com histórias próprias.</p></div>
+      <div class="section-heading"><h2 id="work-title">Trabalho<br><em>em movimento.</em></h2><p>Filmes, campanhas e histórias.<br>Uma seleção do que criamos juntos.</p></div>
       <div class="work-filters" role="group" aria-label="Filtrar projetos por cliente"><button type="button" class="is-active" data-filter="all" aria-pressed="true">Todos os projetos</button><button type="button" data-filter="ct-fire" aria-pressed="false">CT Fire</button><button type="button" data-filter="black-suplementos" aria-pressed="false">Black Suplementos</button><button type="button" data-filter="parque-jose-juliao-diniz" aria-pressed="false">Parque José Julião Diniz</button></div>
       <p id="work-announcement" class="sr-only" role="status"></p>
+      <div class="work-gallery-controls" hidden><span>EXPLORE A SELEÇÃO</span><div><button type="button" id="work-prev" aria-label="Projeto anterior">←</button><button type="button" id="work-next" aria-label="Próximo projeto">→</button></div></div>
       <div class="work-grid is-featured" id="work-grid">__WORK_CARDS__</div>
       <div class="work-footer"><p>Da primeira ideia à publicação.<br><span>Direção em cada detalhe.</span></p><button class="button button-outline" type="button" id="more-work" hidden>Ver todos os trabalhos <span aria-hidden="true">↗</span></button><a class="text-link" href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener noreferrer">Acompanhe no Instagram <span aria-hidden="true">↗</span></a></div>
     </section>
+
+    <section class="manifesto-section dark-section section-pad" id="vision" aria-labelledby="manifesto-title"><div class="manifesto-meta"><span class="eyebrow">O QUE NOS MOVE</span><span class="manifesto-symbol" aria-hidden="true">↗</span></div><div><h2 id="manifesto-title" class="manifesto-text"><span class="manifesto-line">Ideias que</span> <span class="manifesto-line">ganham forma.</span> <span class="manifesto-line"><em>Marcas que</em></span> <span class="manifesto-line"><em>movem pessoas.</em></span></h2><div class="manifesto-bottom"><p>Encontramos o que torna sua marca única. E transformamos isso em estratégia, imagem e movimento.</p><a class="text-link" href="#expertise">Conheça a Cavalcante <span aria-hidden="true">↓</span></a></div></div></section>
 
     <section class="services-section light-section section-pad" id="expertise" aria-labelledby="services-title">
       <span id="servicos" class="anchor-alias"></span><div class="section-eyebrow"><span>02 / O QUE FAZEMOS</span><span>UMA DIREÇÃO. VÁRIAS POSSIBILIDADES.</span></div>
       <div class="services-layout"><div class="services-intro"><h2 id="services-title">O que sua<br>marca precisa<br> <em>agora?</em></h2><p>Um projeto pontual ou uma parceria contínua. Conectamos estratégia, criação e distribuição ao momento do seu negócio.</p><a class="text-link" href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20entender%20quais%20servi%C3%A7os%20fazem%20sentido%20para%20minha%20empresa." target="_blank" rel="noopener noreferrer">Vamos encontrar a direção <span aria-hidden="true">↗</span></a></div>
       <div class="service-list">
-        <details class="service" name="services" open><summary><span class="service-number">01</span><span>Estratégia & marca<small>PARA CONSTRUIR UMA POSIÇÃO CLARA</small></span><span class="service-plus" aria-hidden="true">+</span></summary><div class="service-body"><p>Definimos o que sua marca tem a dizer, para quem e como deve ser percebida.</p><ul><li>Diagnóstico de marca e presença digital</li><li>Posicionamento e direção criativa</li><li>Identidade visual e suas aplicações</li><li>Planejamento de comunicação</li></ul><a href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20conversar%20sobre%20estrat%C3%A9gia%20e%20marca." target="_blank" rel="noopener noreferrer">Planejar minha marca ↗</a></div></details>
-        <details class="service" name="services"><summary><span class="service-number">02</span><span>Audiovisual<small>PARA MOSTRAR O VALOR DO SEU NEGÓCIO</small></span><span class="service-plus" aria-hidden="true">+</span></summary><div class="service-body"><p>Transformamos uma intenção em imagem, som e movimento. Do roteiro ao último corte.</p><ul><li>Conceito, roteiro e direção</li><li>Captação e produção de vídeos</li><li>Reels, campanhas e filmes de marca</li><li>Cobertura e aftermovies de eventos</li></ul><a href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20produzir%20um%20v%C3%ADdeo%20com%20a%20Cavalcante." target="_blank" rel="noopener noreferrer">Tirar meu filme do papel ↗</a></div></details>
-        <details class="service" name="services"><summary><span class="service-number">03</span><span>Conteúdo & presença<small>PARA CONSTRUIR CONSISTÊNCIA</small></span><span class="service-plus" aria-hidden="true">+</span></summary><div class="service-body"><p>Uma presença que faz sentido para a sua marca e para as pessoas que você quer alcançar.</p><ul><li>Linha editorial e calendário de conteúdo</li><li>Gestão de Instagram</li><li>Design e conteúdo para redes sociais</li><li>Roteiros, pautas e formatos de atração</li></ul><a href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20organizar%20o%20conte%C3%BAdo%20da%20minha%20marca." target="_blank" rel="noopener noreferrer">Construir minha presença ↗</a></div></details>
-        <details class="service" name="services"><summary><span class="service-number">04</span><span>Mídia & performance<small>PARA CONECTAR SUA OFERTA AO PÚBLICO</small></span><span class="service-plus" aria-hidden="true">+</span></summary><div class="service-body"><p>Distribuição com objetivo, criativos alinhados e acompanhamento para orientar cada ajuste.</p><ul><li>Planejamento de campanhas e investimento</li><li>Gestão de tráfego pago</li><li>Criação e teste de anúncios</li><li>Acompanhamento e leitura de resultados</li></ul><a href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20conversar%20sobre%20tr%C3%A1fego%20pago%20e%20campanhas." target="_blank" rel="noopener noreferrer">Planejar minha campanha ↗</a></div></details>
+        <details class="service" name="services" open><summary><span class="service-number">01</span><span>Estratégia & marca <small>PARA CONSTRUIR UMA POSIÇÃO CLARA</small></span><span class="service-plus" aria-hidden="true">+</span></summary><div class="service-body"><p>Definimos o que sua marca tem a dizer, para quem e como deve ser percebida.</p><ul><li>Diagnóstico de marca e presença digital</li><li>Posicionamento e direção criativa</li><li>Identidade visual e suas aplicações</li><li>Planejamento de comunicação</li></ul><a href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20conversar%20sobre%20estrat%C3%A9gia%20e%20marca." target="_blank" rel="noopener noreferrer">Planejar minha marca ↗</a></div></details>
+        <details class="service" name="services"><summary><span class="service-number">02</span><span>Audiovisual <small>PARA MOSTRAR O VALOR DO SEU NEGÓCIO</small></span><span class="service-plus" aria-hidden="true">+</span></summary><div class="service-body"><p>Transformamos uma intenção em imagem, som e movimento. Do roteiro ao último corte.</p><ul><li>Conceito, roteiro e direção</li><li>Captação e produção de vídeos</li><li>Reels, campanhas e filmes de marca</li><li>Cobertura e aftermovies de eventos</li></ul><a href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20produzir%20um%20v%C3%ADdeo%20com%20a%20Cavalcante." target="_blank" rel="noopener noreferrer">Tirar meu filme do papel ↗</a></div></details>
+        <details class="service" name="services"><summary><span class="service-number">03</span><span>Conteúdo & presença <small>PARA CONSTRUIR CONSISTÊNCIA</small></span><span class="service-plus" aria-hidden="true">+</span></summary><div class="service-body"><p>Uma presença que faz sentido para a sua marca e para as pessoas que você quer alcançar.</p><ul><li>Linha editorial e calendário de conteúdo</li><li>Gestão de Instagram</li><li>Design e conteúdo para redes sociais</li><li>Roteiros, pautas e formatos de atração</li></ul><a href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20organizar%20o%20conte%C3%BAdo%20da%20minha%20marca." target="_blank" rel="noopener noreferrer">Construir minha presença ↗</a></div></details>
+        <details class="service" name="services"><summary><span class="service-number">04</span><span>Mídia & performance <small>PARA CONECTAR SUA OFERTA AO PÚBLICO</small></span><span class="service-plus" aria-hidden="true">+</span></summary><div class="service-body"><p>Distribuição com objetivo, criativos alinhados e acompanhamento para orientar cada ajuste.</p><ul><li>Planejamento de campanhas e investimento</li><li>Gestão de tráfego pago</li><li>Criação e teste de anúncios</li><li>Acompanhamento e leitura de resultados</li></ul><a href="https://wa.me/5584999492725?text=Ol%C3%A1!%20Quero%20conversar%20sobre%20tr%C3%A1fego%20pago%20e%20campanhas." target="_blank" rel="noopener noreferrer">Planejar minha campanha ↗</a></div></details>
       </div></div>
     </section>
 
@@ -128,7 +131,7 @@ page = '''<!doctype html>
 </html>
 '''
 page = page.replace('__WORK_CARDS__', '\n'.join(cards)).replace('__CATALOG__', json.dumps(catalog, ensure_ascii=False).replace('<', '\\u003c'))
-for glyph, name in [('↗', 'arrow'), ('↓', 'down'), ('↑', 'up'), ('×', 'close'), ('✓', 'check')]:
+for glyph, name in [('↗', 'arrow'), ('↓', 'down'), ('↑', 'up'), ('←', 'left'), ('→', 'right'), ('×', 'close'), ('✓', 'check')]:
     page = page.replace(glyph, icon(name))
 page = page.replace('aria-hidden="true">+</span>', 'aria-hidden="true">' + icon('plus') + '</span>')
 for number, name in enumerate(['strategy', 'film', 'content', 'performance'], 1):

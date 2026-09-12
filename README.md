@@ -10,7 +10,7 @@
 | Arquivo | Para que serve |
 |---|---|
 | `index.html` | Página pública gerada por `scripts/build-home.py`; sem build na Vercel |
-| `site.css`, `site-editorial.css` | Componentes básicos e direção visual editorial responsiva |
+| `site-studio.css` | Sistema visual responsivo da página pública; os estilos anteriores não são carregados pela home |
 | `site.js`, `site-motion.js`, `site-scene.js` | Portfólio acessível, transições de rolagem e cenas opcionais |
 | `project-catalog.json`, `assets/work/` | Descrições e capas verificadas dos trabalhos |
 | `app/` | O sistema: `js/views/` tem uma tela por arquivo |
@@ -87,7 +87,7 @@ Gere um link exclusivo por cliente em **Portal do cliente** e envie no WhatsApp:
 
 ## ✏️ Personalizar o site
 
-Edite `scripts/build-home.py` para os textos e execute `python3 scripts/build-home.py`. O resultado é `index.html`, servido diretamente pela Vercel. Edite `site-editorial.css` para a direção visual e `site.css` para os componentes básicos. Mantenha as descrições factuais e os links reais dos trabalhos.
+Edite `scripts/build-home.py` para os textos e execute `python3 scripts/build-home.py`. O resultado é `index.html`, servido diretamente pela Vercel. Edite `site-studio.css` para a direção visual e os componentes da home. A galeria usa rolagem horizontal nativa nos destaques e grade ao filtrar; as imagens mantêm a proporção vertical. A cena limita a resolução de renderização, pausa fora da tela e interpola mouse/rolagem por tempo. Mantenha as descrições factuais e os links reais dos trabalhos.
 
 A edição editorial apresenta o símbolo da marca em metal 3D, tipografia em grande escala, três projetos em composições alternadas e um arquivo filtrável com os 14 trabalhos. A navegação usa rolagem nativa; as transições são opcionais e respeitam redução de movimento. Os filmes abrem pelo link real no Instagram.
 
