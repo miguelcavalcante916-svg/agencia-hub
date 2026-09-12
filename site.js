@@ -65,6 +65,17 @@
     if (text !== undefined) node.textContent = text;
     return node;
   }
+  function projectArrow() {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'icon icon-arrow');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '1.5'); svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round'); svg.setAttribute('aria-hidden', 'true');
+    const path = document.createElementNS(svg.namespaceURI, 'path');
+    path.setAttribute('d', 'M5 19 19 5M5 5h14v14'); svg.append(path);
+    return svg;
+  }
   function card(item, index) {
     const article = element('article', 'work-card'); article.dataset.group = item.grupo;
     const link = element('a', 'work-cover');
@@ -82,9 +93,9 @@
     story.append(element('span', 'work-number', `${String(index + 1).padStart(2, '0')} / ${item.categoria || 'Projeto Cavalcante'}`));
     story.append(element('span', 'work-client', item.cliente || item.titulo));
     story.append(element('span', 'work-project-title', item.titulo));
-    const arrow = element('span', 'work-open', '↗'); arrow.setAttribute('aria-hidden', 'true'); link.append(arrow);
+    const arrow = element('span', 'work-open'); arrow.append(projectArrow()); arrow.setAttribute('aria-hidden', 'true'); link.append(arrow);
     const caption = element('span', 'work-caption', item.capa ? 'Explorar projeto' : 'Ver o trabalho');
-    const arrow2 = element('span', '', '↗'); arrow2.setAttribute('aria-hidden', 'true'); caption.append(arrow2); story.append(caption); link.append(story);
+    const arrow2 = element('span', ''); arrow2.append(projectArrow()); arrow2.setAttribute('aria-hidden', 'true'); caption.append(arrow2); story.append(caption); link.append(story);
     const meta = element('div', 'work-meta'); meta.append(element('h3', '', item.cliente || item.titulo), element('p', '', item.categoria || 'Projeto Cavalcante'));
     article.append(link, meta); return article;
   }
@@ -165,7 +176,7 @@
     steps.forEach(step => observer.observe(step));
   }
   // Progressive enhancement: typography, navigation and case links work without WebGL.
-  const loadScene = () => import('./site-scene.js?v=20260911-2').then(scene => {
+  const loadScene = () => import('./site-scene.js?v=20260911-3').then(scene => {
     drawMethod = scene.initMethod($('#method-canvas'), reduceMotion); drawMethod(activeStep);
     if (!reduceMotion.matches && !navigator.connection?.saveData) scene.initHero($('#hero-canvas'), reduceMotion).catch(() => {});
   }).catch(() => {});

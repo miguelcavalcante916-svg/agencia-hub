@@ -29,3 +29,33 @@
 
 /* Keep the subject in frame across wide and portrait case layouts. */
 .is-featured .work-card[data-group="parque-jose-juliao-diniz"] .work-cover>img,.is-featured .work-card[data-group="black-suplementos"] .work-cover>img{object-position:50% 20%}
+
+/* Unified vector language: shared optical weight and deliberate touch targets. */
+.icon{display:inline-block;width:1.2em;height:1.2em;flex-shrink:0;vertical-align:-.18em;pointer-events:none}
+.button .icon,.text-link .icon,.header-contact .icon{width:22px;height:22px;transition:transform .25s ease}
+a:hover>.icon,.button:hover .icon,.text-link:hover .icon{transform:translate(2px,-2px)}
+.service-number .icon{width:34px;height:34px;stroke-width:1.25}
+.service-number{display:flex;align-items:center;justify-content:center}
+.service-plus .icon{width:22px;height:22px}.dialog-close .icon{width:26px;height:26px}
+.work-open .icon{width:26px;height:26px}.contact-arrow .icon{width:100%;height:100%}
+.contact-arrow{display:flex;align-items:center;justify-content:center}
+.manifesto-symbol .icon{width:100%;height:100%;max-height:140px}
+.footer-wordmark>span .icon{width:.65em;height:.65em}
+.mobile-menu a>.icon{margin-left:auto;width:28px;height:28px}
+.eyebrow,.section-eyebrow,.hero-kicker,.work-number,.work-caption,.method-visual-top,.method-visual-bottom,.service summary small,.footer-bottom{font-size:12px}
+/* Projects become cinematic, edge-to-edge scenes rather than split cards. */
+.work-grid.is-featured{gap:24px}
+.is-featured .work-card{position:relative;min-height:0;overflow:hidden;border-radius:4px}
+.is-featured .work-card .work-cover{display:block;position:relative;height:min(850px,90svh);min-height:560px;isolation:isolate;overflow:hidden}
+.is-featured .work-card .work-cover>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;transform:scale(1.015);transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.is-featured .work-card .work-cover:hover>img{transform:scale(1.065)}
+.is-featured .work-card .work-cover:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.2),transparent 30%,rgba(0,0,0,.78));z-index:1;pointer-events:none}
+.is-featured .work-card .work-story{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:clamp(24px,5vw,80px);color:#fff;background:none;width:100%;max-width:none}
+.is-featured .work-card .work-number{position:absolute;left:clamp(24px,5vw,80px);top:36px;color:#fff}
+.is-featured .work-card .work-client{font-size:clamp(48px,7vw,112px);line-height:.98;letter-spacing:-.065em;max-width:850px;color:#fff}
+.is-featured .work-card .work-project-title{max-width:540px;color:#eee;font-size:18px;margin-top:20px}
+.is-featured .work-card .work-caption{margin-top:30px;color:#fff;border-color:#ffffff60}
+.is-featured .work-card .work-open{display:flex;position:absolute;right:36px;top:30px;z-index:3;background:#ffffff18;border:1px solid #ffffff60;color:#fff;backdrop-filter:blur(12px)}
+@media(min-width:1000px){.work-section{padding-left:24px;padding-right:24px}.work-section>.section-eyebrow,.work-section>.section-heading,.work-section>.work-filters,.work-section>.work-footer{margin-left:4vw;margin-right:4vw}.is-featured .work-card{position:sticky;top:100px}.work-grid.is-featured{padding-bottom:24px}}
+@media(max-width:600px){.is-featured .work-card .work-cover{height:76svh;min-height:520px}.is-featured .work-card .work-client{font-size:48px}.is-featured .work-card .work-open{right:20px;top:24px}.is-featured .work-card .work-number{max-width:65%;line-height:1.5;top:28px}.service-number .icon{width:26px;height:26px}}
+@media(prefers-reduced-motion:reduce){.icon,.is-featured .work-card .work-cover>img{transition:none}.is-featured .work-card{position:relative;top:auto}.is-featured .work-card .work-cover:hover>img{transform:none}}

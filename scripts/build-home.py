@@ -6,6 +6,22 @@ from html import escape
 ROOT = Path(__file__).resolve().parents[1]
 catalog = json.loads((ROOT / 'project-catalog.json').read_text())['itens']
 featured = [item for item in catalog if item.get('destaque')]
+
+ICONS = {
+    'arrow': '<path d="M5 19 19 5M5 5h14v14"/>',
+    'down': '<path d="M12 3v18m-7-7 7 7 7-7"/>',
+    'up': '<path d="M12 21V3m-7 7 7-7 7 7"/>',
+    'plus': '<path d="M12 5v14M5 12h14"/>',
+    'close': '<path d="m6 6 12 12M6 18 18 6"/>',
+    'check': '<path d="m5 12 4 4L19 6"/>',
+    'strategy': '<circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6 6-2Z"/>',
+    'film': '<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M3 11h18M3 7l17-4 1 4M8 6l3 4m3-5 3 4"/>',
+    'content': '<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 5h4m-4 14h4M9 10h6m-6 3h4"/>',
+    'performance': '<path d="M3 3v18h18M7 15l5-5 4 2 5-7m-5 0h5v5"/>',
+}
+def icon(name):
+    return '<svg class="icon icon-' + name + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + ICONS[name] + '</svg>'
+
 cards = []
 for i, item in enumerate(featured):
     cards.append(f'''<article class="work-card" data-group="{escape(item['grupo'])}">
@@ -41,10 +57,10 @@ page = '''<!doctype html>
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="assets/fonts/InstrumentSans-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/InstrumentSans-Bold.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="site.css?v=20260911-2">
-  <link rel="stylesheet" href="site-editorial.css?v=20260911-2">
-  <script src="site.js?v=20260911-2" defer></script>
-  <script src="site-motion.js?v=20260911-2" defer></script>
+  <link rel="stylesheet" href="site.css?v=20260911-3">
+  <link rel="stylesheet" href="site-editorial.css?v=20260911-3">
+  <script src="site.js?v=20260911-3" defer></script>
+  <script src="site-motion.js?v=20260911-3" defer></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Agência Cavalcante","url":"https://agenciacavalcante.com/","image":"https://agenciacavalcante.com/og.png","description":"Estratégia de marketing, produção audiovisual, conteúdo e tráfego pago.","telephone":"+5584999492725","address":{"@type":"PostalAddress","addressLocality":"Alexandria","addressRegion":"RN","addressCountry":"BR"},"areaServed":["Alexandria","Rio Grande do Norte","Brasil"],"sameAs":["https://instagram.com/cavalcante.media"],"knowsAbout":["Marketing digital","Produção audiovisual","Tráfego pago","Identidade visual"]}</script>
 </head>
 <body class="edition-two">
@@ -108,5 +124,10 @@ page = '''<!doctype html>
 </html>
 '''
 page = page.replace('__WORK_CARDS__', '\n'.join(cards)).replace('__CATALOG__', json.dumps(catalog, ensure_ascii=False).replace('<', '\\u003c'))
+for glyph, name in [('↗', 'arrow'), ('↓', 'down'), ('↑', 'up'), ('×', 'close'), ('✓', 'check')]:
+    page = page.replace(glyph, icon(name))
+page = page.replace('aria-hidden="true">+</span>', 'aria-hidden="true">' + icon('plus') + '</span>')
+for number, name in enumerate(['strategy', 'film', 'content', 'performance'], 1):
+    page = page.replace('<span class="service-number">0' + str(number) + '</span>', '<span class="service-number">' + icon(name) + '</span>')
 (ROOT / 'index.html').write_text(page)
 print('index.html generated with', len(featured), 'featured works and', len(catalog), 'catalog entries.')
