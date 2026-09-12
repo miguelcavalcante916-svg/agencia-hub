@@ -57,13 +57,14 @@ page = '''<!doctype html>
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="assets/fonts/InstrumentSans-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/InstrumentSans-Bold.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="site.css?v=20260911-3">
-  <link rel="stylesheet" href="site-editorial.css?v=20260911-3">
-  <script src="site.js?v=20260911-3" defer></script>
-  <script src="site-motion.js?v=20260911-3" defer></script>
+  <link rel="stylesheet" href="site.css?v=20260912-1">
+  <link rel="stylesheet" href="site-editorial.css?v=20260912-1">
+  <script src="site.js?v=20260912-1" defer></script>
+  <script src="site-motion.js?v=20260912-1" defer></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Agência Cavalcante","url":"https://agenciacavalcante.com/","image":"https://agenciacavalcante.com/og.png","description":"Estratégia de marketing, produção audiovisual, conteúdo e tráfego pago.","telephone":"+5584999492725","address":{"@type":"PostalAddress","addressLocality":"Alexandria","addressRegion":"RN","addressCountry":"BR"},"areaServed":["Alexandria","Rio Grande do Norte","Brasil"],"sameAs":["https://instagram.com/cavalcante.media"],"knowsAbout":["Marketing digital","Produção audiovisual","Tráfego pago","Identidade visual"]}</script>
 </head>
 <body class="edition-two">
+  <nav class="chapter-nav" aria-label="Capítulos do site"><a href="#arrival" aria-label="Início" aria-current="location"><span>01</span><i></i><b>Início</b></a><a href="#work" aria-label="Projetos"><span>02</span><i></i><b>Projetos</b></a><a href="#expertise" aria-label="Serviços"><span>03</span><i></i><b>Serviços</b></a><a href="#method" aria-label="Método"><span>04</span><i></i><b>Método</b></a><a href="#contact" aria-label="Contato"><span>05</span><i></i><b>Contato</b></a></nav>
   <div class="reading-progress" aria-hidden="true"><i></i></div>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
   <header class="site-header" id="site-header">
@@ -82,7 +83,7 @@ page = '''<!doctype html>
       <div class="hero-bottom"><span>UM ESTÚDIO. MUITAS POSSIBILIDADES.</span><a href="#work">Explore nosso trabalho <span class="scroll-arrow" aria-hidden="true">↓</span></a><span class="hero-edition">ESTRATÉGIA & AUDIOVISUAL / 2026</span></div>
     </section>
 
-    <section class="manifesto-section light-section section-pad" aria-labelledby="manifesto-title"><div class="manifesto-meta"><span class="eyebrow">O QUE NOS MOVE</span><span class="manifesto-symbol" aria-hidden="true">↗</span></div><div><h2 id="manifesto-title" class="manifesto-text">Entre ser visto<br>e ser <em>lembrado,</em><br>existe uma boa ideia.</h2><div class="manifesto-bottom"><p>Encontramos o que torna sua marca única. E transformamos isso em estratégia, imagem e movimento.</p><a class="text-link" href="#expertise">Conheça a Cavalcante <span aria-hidden="true">↓</span></a></div></div></section>
+    <section class="manifesto-section dark-section section-pad" id="vision" aria-labelledby="manifesto-title"><div class="manifesto-meta"><span class="eyebrow">O QUE NOS MOVE</span><span class="manifesto-symbol" aria-hidden="true">↗</span></div><div><h2 id="manifesto-title" class="manifesto-text"><span class="manifesto-line">Entre ser visto</span><span class="manifesto-line">e ser <em>lembrado,</em></span><span class="manifesto-line">existe uma boa ideia.</span></h2><div class="manifesto-bottom"><p>Encontramos o que torna sua marca única. E transformamos isso em estratégia, imagem e movimento.</p><a class="text-link" href="#expertise">Conheça a Cavalcante <span aria-hidden="true">↓</span></a></div></div></section>
 
     <section class="work-section light-section section-pad" id="work" aria-labelledby="work-title">
       <span id="portfolio" class="anchor-alias"></span><span id="prova" class="anchor-alias"></span><span id="evidence" class="anchor-alias"></span>

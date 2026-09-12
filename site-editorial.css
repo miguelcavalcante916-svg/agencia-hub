@@ -59,3 +59,19 @@ a:hover>.icon,.button:hover .icon,.text-link:hover .icon{transform:translate(2px
 @media(min-width:1000px){.work-section{padding-left:24px;padding-right:24px}.work-section>.section-eyebrow,.work-section>.section-heading,.work-section>.work-filters,.work-section>.work-footer{margin-left:4vw;margin-right:4vw}.is-featured .work-card{position:sticky;top:100px}.work-grid.is-featured{padding-bottom:24px}}
 @media(max-width:600px){.is-featured .work-card .work-cover{height:76svh;min-height:520px}.is-featured .work-card .work-client{font-size:48px}.is-featured .work-card .work-open{right:20px;top:24px}.is-featured .work-card .work-number{max-width:65%;line-height:1.5;top:28px}.service-number .icon{width:26px;height:26px}}
 @media(prefers-reduced-motion:reduce){.icon,.is-featured .work-card .work-cover>img{transition:none}.is-featured .work-card{position:relative;top:auto}.is-featured .work-card .work-cover:hover>img{transform:none}}
+
+/* A continuous dark introduction, with a scroll-lit editorial statement. */
+.manifesto-section{background:#080e12;color:#eeeee7;position:relative;min-height:100svh;align-items:center;border-top:1px solid #ffffff12;overflow:hidden}
+.manifesto-section:before{content:"";position:absolute;width:70vw;height:70vw;right:-30vw;top:-25vw;border:1px solid #b2d9e921;border-radius:50%;box-shadow:0 0 0 7vw #b2d9e907,0 0 0 14vw #b2d9e904;pointer-events:none}
+.manifesto-section>div{position:relative;z-index:1}.manifesto-line{display:block;opacity:var(--line-light,1)}
+.manifesto-text{font-size:clamp(44px,6.3vw,104px);line-height:1.08}.manifesto-text em{color:#b2d9e9}
+.manifesto-section .manifesto-bottom p{color:#b7c1c7}.manifesto-section .text-link{color:#eeeee7;border-color:#ffffff40}.manifesto-meta{color:#b2d9e9}
+.chapter-nav{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:45;display:flex;flex-direction:column;padding:8px 4px;background:#080e12dc;backdrop-filter:blur(16px);border:1px solid #ffffff25;border-radius:40px;color:#dce9ef}
+.chapter-nav a{position:relative;display:flex;align-items:center;justify-content:center;width:36px;height:44px;text-decoration:none;color:inherit}
+.chapter-nav a>span{font-size:10px;opacity:.5}.chapter-nav i{display:none}.chapter-nav b{position:absolute;right:48px;background:#080e12;padding:10px 14px;border:1px solid #ffffff30;border-radius:6px;font-size:13px;font-weight:400;opacity:0;transform:translateX(5px);transition:opacity .2s,transform .2s;pointer-events:none}
+.chapter-nav a:hover b,.chapter-nav a:focus-visible b{opacity:1;transform:none}.chapter-nav a[aria-current]>span{opacity:1;color:#b2d9e9}.chapter-nav a[aria-current]:after{content:"";position:absolute;bottom:5px;width:12px;height:2px;background:#b2d9e9}
+.chapter-nav a:focus-visible{outline:2px solid #b2d9e9;border-radius:20px;outline-offset:-2px}
+@media(min-width:1000px){.manifesto-section{padding-top:180px;padding-bottom:180px}.manifesto-bottom{margin-top:64px}}
+@media(max-width:1100px){.chapter-nav{display:none}}
+@media(max-width:600px){.manifesto-section{min-height:80svh}.manifesto-text{font-size:clamp(34px,8.2vw,49px)}.manifesto-bottom{gap:28px}.manifesto-symbol{display:none}}
+@media(prefers-reduced-motion:reduce){.manifesto-line{opacity:1!important}.chapter-nav b{transition:none}}

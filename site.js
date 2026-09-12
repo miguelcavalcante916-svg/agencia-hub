@@ -11,7 +11,7 @@
 
   const menu = $('#mobile-menu');
   const toggle = $('.menu-toggle');
-  const background = [$('main'), $('.site-footer')];
+  const background = [$('main'), $('.site-footer'), $('.chapter-nav')];
   function setMenu(open, restore = false) {
     menu.hidden = !open;
     toggle.setAttribute('aria-expanded', String(open));
@@ -176,7 +176,7 @@
     steps.forEach(step => observer.observe(step));
   }
   // Progressive enhancement: typography, navigation and case links work without WebGL.
-  const loadScene = () => import('./site-scene.js?v=20260911-3').then(scene => {
+  const loadScene = () => import('./site-scene.js?v=20260912-1').then(scene => {
     drawMethod = scene.initMethod($('#method-canvas'), reduceMotion); drawMethod(activeStep);
     if (!reduceMotion.matches && !navigator.connection?.saveData) scene.initHero($('#hero-canvas'), reduceMotion).catch(() => {});
   }).catch(() => {});
