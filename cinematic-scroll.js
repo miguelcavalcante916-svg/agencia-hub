@@ -2,7 +2,7 @@
   const root = document.documentElement;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const coarse = matchMedia('(pointer: coarse)').matches;
-  const debug = new URLSearchParams(location.search).get('debugMotion') === '1';
+  const debug = new URLSearchParams(location.search).get('motionDebug') === '1';
   const gsap = window.gsap;
   const ScrollTrigger = window.ScrollTrigger;
   const clamp = (value, min = -1, max = 1) => Math.min(max, Math.max(min, value));
@@ -30,7 +30,7 @@
       `scene: ${state.scene || 'arrival'}`,
       `progress: ${(state.progress || 0).toFixed(3)}`,
       `velocity: ${(state.velocity || 0).toFixed(3)}`,
-      `reduced: ${reduced ? 'yes' : 'no'}`,
+      `mode: ${window.CavalcantePerformanceMode || (reduced ? 'fallback' : 'full')}`,
     ].join('\n');
   };
 
@@ -138,8 +138,9 @@
         .to(root, { '--reel-camera': 1, duration: .3, ease: 'power4.out' }, .6);
     }
 
-    if (work && !work.hidden) {
-      gsap.timeline({
+    if (work && !work.hidden && workPlanes.length) {
+      gsap.set(workPlanes, { autoAlpha: 0, clipPath: 'inset(100% 0 0 0)' });
+      const workTimeline = gsap.timeline({
         scrollTrigger: {
           trigger: work,
           start: 'top top',
@@ -153,17 +154,41 @@
               gsap.to(plane, {
                 skewX: velocity * (index % 2 ? -2.5 : 2.5),
                 duration: .35,
-                overwrite: true,
+                overwrite: 'auto',
                 ease: 'power3.out',
               });
             });
           },
           onScrubComplete: settleVelocity,
         },
-      })
-        .to(workPlanes, { y: '-4vh', duration: .25, stagger: .12, ease: 'power3.out' }, 0)
-        .to(workPlanes, { scale: 1.06, duration: .35, stagger: .1, ease: 'expo.out' }, .35)
-        .to(root, { '--work-camera': 1, duration: .34, ease: 'power3.inOut' }, .62);
+      });
+
+      workTimeline
+        .to('.work-word', { autoAlpha: 0, y: '-8vh', scale: .92, duration: .12, ease: 'power3.in' }, 0)
+        .fromTo(workPlanes[0],
+          { autoAlpha: 0, clipPath: 'inset(100% 0 0 0)' },
+          { autoAlpha: 1, clipPath: 'inset(0% 0 0 0)', duration: .2, ease: 'expo.out' }, .08)
+        .fromTo(workPlanes[0].querySelector('img'), { scale: 1.12 }, { scale: 1.02, duration: .3, ease: 'power2.out' }, .08);
+
+      if (workPlanes[1]) {
+        workTimeline
+          .to(workPlanes[0], { autoAlpha: 0, scale: .96, duration: .14, ease: 'power2.in' }, .34)
+          .fromTo(workPlanes[1],
+            { autoAlpha: 0, clipPath: 'inset(0 0 100% 0)' },
+            { autoAlpha: 1, clipPath: 'inset(0 0 0% 0)', duration: .22, ease: 'expo.out' }, .35)
+          .fromTo(workPlanes[1].querySelector('img'), { scale: 1.12 }, { scale: 1.02, duration: .3, ease: 'power2.out' }, .35);
+      }
+
+      if (workPlanes[2]) {
+        workTimeline
+          .to(workPlanes[1], { autoAlpha: 0, scale: .96, duration: .14, ease: 'power2.in' }, .64)
+          .fromTo(workPlanes[2],
+            { autoAlpha: 0, clipPath: 'inset(100% 0 0 0)' },
+            { autoAlpha: 1, clipPath: 'inset(0% 0 0 0)', duration: .22, ease: 'expo.out' }, .65)
+          .fromTo(workPlanes[2].querySelector('img'), { scale: 1.12 }, { scale: 1.02, duration: .31, ease: 'power2.out' }, .65);
+      }
+
+      workTimeline.to(root, { '--work-camera': 1, duration: .22, ease: 'power3.inOut' }, .76);
     }
 
     if (portal) {

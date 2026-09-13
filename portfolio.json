@@ -1,7 +1,26 @@
 {
-  "_ajuda": "Este arquivo controla a seção de portfólio do site. Enquanto 'itens' estiver vazio, a seção não aparece no site (nem no menu) — assim ninguém vê um portfólio vazio. Para publicar: gere a lista no sistema (app -> Meu site), cole aqui no lugar de [] e salve. A Vercel republica sozinha em ~1 minuto.",
-  "_exemplo": [
-    { "url": "https://www.instagram.com/reel/CODIGO_DO_REEL/", "titulo": "Aftermovie — Nome do evento" }
-  ],
-  "itens": []
+  "_ajuda": "Seleção editorial exibida na experiência Work. A lista completa e os dados de origem ficam em project-catalog.json.",
+  "itens": [
+    {
+      "url": "https://www.instagram.com/p/DUeHIHsj1ht/",
+      "titulo": "Fire Summer — treino na areia",
+      "cliente": "CT Fire",
+      "categoria": "Filme e conteúdo",
+      "capa": "assets-cavalcante/clients/ct-fire/ct-fire-summer.jpg"
+    },
+    {
+      "url": "https://www.instagram.com/p/DYxpuoBvxgp/",
+      "titulo": "Lançamento da Vaquejada",
+      "cliente": "Parque José Julião Diniz",
+      "categoria": "Campanha de lançamento",
+      "capa": "assets-cavalcante/clients/parque-jose-juliao-diniz/parque-jose-juliao-diniz-lancamento.jpg"
+    },
+    {
+      "url": "https://www.instagram.com/p/DUYopZBEYK5/",
+      "titulo": "O suplemento certo",
+      "cliente": "Black Suplementos",
+      "categoria": "Conteúdo de marca",
+      "capa": "assets-cavalcante/clients/black-suplementos/black-suplemento-certo.jpg"
+    }
+  ]
 }

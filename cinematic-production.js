@@ -4,23 +4,25 @@
   const work = document.querySelector('.work');
   const reel = document.querySelector('.reel');
   const portal = document.querySelector('.portal');
-  // Production media slots. Keep empty until the real assets are delivered.
-  const SHOWREEL_DESKTOP = '';
-  const SHOWREEL_MOBILE = '';
-  const SHOWREEL_POSTER = '';
   const knight = document.querySelector('.knight');
   const finale = document.querySelector('.finale');
-  const workLive = document.querySelector('#work-live');
   const evidence = document.querySelector('#evidence');
-  const evidenceLive = document.querySelector('#evidence-live');
   const knightNodes = [...document.querySelectorAll('.knight-node')];
   const knightDetail = document.querySelector('.knight-detail');
   const year = document.querySelector('#current-year');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const saveData = Boolean(navigator.connection?.saveData);
+  const coarse = matchMedia('(pointer: coarse)').matches;
+  const constrained = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4)
+    || (navigator.deviceMemory && navigator.deviceMemory <= 4);
+  const performanceMode = reducedMotion ? 'fallback' : (saveData || constrained || coarse ? 'reduced' : 'full');
   const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
   const ease = value => 1 - Math.pow(1 - clamp(value), 3);
 
-  if (!work || !portal || !knight || !finale) return;
+  root.dataset.performance = performanceMode;
+  window.CavalcantePerformanceMode = performanceMode;
   if (year) year.textContent = String(new Date().getFullYear());
+  if (!work || !portal || !knight || !finale) return;
 
   const methodSteps = [
     ['01 / Diagnóstico', 'A direção começa pelo que precisa mudar, não pelo que precisa ser postado.'],
@@ -76,64 +78,43 @@
     },
   };
 
-  const hideUnavailableChapters = () => {
-    if (!reel || (!SHOWREEL_DESKTOP && !SHOWREEL_MOBILE)) reel?.setAttribute('hidden', '');
-    if (!work || window.__portfolioItems?.length) return;
-    work.setAttribute('hidden', '');
-    document.querySelectorAll('a[href="#work"], a[href="#prova"], a[href="#evidence"]').forEach(link => link.remove());
-    const evidenceLabel = document.querySelector('#evidence-scene-label');
-    const portalLabel = document.querySelector('#portal-scene-label');
-    const knightLabel = document.querySelector('#knight-scene-label');
-    const finaleLabel = document.querySelector('#finale-scene-label');
-    evidenceLabel?.replaceChildren(document.createTextNode('Scene 05 / Evidence'));
-    portalLabel?.replaceChildren(document.createTextNode('Scene 05 / No black box'));
-    knightLabel?.replaceChildren(document.createTextNode('Scene 06 / Knight move'));
-    finaleLabel?.replaceChildren(document.createTextNode('Scene 07 / Start a project'));
-  };
-
-  const setPortfolio = async () => {
+  const configureOptionalShowreel = async () => {
+    if (!reel) return;
+    let showreel;
     try {
-      const response = await fetch('portfolio.json', { cache: 'no-store' });
-      if (!response.ok) {
-        hideUnavailableChapters();
-        return;
-      }
-      const data = await response.json();
-      const items = Array.isArray(data.itens) ? data.itens.filter(item => item && item.url) : [];
-      window.__portfolioItems = items;
-      if (items.length && work) work.removeAttribute('hidden');
-      if (!items.length) {
-        hideUnavailableChapters();
-        return;
-      }
-
-      const first = items[0];
-      const title = String(first.titulo || 'Trabalho Cavalcante');
-      const link = document.createElement('a');
-      link.href = first.url;
-      link.target = '_blank';
-      link.rel = 'noopener';
-      link.textContent = `01 / ${title}`;
-      workLive.textContent = 'Case disponível';
-      workLive.appendChild(link);
-      workLive.classList.add('is-ready');
-
-      const proofItems = items.filter(item => item.metrica || item.resultado || item.logo);
-      if (proofItems.length) {
-        evidence.hidden = false;
-        evidenceLive.textContent = `${proofItems.length} evidência${proofItems.length > 1 ? 's' : ''} verificável${proofItems.length > 1 ? 'eis' : ''}`;
-      }
+      const response = await fetch('showreel-config.json', { cache: 'no-store' });
+      showreel = response.ok ? await response.json() : null;
     } catch {
-      hideUnavailableChapters();
+      return;
     }
+    if (!showreel?.desktop && !showreel?.mobile) return;
+
+    const video = document.querySelector('#showreel-video');
+    const useMobile = innerWidth < 760 && showreel.mobile;
+    video.src = useMobile ? showreel.mobile : (showreel.desktop || showreel.mobile);
+    if (showreel.poster) video.poster = showreel.poster;
+    reel.hidden = false;
+    document.querySelector('.reel-film-study')?.remove();
+    document.querySelector('#work-scene-label')?.replaceChildren(document.createTextNode('Scene 06 / Work'));
+    document.querySelector('#portal-scene-label')?.replaceChildren(document.createTextNode('Scene 07 / No black box'));
+    document.querySelector('#knight-scene-label')?.replaceChildren(document.createTextNode('Scene 08 / Knight move'));
+    document.querySelector('#finale-scene-label')?.replaceChildren(document.createTextNode('Scene 09 / Start a project'));
+    window.CavalcanteMotion?.refresh();
   };
+
+  // Evidence stays unpublished until metrics/resultados-reais.md contains verified numbers.
+  if (evidence) evidence.hidden = true;
+  configureOptionalShowreel();
 
   document.addEventListener('click', event => {
-    const link = event.target.closest('[data-cta-origin]');
+    const link = event.target.closest('[data-cta-origin], [data-work-case]');
     if (!link) return;
-    const origin = link.dataset.ctaOrigin || 'unknown';
     window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: 'whatsapp_click', origin });
+    if (link.dataset.workCase) {
+      window.dataLayer.push({ event: 'work_case_click', case: link.dataset.workCase });
+      return;
+    }
+    window.dataLayer.push({ event: 'whatsapp_click', origin: link.dataset.ctaOrigin || 'unknown' });
   });
 
   let scroll50 = false;
@@ -151,6 +132,4 @@
       window.dataLayer.push({ event: 'scroll_90' });
     }
   }, { passive: true });
-
-  setPortfolio();
 })();
