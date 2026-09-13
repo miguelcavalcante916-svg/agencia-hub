@@ -1,276 +1,249 @@
-// Visual enhancements use local modules to respect the site's existing CSP.
-export async function initHero(canvas, motion) {
+export async function initGlobalScene(canvas, options = {}) {
   const [THREE, { SVGLoader }] = await Promise.all([
-    import('./assets/vendor/three.module.min.js'), import('./assets/vendor/SVGLoader.js')
+    import('./assets/vendor/three.module.min.js'),
+    import('./assets/vendor/SVGLoader.js')
   ]);
-  if (!canvas?.isConnected || motion.matches) return;
-  // Finish loading the brand before allocating GPU resources.
-  const response = await fetch('app/img/logo.svg');
-  if (!response.ok) throw new Error('Brand asset unavailable');
-  const source = await response.text();
-  if (!canvas.isConnected || motion.matches) return;
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
-  const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x070b14, .025);
-  const camera = new THREE.PerspectiveCamera(35, 1, .1, 100); camera.position.set(0, 0, 12.8);
-  let environmentMap;
-  function updateEnvironment() {
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    // Narrow softboxes against black give the silver clear light/dark reflections.
-    // These panels exist only while baking the environment, never in the live scene.
-    const environment = new THREE.Scene();
-    environment.background = new THREE.Color(0x000000);
-    const geometry = new THREE.PlaneGeometry(1, 1);
-    const materials = [];
-    const panels = [
-      { size: [1.6, 9], position: [-6, 1, 7], color: 0xffffff, intensity: 3.2 },
-      { size: [3, 8], position: [5, -1, 4], color: 0x7298ff, intensity: 2.5 },
-      { size: [8, 1.8], position: [0, 6, 1], color: 0xffffff, intensity: 3 },
-      { size: [5, 6], position: [0, 0, -7], color: 0xffffff, intensity: 1.2 }
-    ];
-    panels.forEach(({ size, position, color, intensity }) => {
-      const material = new THREE.MeshBasicMaterial({ color: new THREE.Color(color).multiplyScalar(intensity), toneMapped: false });
-      materials.push(material);
-      const panel = new THREE.Mesh(geometry, material);
-      panel.scale.set(size[0], size[1], 1); panel.position.set(...position); panel.lookAt(0, 0, 0);
-      environment.add(panel);
-    });
-    try {
-      const next = pmrem.fromScene(environment, .01);
-      scene.environment = next.texture;
-      environmentMap?.dispose(); environmentMap = next;
-    } finally {
-      geometry.dispose(); materials.forEach(material => material.dispose()); pmrem.dispose();
-    }
-  }
+  if (!canvas?.isConnected || options.reducedMotion?.matches) return;
 
-  updateEnvironment();
-  // SVGLoader cannot resolve CSS currentColor outside a document style context.
-  const data = new SVGLoader().parse(source.replace(/currentColor/g, '#ffffff'));
-  const knight = new THREE.Group();
-  const front = new THREE.MeshPhysicalMaterial({ color: 0xf2f3f8, metalness: 1, roughness: .22, clearcoat: .8, clearcoatRoughness: .12, envMapIntensity: 2.2 });
-  const edge = new THREE.MeshStandardMaterial({ color: 0xb6c0d3, metalness: 1, roughness: .17, envMapIntensity: 2 });
-  // Fine surface variation catches highlights without a full-screen postprocess.
-  const grain = new Uint8Array(128 * 128 * 4);
-  let seed = 73;
-  for (let i = 0; i < grain.length; i += 4) {
+  const response = await fetch('app/img/logo.svg');
+  if (!response.ok) throw new Error('Brand symbol unavailable');
+  const svg = await response.text();
+  if (!canvas.isConnected) return;
+
+  const full = options.mode === 'full';
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    alpha: true,
+    antialias: full,
+    powerPreference: full ? 'high-performance' : 'low-power'
+  });
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.08;
+
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x060914, .035);
+  const camera = new THREE.PerspectiveCamera(35, 1, .1, 100);
+  camera.position.set(0, 0, 13.2);
+
+  const group = new THREE.Group();
+  const face = new THREE.MeshPhysicalMaterial({
+    color: 0xe9eef8,
+    metalness: 1,
+    roughness: .22,
+    clearcoat: .9,
+    clearcoatRoughness: .13,
+    envMapIntensity: 1.8
+  });
+  const side = new THREE.MeshStandardMaterial({
+    color: 0x7d91b7,
+    metalness: 1,
+    roughness: .2,
+    envMapIntensity: 1.45
+  });
+  const parsed = new SVGLoader().parse(svg.replace(/currentColor/g, '#ffffff'));
+  parsed.paths.forEach(path => {
+    SVGLoader.createShapes(path).forEach(shape => {
+      const geometry = new THREE.ExtrudeGeometry(shape, {
+        depth: 70,
+        bevelEnabled: true,
+        bevelThickness: 9,
+        bevelSize: 6,
+        bevelSegments: full ? 4 : 2,
+        curveSegments: full ? 14 : 8,
+        steps: 1
+      });
+      geometry.translate(-540, -540, -35);
+      geometry.scale(.009, -.009, .009);
+      geometry.computeVertexNormals();
+      group.add(new THREE.Mesh(geometry, [face, side]));
+    });
+  });
+  group.rotation.set(-.08, -.42, -.1);
+  scene.add(group);
+
+  const key = new THREE.DirectionalLight(0xf1f6ff, 4.3);
+  key.position.set(-4, 5, 6);
+  const rim = new THREE.DirectionalLight(0x6ea9ff, 5.2);
+  rim.position.set(6, 1, -3);
+  const fill = new THREE.DirectionalLight(0x9fb8e8, 2.1);
+  fill.position.set(2, -5, 4);
+  scene.add(key, rim, fill);
+
+  const ringA = new THREE.Mesh(
+    new THREE.TorusGeometry(5.25, .014, 8, full ? 220 : 110),
+    new THREE.MeshBasicMaterial({ color: 0xa9c8ff, transparent: true, opacity: .62 })
+  );
+  ringA.rotation.set(1.18, .16, -.32);
+  ringA.position.y = -.6;
+  const ringB = new THREE.Mesh(
+    new THREE.TorusGeometry(4.6, .008, 6, full ? 180 : 90),
+    new THREE.MeshBasicMaterial({ color: 0x7398d5, transparent: true, opacity: .34 })
+  );
+  ringB.rotation.set(.55, .9, .12);
+  scene.add(ringA, ringB);
+
+  const particleCount = full ? 1350 : 480;
+  const positions = new Float32Array(particleCount * 3);
+  let seed = 8347;
+  const random = () => {
     seed = (seed * 1664525 + 1013904223) >>> 0;
-    const value = 160 + (seed >>> 26);
-    grain[i] = grain[i + 1] = grain[i + 2] = value; grain[i + 3] = 255;
+    return seed / 4294967296;
+  };
+  for (let i = 0; i < particleCount; i += 1) {
+    const angle = random() * Math.PI * 2;
+    const radius = 3.7 + random() * 5.7;
+    positions[i * 3] = Math.cos(angle) * radius;
+    positions[i * 3 + 1] = Math.sin(angle) * radius * .68;
+    positions[i * 3 + 2] = -3 - random() * 7;
   }
-  const finish = new THREE.DataTexture(grain, 128, 128, THREE.RGBAFormat);
-  finish.wrapS = finish.wrapT = THREE.RepeatWrapping; finish.repeat.set(.08, .08);
-  finish.magFilter = THREE.LinearFilter; finish.minFilter = THREE.LinearFilter; finish.needsUpdate = true;
-  front.bumpMap = finish; front.bumpScale = .012;
-  data.paths.forEach(path => SVGLoader.createShapes(path).forEach(shape => {
-    const geometry = new THREE.ExtrudeGeometry(shape, { depth: 72, bevelEnabled: true, bevelThickness: 9, bevelSize: 6, bevelSegments: 4, curveSegments: 14, steps: 1 });
-    geometry.translate(-540, -540, -36); geometry.scale(.009, -.009, .009);
-    geometry.computeVertexNormals(); knight.add(new THREE.Mesh(geometry, [front, edge]));
-  }));
-  knight.rotation.set(-.08, -.48, -.1); scene.add(knight);
-  const key = new THREE.DirectionalLight(0xe4f6ff, 4); key.position.set(-3, 5, 5); scene.add(key);
-  const rim = new THREE.DirectionalLight(0x72b4e3, 5); rim.position.set(5, 1, -2); scene.add(rim);
-  const fill = new THREE.DirectionalLight(0xbfd2ff, 2); fill.position.set(2, -4, 3); scene.add(fill);
-  const positions = new Float32Array(620 * 3);
-  for (let i = 0; i < 620; i++) { const angle = i * 2.39996, radius = 4.1 + (i % 21) * .08; positions[i * 3] = Math.cos(angle) * radius; positions[i * 3 + 1] = Math.sin(angle) * radius * .8; positions[i * 3 + 2] = -3 - (i % 17) / 4; }
-  const pointsGeometry = new THREE.BufferGeometry(); pointsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const points = new THREE.Points(pointsGeometry, new THREE.PointsMaterial({ color: 0xc1e6f8, size: .013, transparent: true, opacity: .12, depthWrite: false })); scene.add(points);
-  // A curved wire cyclorama gives the sculpture a continuous architectural space.
+  const particlesGeometry = new THREE.BufferGeometry();
+  particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const particlesMaterial = new THREE.PointsMaterial({
+    color: 0xb9d4ff,
+    size: full ? .018 : .025,
+    transparent: true,
+    opacity: full ? .28 : .18,
+    depthWrite: false
+  });
+  const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+  scene.add(particles);
+
   const roomVertices = [];
-  function surface(x, z) { return [x, -4.6 + Math.pow(Math.max(0, -z - 3), 2) * .032, z]; }
-  for (let x = -30; x <= 30; x += 1.5) {
-    for (let z = -34; z < 14; z += .6) roomVertices.push(...surface(x, z), ...surface(x, z + .6));
+  const surface = (x, z) => [x, -4.65 + Math.pow(Math.max(0, -z - 2), 2) * .03, z];
+  for (let x = -30; x <= 30; x += full ? 1.5 : 3) {
+    for (let z = -32; z < 14; z += 1) roomVertices.push(...surface(x, z), ...surface(x, z + 1));
   }
-  for (let z = -34; z <= 14; z += 1.5) {
-    for (let x = -30; x < 30; x += 1.5) roomVertices.push(...surface(x, z), ...surface(x + 1.5, z));
+  for (let z = -32; z <= 14; z += full ? 1.7 : 3.4) {
+    for (let x = -30; x < 30; x += 1) roomVertices.push(...surface(x, z), ...surface(x + 1, z));
   }
   const roomGeometry = new THREE.BufferGeometry();
   roomGeometry.setAttribute('position', new THREE.Float32BufferAttribute(roomVertices, 3));
-  const roomMaterial = new THREE.LineBasicMaterial({color:0x7b8eaf,transparent:true,opacity:.12,depthWrite:false});
-  const room = new THREE.LineSegments(roomGeometry, roomMaterial); scene.add(room);
-  const orbit = new THREE.Mesh(new THREE.TorusGeometry(5.1, .018, 8, 160), new THREE.MeshBasicMaterial({color:0xa7caf9,transparent:true,opacity:.6}));
-  orbit.rotation.set(1.25, .2, -.3); orbit.position.y = -.7;
-  const shell = canvas.closest('.experience-shell') || canvas.closest('.hero');
-  const owner = canvas.parentElement;
-  let baseCamera = 12.8, shellTop = 0, scrollDistance = 0;
-  let frame = 0, visible = false, lost = false, disposed = false, ready = false;
-  let previousTime = 0, elapsed = 0, scroll = 0, pointerX = 0, pointerY = 0;
-  let pointerTargetX = 0, pointerTargetY = 0, canvasBounds;
-  let renderWidth = 0, renderHeight = 0, pixelRatio = 0;
-  const stop = () => { cancelAnimationFrame(frame); frame = 0; previousTime = 0; };
-  const start = () => {
-    if (!frame && !disposed && !lost && visible && !document.hidden) frame = requestAnimationFrame(render);
-  };
-  function render(time) {
-    frame = 0;
-    if (disposed || lost || !visible || document.hidden) return;
-    // Seconds, rather than a fixed fraction per frame, give 60/120 Hz the same motion.
-    const delta = previousTime ? Math.min((time - previousTime) / 1000, .05) : 1 / 60;
-    previousTime = time;
-    if (!motion.matches) elapsed += delta;
-    const smooth = 1 - Math.exp(-delta / .16);
-    const scrollTarget = motion.matches || scrollDistance <= 1 ? 0 : Math.max(0, Math.min(1, (scrollY - shellTop) / scrollDistance));
-    scroll += (scrollTarget - scroll) * (motion.matches ? 1 : 1 - Math.exp(-delta / .1));
-    pointerX += ((motion.matches ? 0 : pointerTargetX) - pointerX) * (motion.matches ? 1 : smooth);
-    pointerY += ((motion.matches ? 0 : pointerTargetY) - pointerY) * (motion.matches ? 1 : smooth);
-    const t = motion.matches ? 0 : elapsed * .35;
-    camera.position.z = baseCamera - scroll * 2;
-    camera.position.x += ((pointerX * .5 + scroll * 1.3) - camera.position.x) * (motion.matches ? 1 : 1 - Math.exp(-delta / .4));
-    camera.lookAt(0, -.1 + scroll * .6, 0);
-    room.rotation.y = scroll * .12;
-    orbit.rotation.z = -.3 + scroll * .8 + t * .06;
-    knight.rotation.y = -.28 + Math.sin(t * .6) * .08 + pointerX * .12 + scroll * 1.1;
-    knight.rotation.x = -.08 + pointerY * .08;
-    knight.rotation.z = -.12 + Math.sin(t * .7) * .025 - scroll * .12;
-    knight.position.y = (camera.aspect < .8 ? 1.4 : 0) + (motion.matches ? 0 : Math.sin(t * .8) * .06);
-    points.rotation.z = motion.matches ? 0 : t * .035;
-    renderer.render(scene, camera);
-    if (!ready) { owner.classList.add('is-ready'); ready = true; }
-    if (!motion.matches) start();
-  }
-  function resize() {
-    if (disposed || lost) return;
-    canvasBounds = canvas.getBoundingClientRect();
-    const { width, height } = canvasBounds;
-    if (!width || !height) return;
-    // Keep small screens crisp without asking large displays to draw millions of extra pixels.
-    const nextRatio = Math.min(devicePixelRatio || 1, 1.75, Math.sqrt(3200000 / (width * height)));
-    if (width !== renderWidth || height !== renderHeight || nextRatio !== pixelRatio) {
-      renderWidth = width; renderHeight = height; pixelRatio = nextRatio;
-      renderer.setPixelRatio(nextRatio); renderer.setSize(width, height, false);
-      camera.aspect = width / height; baseCamera = camera.aspect < .8 ? 17 : 13.4;
-      knight.scale.setScalar(camera.aspect < .8 ? .72 : 1);
-      camera.updateProjectionMatrix();
-    }
-    // Cache document geometry only when layout changes; the render loop reads scrollY alone.
-    const bounds = shell.getBoundingClientRect();
-    shellTop = bounds.top + scrollY; scrollDistance = getComputedStyle(canvas.closest('.hero')).position === 'sticky' ? Math.max(0, shell.offsetHeight - innerHeight) : 0;
-    start();
-  }
-  const resizeObserver = new ResizeObserver(resize);
-  resizeObserver.observe(canvas); resizeObserver.observe(shell);
-  const visibility = new IntersectionObserver(entries => {
-    visible = entries[0].isIntersecting;
-    if (visible) { resize(); start(); } else stop();
-  });
-  visibility.observe(canvas);
-  const onVisibility = () => { if (document.hidden) stop(); else start(); };
-  const onPointerEnter = () => { canvasBounds = canvas.getBoundingClientRect(); };
-  const onPointer = event => {
-    if (event.pointerType === 'touch' || motion.matches || !visible || !canvasBounds?.width) return;
-    pointerTargetX = Math.max(-1, Math.min(1, (event.clientX - canvasBounds.left) / canvasBounds.width * 2 - 1));
-    pointerTargetY = Math.max(-1, Math.min(1, (event.clientY - canvasBounds.top) / canvasBounds.height * 2 - 1));
-  };
-  const resetPointer = () => { pointerTargetX = pointerTargetY = 0; };
-  const onMotion = () => { stop(); resetPointer(); start(); };
-  const onContextLost = event => { event.preventDefault(); lost = true; ready = false; stop(); owner.classList.remove('is-ready'); };
-  const onContextRestored = () => { lost = false; updateEnvironment(); resize(); start(); };
-  const onPageShow = () => { resize(); start(); };
-  function onPageHide(event) {
-    stop();
-    if (event.persisted) return;
-    disposed = true; resizeObserver.disconnect(); visibility.disconnect();
-    owner.removeEventListener('pointerenter', onPointerEnter); owner.removeEventListener('pointermove', onPointer); owner.removeEventListener('pointerleave', resetPointer);
-    document.removeEventListener('visibilitychange', onVisibility); motion.removeEventListener('change', onMotion);
-    canvas.removeEventListener('webglcontextlost', onContextLost); canvas.removeEventListener('webglcontextrestored', onContextRestored);
-    removeEventListener('resize', resize); removeEventListener('pageshow', onPageShow); removeEventListener('pagehide', onPageHide);
-    knight.children.forEach(mesh => mesh.geometry.dispose()); front.dispose(); edge.dispose(); finish.dispose(); pointsGeometry.dispose(); points.material.dispose(); environmentMap.dispose(); roomGeometry.dispose(); roomMaterial.dispose(); orbit.geometry.dispose(); orbit.material.dispose(); renderer.dispose();
-  }
-  owner.addEventListener('pointerenter', onPointerEnter, { passive: true }); owner.addEventListener('pointermove', onPointer, { passive: true }); owner.addEventListener('pointerleave', resetPointer, { passive: true });
-  document.addEventListener('visibilitychange', onVisibility); motion.addEventListener('change', onMotion);
-  canvas.addEventListener('webglcontextlost', onContextLost); canvas.addEventListener('webglcontextrestored', onContextRestored);
-  addEventListener('resize', resize, { passive: true }); addEventListener('pagehide', onPageHide); addEventListener('pageshow', onPageShow);
-  resize();
-}
+  const roomMaterial = new THREE.LineBasicMaterial({ color: 0x6f8abc, transparent: true, opacity: .12, depthWrite: false });
+  const room = new THREE.LineSegments(roomGeometry, roomMaterial);
+  scene.add(room);
 
-export function initMethod(canvas, motion) {
-  const ctx = canvas?.getContext('2d'); if (!ctx) return () => {};
-  const total = 850, positions = new Float32Array(total * 2);
-  let width = 0, height = 0, pixelRatio = 0, step = 0, frame = 0;
-  let visible = false, initialized = false, disposed = false, previousTime = 0, ready = false;
-  const owner = canvas.closest('.method-visual');
-  function target(index, phase) {
-    const ratio = index / total, angle = ratio * Math.PI * 2;
-    if (phase === 0) { const phi = Math.acos(1 - 2 * (index + .5) / total), theta = index * 2.399963; return [Math.cos(theta) * Math.sin(phi) * .33, Math.cos(phi) * .33]; }
-    if (phase === 1) { const ring = index % 7, a = angle * 7; return [Math.cos(a) * (.2 + ring * .02), Math.sin(a) * (.2 + ring * .02) * .45 + Math.cos(a) * .1]; }
-    if (phase === 2) { const side = index % 4, t = Math.floor(index / 4) / (total / 4); const inset = Math.floor(index / 60) % 3 * .025; const a = .29 - inset, b = .22 - inset; return side === 0 ? [-a + t * 2 * a, -b] : side === 1 ? [a, -b + t * 2 * b] : side === 2 ? [a - t * 2 * a, b] : [-a, b - t * 2 * b]; }
-    if (phase === 3) { const arm = index % 6, t = Math.floor(index / 6) / (total / 6), a = arm / 6 * Math.PI * 2; return [Math.cos(a) * t * .37, Math.sin(a) * t * .37]; }
-    return [Math.sin(angle) * .33, Math.sin(angle * 2) * .16];
-  }
-  // All five shapes are static. Calculate their trigonometry once, not for every particle/frame.
-  const targets = Array.from({ length: 5 }, (_, phase) => {
-    const points = new Float32Array(total * 2);
-    for (let index = 0; index < total; index++) points.set(target(index, phase), index * 2);
-    return points;
-  });
-  const stop = () => { cancelAnimationFrame(frame); frame = 0; previousTime = 0; };
-  const start = () => { if (!frame && !disposed && visible && width && height && !document.hidden) frame = requestAnimationFrame(draw); };
-  function draw(time) {
-    frame = 0;
-    if (disposed || !visible || document.hidden) return;
-    const delta = previousTime ? Math.min((time - previousTime) / 1000, .05) : 1 / 60;
-    previousTime = time;
-    const speed = motion.matches ? 1 : 1 - Math.exp(-delta / .214);
-    const destination = targets[step];
-    let distance = 0;
-    for (let i = 0; i < positions.length; i++) {
-      positions[i] += (destination[i] - positions[i]) * speed;
-      distance += Math.abs(destination[i] - positions[i]);
+  const state = { scene: 'arrival', progress: 0, velocity: 0 };
+  let pointerTargetX = 0;
+  let pointerTargetY = 0;
+  let pointerX = 0;
+  let pointerY = 0;
+  let frame = 0;
+  let last = 0;
+  let elapsed = 0;
+  let disposed = false;
+  let lost = false;
+  let width = 0;
+  let height = 0;
+
+  const sceneTargets = () => {
+    const p = state.progress;
+    if (state.scene === 'think/create/scale') {
+      return { x: p < .34 ? 2.8 : p < .68 ? -2.8 : 2.3, y: (p - .5) * .7, z: 13.8, scale: .82, ry: -.2 + p * 1.15, rz: -.1 + p * .18 };
     }
-    ctx.clearRect(0, 0, width, height);
-    const scale = Math.min(width, height) * 1.05, centerX = width / 2, centerY = height / 2;
-    ctx.strokeStyle = '#a0b2ee12'; ctx.lineWidth = 1;
-    for (let i = 1; i <= 3; i++) { ctx.beginPath(); ctx.arc(centerX, centerY, scale * (.12 * i), 0, Math.PI * 2); ctx.stroke(); }
-    ctx.beginPath(); ctx.moveTo(centerX, 25); ctx.lineTo(centerX, height - 25); ctx.moveTo(25, centerY); ctx.lineTo(width - 25, centerY); ctx.stroke();
-    // Five paint batches replace 850 individual fills and style changes.
-    for (let group = 0; group < 5; group++) {
-      const radius = group === 0 ? 1.5 : .85;
-      ctx.fillStyle = group === 0 ? '#edfaff' : '#98c9de'; ctx.globalAlpha = .28 + group * .16;
-      ctx.beginPath();
-      for (let index = group; index < total; index += 5) {
-        const x = centerX + positions[index * 2] * scale, y = centerY + positions[index * 2 + 1] * scale;
-        ctx.moveTo(x + radius, y); ctx.arc(x, y, radius, 0, Math.PI * 2);
-      }
-      ctx.fill();
+    if (state.scene === 'knight move') {
+      return { x: 2.3 - p * .7, y: .2 - p * .7, z: 14.8 - p * 1.8, scale: .68 + p * .18, ry: .2 + p * .9, rz: -.25 + p * .22 };
     }
-    ctx.globalAlpha = 1;
-    if (!ready) { owner?.classList.add('is-ready'); ready = true; }
-    if (!motion.matches && distance > .025) start(); else previousTime = 0;
-  }
-  function resize() {
-    if (disposed) return;
-    const rect = canvas.getBoundingClientRect(), nextRatio = Math.min(devicePixelRatio || 1, 2);
-    if (!rect.width || !rect.height) return;
-    if (width === rect.width && height === rect.height && pixelRatio === nextRatio) return;
-    width = rect.width; height = rect.height; pixelRatio = nextRatio;
-    canvas.width = Math.round(width * pixelRatio); canvas.height = Math.round(height * pixelRatio);
-    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    if (!initialized) { positions.set(targets[step]); initialized = true; }
-    // Do not draw synchronously here: that could orphan an already scheduled animation frame.
-    start();
-  }
-  const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(canvas);
-  const visibilityObserver = new IntersectionObserver(entries => {
-    visible = entries[0].isIntersecting;
-    if (visible) start(); else stop();
-  });
-  visibilityObserver.observe(canvas);
-  const onVisibility = () => { if (document.hidden) stop(); else start(); };
-  const onMotion = () => { stop(); start(); };
-  const onPageShow = () => { resize(); start(); };
-  function onPageHide(event) {
-    stop();
-    if (event.persisted) return;
-    disposed = true; resizeObserver.disconnect(); visibilityObserver.disconnect();
-    document.removeEventListener('visibilitychange', onVisibility); motion.removeEventListener('change', onMotion);
-    removeEventListener('resize', resize); removeEventListener('pagehide', onPageHide); removeEventListener('pageshow', onPageShow);
-  }
-  document.addEventListener('visibilitychange', onVisibility); motion.addEventListener('change', onMotion);
-  addEventListener('resize', resize, { passive: true }); addEventListener('pagehide', onPageHide); addEventListener('pageshow', onPageShow);
-  resize();
-  return index => {
-    if (!Number.isInteger(index) || index < 0 || index >= targets.length || disposed) return;
-    step = index; start();
+    if (state.scene === 'start a project') {
+      return { x: 2.7, y: .15, z: 13.4, scale: .83, ry: .75 + p * .18, rz: -.04 };
+    }
+    return { x: p * 1.1, y: p * .35, z: 13.2 - p * 1.7, scale: 1, ry: -.42 + p * 1.05, rz: -.1 - p * .1 };
   };
+
+  const render = time => {
+    frame = 0;
+    if (disposed || lost || document.hidden) return;
+    const delta = last ? Math.min((time - last) / 1000, .05) : 1 / 60;
+    last = time;
+    elapsed += delta;
+    const smoothing = 1 - Math.exp(-delta / .18);
+    pointerX += (pointerTargetX - pointerX) * smoothing;
+    pointerY += (pointerTargetY - pointerY) * smoothing;
+    const target = sceneTargets();
+    group.position.x += (target.x + pointerX * .35 - group.position.x) * smoothing;
+    group.position.y += (target.y - pointerY * .2 - group.position.y) * smoothing;
+    group.scale.setScalar(group.scale.x + (target.scale - group.scale.x) * smoothing);
+    group.rotation.y += (target.ry + pointerX * .12 - group.rotation.y) * smoothing;
+    group.rotation.x += (-.08 + pointerY * .08 - group.rotation.x) * smoothing;
+    group.rotation.z += (target.rz + Math.sin(elapsed * .55) * .018 - group.rotation.z) * smoothing;
+    camera.position.z += (target.z - camera.position.z) * smoothing;
+    camera.lookAt(0, 0, 0);
+    ringA.rotation.z += delta * (.06 + Math.abs(state.velocity) * .25);
+    ringB.rotation.x += delta * .025;
+    particles.rotation.z += delta * .012;
+    particles.rotation.y += delta * .006;
+    room.rotation.y += (state.progress * .1 - room.rotation.y) * smoothing;
+    renderer.render(scene, camera);
+    frame = requestAnimationFrame(render);
+  };
+
+  const resize = () => {
+    if (disposed) return;
+    const nextWidth = innerWidth;
+    const nextHeight = innerHeight;
+    if (nextWidth === width && nextHeight === height) return;
+    width = nextWidth;
+    height = nextHeight;
+    const cap = full ? 1.65 : 1;
+    const ratio = Math.min(devicePixelRatio || 1, cap, Math.sqrt((full ? 3000000 : 1300000) / Math.max(1, width * height)));
+    renderer.setPixelRatio(ratio);
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.fov = camera.aspect < .78 ? 48 : 35;
+    camera.updateProjectionMatrix();
+    canvas.closest('.world')?.classList.add('is-ready');
+  };
+  const onPointer = event => {
+    if (event.pointerType === 'touch') return;
+    pointerTargetX = Math.max(-1, Math.min(1, event.clientX / innerWidth * 2 - 1));
+    pointerTargetY = Math.max(-1, Math.min(1, event.clientY / innerHeight * 2 - 1));
+  };
+  const onContextLost = event => {
+    event.preventDefault();
+    lost = true;
+    cancelAnimationFrame(frame);
+    canvas.closest('.world')?.classList.remove('is-ready');
+  };
+  const onContextRestored = () => {
+    lost = false;
+    resize();
+    frame = requestAnimationFrame(render);
+  };
+  const destroy = () => {
+    disposed = true;
+    cancelAnimationFrame(frame);
+    removeEventListener('resize', resize);
+    removeEventListener('pointermove', onPointer);
+    canvas.removeEventListener('webglcontextlost', onContextLost);
+    canvas.removeEventListener('webglcontextrestored', onContextRestored);
+    group.children.forEach(mesh => mesh.geometry.dispose());
+    face.dispose();
+    side.dispose();
+    ringA.geometry.dispose();
+    ringA.material.dispose();
+    ringB.geometry.dispose();
+    ringB.material.dispose();
+    particlesGeometry.dispose();
+    particlesMaterial.dispose();
+    roomGeometry.dispose();
+    roomMaterial.dispose();
+    renderer.dispose();
+  };
+
+  addEventListener('resize', resize, { passive: true });
+  addEventListener('pointermove', onPointer, { passive: true });
+  canvas.addEventListener('webglcontextlost', onContextLost);
+  canvas.addEventListener('webglcontextrestored', onContextRestored);
+  addEventListener('pagehide', event => { if (!event.persisted) destroy(); });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) cancelAnimationFrame(frame);
+    else if (!frame && !disposed && !lost) frame = requestAnimationFrame(render);
+  });
+  window.CavalcanteScene = {
+    setState(next) { Object.assign(state, next); },
+    destroy
+  };
+  if (window.CavalcanteMotionState) Object.assign(state, window.CavalcanteMotionState);
+  resize();
+  frame = requestAnimationFrame(render);
 }

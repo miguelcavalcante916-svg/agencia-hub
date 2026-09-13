@@ -1,215 +1,90 @@
 (() => {
   'use strict';
-  const $ = (selector, root = document) => root.querySelector(selector);
-  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  $('#year').textContent = new Date().getFullYear();
-  const header = $('#site-header');
-  const updateHeader = () => header.classList.toggle('is-scrolled', scrollY > 24);
-  addEventListener('scroll', updateHeader, { passive: true });
-  updateHeader();
+  const root = document.documentElement;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const coarse = matchMedia('(pointer: coarse)').matches;
+  const saveData = Boolean(navigator.connection?.saveData);
+  const memory = Number(navigator.deviceMemory || 8);
+  const canvas = document.querySelector('#global-canvas');
+  let webgl = false;
+  try {
+    const probe = document.createElement('canvas');
+    webgl = Boolean(probe.getContext('webgl2') || probe.getContext('webgl'));
+  } catch {}
+  const mode = reducedMotion.matches || !webgl ? 'fallback' : (saveData || coarse || memory <= 4 || innerWidth < 900 ? 'reduced' : 'full');
+  root.dataset.performance = mode;
+  root.classList.add('js');
+  document.querySelector('#year').textContent = new Date().getFullYear();
 
-  $$('.service').forEach(service => service.addEventListener('toggle', () => {
-    if (!service.open) return;
-    requestAnimationFrame(() => {
-      const summary = $('summary', service);
-      if (summary.getBoundingClientRect().top < header.offsetHeight + 16) {
-        summary.scrollIntoView({block: 'start', behavior: reduceMotion.matches ? 'instant' : 'smooth'});
-      }
-    });
-  }));
-
-  const menu = $('#mobile-menu');
-  const toggle = $('.menu-toggle');
-  const background = [$('main'), $('.site-footer'), $('.chapter-nav')];
-  function setMenu(open, restore = false) {
+  const header = document.querySelector('#site-header');
+  const menu = document.querySelector('#mobile-menu');
+  const toggle = document.querySelector('.menu-toggle');
+  const close = document.querySelector('.menu-close');
+  const pageNodes = [document.querySelector('main'), document.querySelector('.site-footer'), document.querySelector('.world')];
+  const setMenu = (open, restore = false) => {
     menu.hidden = !open;
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
     document.body.classList.toggle('menu-open', open);
-    background.forEach(node => { node.inert = open; });
-    if (open) $('a', menu).focus();
+    pageNodes.forEach(node => { if (node) node.inert = open; });
+    if (open) menu.querySelector('a')?.focus();
     else if (restore) toggle.focus();
-  }
-  toggle.addEventListener('click', () => setMenu(menu.hidden, !menu.hidden));
-  $$('a', menu).forEach(link => link.addEventListener('click', () => {
-    setMenu(false);
-    const destination = $(link.getAttribute('href'));
-    if (destination) {
-      destination.tabIndex = -1;
-      destination.focus({ preventScroll: true });
-      destination.addEventListener('blur', () => destination.removeAttribute('tabindex'), { once: true });
-    }
-  }));
-  document.addEventListener('keydown', event => {
-    if (menu.hidden) return;
-    if (event.key === 'Escape') { setMenu(false, true); return; }
-    if (event.key !== 'Tab') return;
-    const focusable = [$('.brand'), $('.header-contact'), toggle, ...$$('a', menu)];
-    const first = focusable[0], last = focusable[focusable.length - 1];
-    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-  });
-  matchMedia('(min-width: 801px)').addEventListener('change', event => { if (event.matches) setMenu(false); });
-
-  // Keep the AgencyHub exporter contract: portfolio.json contains only URL + title.
-  // Match its entries to the local catalog to add verified images and project details.
-  const catalog = JSON.parse($('#project-catalog').textContent);
-  const normalize = value => {
-    try { const url = new URL(value); return url.hostname.replace(/^www\./, '') + url.pathname.replace(/\/$/, ''); }
-    catch { return ''; }
   };
-  const safeURL = value => {
-    try { const url = new URL(value); return url.protocol === 'https:' ? url.href : null; }
-    catch { return null; }
+  toggle.addEventListener('click', () => setMenu(menu.hidden, true));
+  close.addEventListener('click', () => setMenu(false, true));
+  menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false)));
+  addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !menu.hidden) setMenu(false, true);
+  });
+  matchMedia('(min-width: 901px)').addEventListener('change', event => {
+    if (event.matches && !menu.hidden) setMenu(false);
+  });
+
+  let lastScroll = 0;
+  const hub = document.querySelector('#hub');
+  const knight = document.querySelector('#method');
+  const finale = document.querySelector('#contact');
+  const updateHeader = () => {
+    const marker = scrollY + header.offsetHeight;
+    const onLight = (marker >= hub.offsetTop && marker < knight.offsetTop) || marker >= finale.offsetTop;
+    header.classList.toggle('is-scrolled', scrollY > 24);
+    header.classList.toggle('is-light', onLight);
+    header.classList.toggle('is-hidden', scrollY > lastScroll && scrollY > innerHeight * .8);
+    lastScroll = scrollY;
   };
-  let works = catalog.slice().sort((a, b) => Number(b.destaque) - Number(a.destaque));
-  let filter = 'all', expanded = false;
-  const grid = $('#work-grid');
-  const more = $('#more-work');
-  const galleryControls = $('.work-gallery-controls');
-  galleryControls.hidden = false;
-  function moveGallery(direction) {
-    const first = grid.firstElementChild;
-    if (!first) return;
-    const gap = parseFloat(getComputedStyle(grid).columnGap) || 0;
-    grid.scrollBy({left: direction * (first.getBoundingClientRect().width + gap), behavior: reduceMotion.matches ? 'instant' : 'smooth'});
-  }
-  $('#work-prev').addEventListener('click', () => moveGallery(-1));
-  $('#work-next').addEventListener('click', () => moveGallery(1));
-  function updateGalleryButtons() {
-    $('#work-prev').disabled = grid.scrollLeft < 2;
-    $('#work-next').disabled = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 2;
-  }
-  grid.addEventListener('scroll', updateGalleryButtons, {passive: true});
-  new ResizeObserver(updateGalleryButtons).observe(grid);
+  addEventListener('scroll', updateHeader, { passive: true });
+  updateHeader();
 
-  const dialog = $('#project-dialog');
-  let dialogTrigger = null;
-  function element(tag, className, text) {
-    const node = document.createElement(tag);
-    if (className) node.className = className;
-    if (text !== undefined) node.textContent = text;
-    return node;
-  }
-  function projectArrow() {
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('class', 'icon icon-arrow');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', 'currentColor');
-    svg.setAttribute('stroke-width', '1.5'); svg.setAttribute('stroke-linecap', 'round');
-    svg.setAttribute('stroke-linejoin', 'round'); svg.setAttribute('aria-hidden', 'true');
-    const path = document.createElementNS(svg.namespaceURI, 'path');
-    path.setAttribute('d', 'M5 19 19 5M5 5h14v14'); svg.append(path);
-    return svg;
-  }
-  function card(item, index) {
-    const article = element('article', 'work-card'); article.dataset.group = item.grupo;
-    const link = element('a', 'work-cover');
-    link.href = item.url; link.target = '_blank'; link.rel = 'noopener noreferrer';
-    link.setAttribute('aria-label', `Explorar projeto ${item.titulo}`);
-    if (item.capa) {
-      link.dataset.project = item.id;
-      const img = element('img'); img.src = item.capa; img.alt = `${item.titulo} — ${item.cliente}`;
-      img.width = 1080; img.height = 1920; img.loading = 'lazy'; img.decoding = 'async'; link.append(img);
-    } else {
-      link.classList.add('work-cover-fallback');
-      link.append(element('strong', '', item.titulo));
-    }
-    const story = element('span', 'work-story');
-    story.append(element('span', 'work-number', `${String(index + 1).padStart(2, '0')} / ${item.categoria || 'Projeto Cavalcante'}`));
-    story.append(element('span', 'work-client', item.cliente || item.titulo));
-    story.append(element('span', 'work-project-title', item.titulo));
-    const arrow = element('span', 'work-open'); arrow.append(projectArrow()); arrow.setAttribute('aria-hidden', 'true'); link.append(arrow);
-    const caption = element('span', 'work-caption', item.capa ? 'Explorar projeto' : 'Ver o trabalho');
-    const arrow2 = element('span', ''); arrow2.append(projectArrow()); arrow2.setAttribute('aria-hidden', 'true'); caption.append(arrow2); story.append(caption); link.append(story);
-    const meta = element('div', 'work-meta'); meta.append(element('h3', '', item.cliente || item.titulo), element('p', '', item.categoria || 'Projeto Cavalcante'));
-    article.append(link, meta); return article;
-  }
-  function renderWorks(announce = true) {
-    const selected = filter === 'all' ? works : works.filter(item => item.grupo === filter);
-    const visible = filter === 'all' && !expanded ? selected.slice(0, 3) : selected;
-    grid.scrollLeft = 0;
-    grid.classList.toggle('is-featured', filter === 'all' && !expanded);
-    galleryControls.hidden = filter !== 'all' || expanded;
-    requestAnimationFrame(updateGalleryButtons);
-    grid.replaceChildren(...visible.map(card));
-    if (!visible.length) {
-      const message = element('p', 'work-empty', 'Novos trabalhos por aqui em breve. Acompanhe nossas publicações no Instagram.'); grid.append(message);
-    }
-    more.hidden = filter !== 'all' || selected.length <= 3;
-    more.firstChild.textContent = expanded ? 'Mostrar projetos selecionados ' : `Ver todos os ${works.length} trabalhos `;
-    more.setAttribute('aria-expanded', String(expanded));
-    $$('.work-filters button').forEach(button => {
-      const active = button.dataset.filter === filter; button.classList.toggle('is-active', active); button.setAttribute('aria-pressed', String(active));
+  window.dataLayer = window.dataLayer || [];
+  document.addEventListener('click', event => {
+    const link = event.target.closest('[data-event]');
+    if (!link) return;
+    window.dataLayer.push({
+      event: link.dataset.event,
+      origin: link.dataset.label || 'unknown',
+      href: link.getAttribute('href') || ''
     });
-    if (announce) $('#work-announcement').textContent = `${visible.length} ${visible.length === 1 ? 'projeto exibido' : 'projetos exibidos'}.`;
-  }
-  $$('.work-filters button').forEach(button => button.addEventListener('click', () => { filter = button.dataset.filter; expanded = false; renderWorks(); }));
-  more.addEventListener('click', () => {
-    expanded = !expanded; renderWorks();
-    if (!expanded) $('#work-title').scrollIntoView({ behavior: reduceMotion.matches ? 'instant' : 'smooth', block: 'start' });
   });
-  function closeProject() { dialog.close(); }
-  $('.dialog-close').addEventListener('click', closeProject);
-  dialog.addEventListener('click', event => { if (event.target === dialog) { const rect = dialog.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeProject(); } });
-  dialog.addEventListener('close', () => { document.body.classList.remove('dialog-open'); dialogTrigger?.focus({ preventScroll: true }); });
-  grid.addEventListener('click', event => {
-    const link = event.target.closest('a[data-project]');
-    if (!link || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    const item = works.find(work => work.id === link.dataset.project);
-    if (!item || typeof dialog.showModal !== 'function') return;
-    event.preventDefault(); dialogTrigger = link;
-    $('#project-title').textContent = item.titulo;
-    $('#project-client').textContent = item.cliente;
-    $('#project-category').textContent = item.categoria;
-    $('#project-description').textContent = item.descricao;
-    $('#project-image').src = item.capa; $('#project-image').alt = item.titulo;
-    $('#project-link').href = item.url;
-    $('#project-contact').href = `https://wa.me/5584999492725?text=${encodeURIComponent(`Olá! Vi o projeto “${item.titulo}” no site e quero conversar sobre algo para a minha marca.`)}`;
-    dialog.showModal(); dialog.scrollTop = 0; document.body.classList.add('dialog-open');
-  });
-  renderWorks(false);
-  fetch('portfolio.json', { cache: 'no-cache' }).then(response => {
-    if (!response.ok) throw new Error('Portfolio unavailable'); return response.json();
-  }).then(data => {
-    if (!Array.isArray(data.itens)) return;
-    const seen = new Set();
-    const entries = data.itens.flatMap((entry, index) => {
-      if (!entry || typeof entry.titulo !== 'string' || typeof entry.url !== 'string') return [];
-      const url = safeURL(entry.url), key = normalize(entry.url);
-      if (!url || seen.has(key)) return []; seen.add(key);
-      const known = catalog.find(item => normalize(item.url) === key);
-      return [{ ...(known || { id: `external-${index}`, grupo: 'other', cliente: '', categoria: 'Projeto Cavalcante' }), titulo: entry.titulo, url }];
-    });
-    // Invalid nonempty payloads should not erase the verified static portfolio.
-    if (data.itens.length && !entries.length) return;
-    works = entries; renderWorks(false);
-  }).catch(() => { /* The embedded verified catalog remains usable offline. */ });
+  let sent50 = false;
+  let sent90 = false;
+  addEventListener('scroll', () => {
+    const distance = document.documentElement.scrollHeight - innerHeight;
+    const progress = distance > 0 ? scrollY / distance : 0;
+    if (!sent50 && progress >= .5) {
+      sent50 = true;
+      window.dataLayer.push({ event: 'scroll_50' });
+    }
+    if (!sent90 && progress >= .9) {
+      sent90 = true;
+      window.dataLayer.push({ event: 'scroll_90' });
+    }
+  }, { passive: true });
 
-  const steps = $$('.method-steps li');
-  const captions = ['Primeiro, entender o seu negócio.', 'Uma ideia encontra sua direção.', 'A estratégia ganha forma.', 'A mensagem encontra seu público.', 'Aprender. Ajustar. Continuar.'];
-  let activeStep = 0, drawMethod = () => {};
-  function selectStep(index) {
-    activeStep = index;
-    steps.forEach((step, i) => { step.classList.toggle('is-active', i === index); $('button', step).setAttribute('aria-pressed', String(i === index)); });
-    $('#method-count').textContent = `${String(index + 1).padStart(2, '0')} / 05`;
-    $('#method-caption').textContent = captions[index]; drawMethod(index);
+  if (mode !== 'fallback' && canvas) {
+    const load = () => import('./site-scene.js?v=20260913-1')
+      .then(module => module.initGlobalScene(canvas, { mode, reducedMotion }))
+      .catch(() => { root.dataset.performance = 'fallback'; });
+    if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 900 });
+    else setTimeout(load, 80);
   }
-  steps.forEach((step, index) => $('button', step).addEventListener('click', () => selectStep(index)));
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(entries => {
-      if (innerWidth <= 800) return;
-      const visible = entries.filter(entry => entry.isIntersecting);
-      if (visible.length) selectStep(Number(visible[0].target.dataset.step));
-    }, { rootMargin: '-30% 0px -50% 0px' });
-    steps.forEach(step => observer.observe(step));
-  }
-  // Progressive enhancement: typography, navigation and case links work without WebGL.
-  const loadScene = () => import('./site-scene.js?v=20260912-6').then(scene => {
-    drawMethod = scene.initMethod($('#method-canvas'), reduceMotion); drawMethod(activeStep);
-    if (!reduceMotion.matches && !navigator.connection?.saveData) scene.initHero($('#hero-canvas'), reduceMotion).catch(() => {});
-  }).catch(() => {});
-  if ('requestIdleCallback' in window) requestIdleCallback(loadScene, { timeout: 1800 });
-  else setTimeout(loadScene, 150);
 })();
