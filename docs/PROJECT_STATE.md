@@ -7,41 +7,116 @@
 
 ---
 
+## Source of truth — definição normativa
+
+```
+SOURCE_OF_TRUTH_PATH  = /workspace/agencia-hub
+GIT_REPOSITORY_PATH   = /workspace/agencia-hub          (contém .git + remote origin)
+RUNTIME_WORKTREE_PATH = /home/user/agencia-hub          (SEM .git; onde se edita)
+```
+
+**Autoridade final:** `github.com/miguelcavalcante916-svg/agencia-hub`. É a única coisa
+que sobrevive ao container ser reciclado. Os dois caminhos locais são efêmeros.
+
+### Relação medida entre os dois caminhos
+
+| Medição | Resultado |
+|---|---|
+| Mount / volume | **o mesmo** (`/dev/vda`, device id 65024) — não há mount separado |
+| Inodes | **diferentes** (475147 × 15826946) |
+| `.git` | só em `/workspace/agencia-hub` |
+| Escrever num aparece no outro? | **NÃO** — testado empiricamente criando arquivo em `/home/user` e procurando em `/workspace` |
+| Ligação | **cópia manual**, em nenhum sentido automático |
+
+**São duas árvores independentes. Podem divergir, e divergiram** (10 arquivos no
+momento desta auditoria).
+
+### Por que a cópia existe
+Os testes apontam para `file:///home/user/agencia-hub/...` por caminho absoluto, e o
+`index.html` funciona de `file://`. O runtime é onde o navegador lê.
+
+### Regra para TODAS as sessões futuras
+
+1. **Editar** em `RUNTIME_WORKTREE_PATH`.
+2. **Antes de commitar**, rodar `ferramentas/espelho.sh enviar`.
+3. **Depois de `git pull`/`checkout`**, rodar `ferramentas/espelho.sh trazer`.
+4. **Na dúvida**, rodar `ferramentas/espelho.sh conferir` — lista divergências sem
+   escrever nada. Sai com código 1 se divergirem.
+
+> **Pendente de decisão do Miguel:** consolidar os dois num só, trocando o runtime por
+> um symlink para o repositório. Elimina a divergência de vez, mas exige apagar a cópia
+> — passo destrutivo, não executado sem autorização. Ver `DECISIONS.md`.
+
 ## Current production
 
 | | |
 |---|---|
-| Repositório Git | `/workspace/agencia-hub` → `github.com/miguelcavalcante916-svg/agencia-hub` |
-| Cópia de trabalho | `/home/user/agencia-hub` (**sem `.git`** — espelhar antes de commitar) |
-| Branch | `main` |
-| Commit | **`029db9f`** — *"Base para publicar na Play: privacidade, assetlinks e o app no marinho"* |
-| Árvore | limpa no momento da auditoria |
-| Deploy | Vercel, automático a partir de `main` |
+| Branch de trabalho | `claude/lead-agent-skill-e-docs` |
+| Branch de produção | `main` — **publica sozinha na Vercel** |
+| HEAD de produção | **`029db9f`** — *"Base para publicar na Play: privacidade, assetlinks e o app no marinho"* |
+| Remote | `github.com/miguelcavalcante916-svg/agencia-hub` (público) |
+| Projeto Vercel | `agencia-cavalcante` (segundo o README deste repo, linha 33) |
 | Domínio | agenciacavalcante.com (Hostinger → DNS → Vercel) |
-
-Cadeia de commits da sessão anterior: `b75aadc → 39bb2f1 → cfc77ce → dcca784 → a145495
-→ 051f67c → 16812e9 → 0ddb3b8 → 44c266a → b60242c → ec2bef6 → 9c8e362 → d73ec3f →
-89ae309 → f014e32 → 029db9f`.
+| Histórico | 52 commits, 18/08/2026 → 14/09/2026 |
 
 ## Approved visual base
 
 **Deployment declarado pelo Miguel:** `agencia-cavalcante-7d0et1r6l`
+**Status: 🔴 BLOCKED_BY_USER** — não foi possível provar o commit.
 
-⚠️ **Commit correspondente: NÃO VERIFICADO.** A política de rede desta sessão devolve
-`403 CONNECT` para `*.vercel.app` e para `agenciacavalcante.com` — confirmado no status
-do proxy. Não é possível abrir nem comparar o deployment daqui.
+### Existem DOIS repositórios, não um
 
-**Como confirmar (3 cliques, só o Miguel pode):**
-Vercel → projeto `agencia-cavalcante` → **Deployments** → localizar o que termina em
-`7d0et1r6l` → a linha mostra o **commit SHA** e a branch. Anotar aqui.
+| | `agencia-hub` | `agencia-cavalcante` |
+|---|---|---|
+| Visibilidade | público | **privado** |
+| Último push | 14/09/2026 | **07/06/2026** |
+| HEAD | `029db9f` (main) | `bc31466` *"Pareamento final das URLs CT Fire"* |
+| Pilha | HTML/CSS/JS puro, sem build | **Next.js 16 + React 19 + TS + Tailwind v4 + Framer Motion 12** |
+| Paleta | azul `#4361EE` + marinho `#16255F` | **dourado `#c8a24a` + marinho `#0b1f3f`** |
+| Mídia real | **0 imagens, 0 vídeos** | **14 fotos de clientes reais, 2,2 MB** |
+| Segmentação | 0 menções | `niches-section.tsx` |
+| Página Work | não tem | `/trabalhos` + `video-modal` + `works-grid` |
+| Identidade cavalo | SVG solto | `chess-pattern`, `knight-motion-line`, `strategic-move-diagram` |
+
+Clientes reais no `agencia-cavalcante`: **CT Fire** (9 fotos), **Black Suplementos**
+(4), **Parque José Julião Diniz** (1).
+
+### Por que isso trava a identificação
+
+O nome do projeto Vercel na URL (`agencia-cavalcante`) é **idêntico ao nome do
+repositório privado** — e a Vercel deriva o nome do projeto do repositório por padrão.
+Mas o `README.md` do `agencia-hub`, linha 33, afirma que o projeto Vercel
+`agencia-cavalcante` está ligado **a este repositório**.
+
+Os dois não podem estar ligados ao mesmo projeto ao mesmo tempo. Ou o README está
+desatualizado, ou o projeto foi religado em algum momento. **Em qualquer dos casos, o
+deployment `7d0et1r6l` pode ter vindo de qualquer um dos dois** — e adivinhar seria
+escolher entre duas identidades visuais incompatíveis.
+
+### Teste de 5 segundos que resolve (só o Miguel pode)
+
+Abrir a URL da base visual e responder **uma** pergunta:
+
+> **O site é DOURADO + MARINHO com fotos de academia (CT Fire)?**
+> - **SIM** → a base é o repositório **`agencia-cavalcante`** (Next.js). Todo o trabalho
+>   de paleta/motion que documentei descreve o projeto errado.
+> - **NÃO — é azul, sem fotos** → a base é o **`agencia-hub`**, e falta só descobrir qual
+>   dos 51 commits de `main`.
+
+Se for o `agencia-hub`: Vercel → projeto → *Deployments* → achar o que termina em
+`7d0et1r6l` → a linha mostra o commit.
 
 > Commit da base aprovada: `__________` ← preencher
 
-Até lá, a hipótese de trabalho é que `029db9f` (produção) **é ou descende de** a base
-aprovada, porque `main` publica automaticamente. **Não** tratar isso como verificado.
+### O que NÃO foi feito por causa deste bloqueio
+Nenhuma alteração visual na homepage. Nenhuma mudança de paleta, motion, H1, pacotes,
+FAQ ou seções. **STABILIZE FIRST.**
 
-**Princípio:** PRESERVAR + REFINAR + CONTEÚDO REAL + MOTION + CONVERSÃO.
-Redesign completo exige autorização explícita.
+### Pista lateral do histórico do agencia-hub
+O repositório **já teve** herói 3D em WebGL (`5826bea`) e a biblioteca Motion 13
+auto-hospedada em `vendor/` (`9a562b3`). Ambos foram **removidos** em `d622d11`
+(27/08, *"Site 136 KB mais leve"*). Se a base aprovada for uma dessas versões, o HEAD
+atual não é refinamento dela — é uma simplificação deliberada dela.
 
 ## Asset state
 
@@ -111,7 +186,16 @@ usados — não há biblioteca carregada.
 - Sem mídia real em lugar nenhum
 
 **Resolvido nesta sessão:** a suíte de testes vivia só no scratchpad efêmero do
-container — 95 verificações que sumiriam no próximo reinício. Movida para `testes/`.
+container — 91 verificações (site 32, app 25, trava 9, portal 9, fontes 8, login 8,
+mais o teste de CSP) que sumiriam no próximo reinício. Movida para
+`testes/`, com `README.md` e as fixtures de fonte (`testes/fontes/`, 524 KB de woff2 do
+npm — o sandbox não alcança o Google Fonts).
+
+**Armadilha descoberta ao validar:** os testes que sobem servidor em porta fixa
+(`teste_login` 8123, `teste_trava` 8144, `teste_csp`) **não podem rodar em paralelo** —
+colidem com `Address already in use` e `goto` estourando, produzindo falha falsa. Uma
+rodada concorrente marcou "1 falha" no `teste_site` que não existia: rodando limpo, ele
+passa duas vezes seguidas. **Rodar um de cada vez.** Registrado em `testes/README.md`.
 
 ## Current priorities
 

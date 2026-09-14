@@ -1,23 +1,45 @@
 # Arquitetura
 
-## Diretórios — e qual é o repositório de verdade
+## Source of truth — normativo
 
-| Caminho | O que é |
-|---|---|
-| `/home/user/agencia-hub` | **cópia de trabalho.** Edite aqui. **Não tem `.git`.** |
-| `/workspace/agencia-hub` | **o repositório Git.** remote `origin` → `github.com/miguelcavalcante916-svg/agencia-hub`, branch `main` |
-| `/home/user/agencia-cavalcante` | scaffold citado pelo Miguel — **não existe neste ambiente.** Não trabalhar nele sem pedido explícito. |
-
-### Espelhamento (obrigatório antes de commitar)
-
-```bash
-cd /workspace/agencia-hub
-find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-cp -r /home/user/agencia-hub/. /workspace/agencia-hub/
-git status          # confira ANTES de add
+```
+SOURCE_OF_TRUTH_PATH  = /workspace/agencia-hub
+GIT_REPOSITORY_PATH   = /workspace/agencia-hub      (tem .git + remote origin)
+RUNTIME_WORKTREE_PATH = /home/user/agencia-hub      (SEM .git; onde se edita)
 ```
 
-O `find` preserva `.git` e nada mais — confira o `git status` antes de qualquer `add`.
+Autoridade final: `github.com/miguelcavalcante916-svg/agencia-hub`. É o único que
+sobrevive ao container ser reciclado.
+
+**Os dois caminhos locais são árvores INDEPENDENTES.** Medido: mesmo volume
+(`/dev/vda`), inodes diferentes, sem mount compartilhado, e escrever num **não** aparece
+no outro. A única ligação é cópia manual — e eles já divergiram.
+
+| | `/home/user/agencia-hub` | `/workspace/agencia-hub` |
+|---|---|---|
+| Papel | runtime worktree — edite aqui | repositório — commite aqui |
+| `.git` | não | **sim** |
+| Por que existe | os testes apontam para `file:///home/user/agencia-hub/...` | é o que tem remote |
+
+### Fluxo obrigatório
+
+```bash
+ferramentas/espelho.sh conferir   # lista divergências, não escreve (exit 1 se divergir)
+ferramentas/espelho.sh enviar     # runtime -> git   (antes de commitar)
+ferramentas/espelho.sh trazer     # git -> runtime   (depois de pull/checkout)
+```
+
+**Sempre `conferir` ao começar.** Nunca commitar sem `enviar` antes.
+
+> Pendência: consolidar os dois num symlink elimina a divergência de vez, mas é passo
+> destrutivo — só com autorização do Miguel.
+
+### Um terceiro diretório, que NÃO é este projeto
+`/home/user/agencia-cavalcante` — clone do repositório **privado**
+`miguelcavalcante916-svg/agencia-cavalcante`: Next.js 16 + React 19 + Tailwind v4 +
+Framer Motion, paleta **dourado `#c8a24a` + marinho `#0b1f3f`**, **14 fotos de clientes
+reais**. Último push 07/06/2026. **Só leitura, não trabalhar nele** sem pedido explícito.
+Pode ser a base visual aprovada — ver `docs/PROJECT_STATE.md` → *Approved visual base*.
 
 ## Pilha — sem build, sem framework
 

@@ -68,15 +68,20 @@ with sync_playwright() as p:
     }""")
 
     pg.goto('file:///home/user/agencia-hub/portal/index.html'); pg.wait_for_timeout(800)
+    # O portal foi REESCRITO para e-mail + senha. O caminho do link virou alternativa:
+    # #bloco-link nasce display:none e quem o revela e o botao #btn-alternar; quem envia
+    # e o #btn-link (ou Enter no campo) — NAO mais o button[type=submit], que hoje e o
+    # form de e-mail e senha. O teste abaixo passa a dirigir o produto como um usuario.
+    pg.click('#btn-alternar'); pg.wait_for_timeout(200)
     pg.fill('#campo-link', 'https://site-qualquer.com/nada')
-    pg.click('button[type=submit]'); pg.wait_for_timeout(400)
+    pg.click('#btn-link'); pg.wait_for_timeout(400)
     if pg.evaluate("!document.getElementById('erro').hidden") and '/portal/' in pg.url:
         ok('entrada do portal recusa link inválido e não navega')
     else:
         falha('validação do link do portal')
 
     pg.fill('#campo-link', 'https://agenciacavalcante.com/app/#/p?d=' + link)
-    pg.click('button[type=submit]'); pg.wait_for_timeout(2600)
+    pg.click('#btn-link'); pg.wait_for_timeout(2600)
     # o shell da agência continua no DOM, mas tem que estar INVISÍVEL
     # (body.modo-portal .app { display:none }) — medir visibilidade, não presença
     est = pg.evaluate("""() => {

@@ -28,6 +28,17 @@ INCOMING → CLASSIFY → INVENTORY → CLIENT → OPTIMIZE → WEBSITE
 Material novo entra em `incoming/`. Só chega ao site depois de classificado,
 inventariado, atribuído e otimizado.
 
+## Onde a biblioteca vive
+
+`agencia-hub/assets-cavalcante/` — **versionada no Git**, que é a única coisa que
+sobrevive ao container ser reciclado. Fora do deploy via `.vercelignore`.
+
+> **Aviso para quando chegar vídeo:** Git guarda binário inteiro a cada versão. Fotos
+> (poucos MB) tudo bem; **masters de vídeo, não** — o repositório incha e nunca
+> desincha. Quando o primeiro master de vídeo chegar, decidir entre Git LFS ou manter os
+> masters fora do Git (só derivados versionados), e registrar em `docs/DECISIONS.md`
+> antes de commitar o primeiro arquivo grande.
+
 ## Estado real (auditado)
 
 A pasta **não existia** no repositório até esta sessão; foi criada com a estrutura

@@ -29,9 +29,11 @@ Quando houver conflito:
 
 ## Os cinco fatos que mais economizam tempo
 
-1. **O repositório Git não é a cópia de trabalho.** Edite em `/home/user/agencia-hub`
-   (sem `.git`), espelhe para `/workspace/agencia-hub` (com `.git`), commite lá.
-   Procedimento exato em `architecture.md`.
+1. **O repositório Git não é a cópia de trabalho, e os dois divergem.** Edite em
+   `/home/user/agencia-hub` (runtime, sem `.git`), rode **`ferramentas/espelho.sh
+   enviar`**, commite em `/workspace/agencia-hub`. Comece toda sessão com
+   `ferramentas/espelho.sh conferir`. Medido: árvores independentes, escrita numa não
+   aparece na outra. Detalhes em `architecture.md`.
 2. **O CSP bloqueia todo script de terceiro** (`script-src 'self' 'unsafe-inline'`).
    CDN não funciona — nem GSAP, nem analytics, nem widget. Auto-hospedar resolve.
 3. **O site não tem nenhuma mídia real** — 0 `<img>`, 0 `<video>`, 34 `<svg>`.
@@ -78,9 +80,11 @@ autorização explícita do Miguel.
 Princípio: **PRESERVAR + REFINAR + CONTEÚDO REAL + MOTION + CONVERSÃO.**
 Redesign completo exige autorização.
 
-> ⚠️ O commit exato correspondente a esse deployment **ainda não foi verificado** — a
-> rede desta sessão não alcança a Vercel. Ver `docs/PROJECT_STATE.md` → "Approved
-> visual base" para o procedimento de confirmação.
+> 🔴 **BLOCKED_BY_USER.** Existem **dois** repositórios da agência, com identidades
+> visuais incompatíveis: `agencia-hub` (azul, zero mídia) e `agencia-cavalcante`
+> (Next.js, **dourado + marinho, 14 fotos de clientes reais**). O nome do projeto na URL
+> da Vercel bate com o **segundo**. **Não alterar nada visual** até o Miguel dizer qual
+> é. Ver `docs/PROJECT_STATE.md` → *Approved visual base*.
 
 ## Benchmarks — nível de execução, não identidade
 

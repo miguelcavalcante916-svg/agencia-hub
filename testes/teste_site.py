@@ -66,7 +66,14 @@ with sync_playwright() as p:
         falha('transform inline no CTA', 'inline=%r comp=%s' % (inline, tf))
 
     pg.mouse.down()
-    pg.wait_for_timeout(160)
+    # NADA de tempo fixo: a transicao do :active dura --t-instante (90ms), mas sob carga
+    # de CPU ela COMECA depois dos 160ms que estavam aqui, e a leitura pegava o frame de
+    # hover (medido: em 5 tentativas, :active=True e alvo certo em todas; so o transform
+    # ainda nao tinha andado numa delas). Esperamos as transicoes do botao ASSENTAREM e
+    # so entao lemos o valor — a assercao (encolheu < 0.995) continua sendo a do produto.
+    pg.wait_for_function(
+        """() => document.querySelector('.hero .hero-ctas .btn-azul')
+               .getAnimations().every(a => a.playState === 'finished')""", timeout=4000)
     tf_press = pg.evaluate("getComputedStyle(document.querySelector('.hero .hero-ctas .btn-azul')).transform")
     pg.mouse.up()
     encolheu = tf_press.startswith('matrix(') and float(tf_press[7:-1].split(',')[0]) < 0.995
@@ -321,8 +328,24 @@ with sync_playwright() as p:
       return { t: r.top + scrollY, h: r.height }; }""")
     sequencia = []
     for fr in (0.02, 0.35, 0.6, 0.9):
-        pg.evaluate("(y) => window.scrollTo({top: y, behavior: 'instant'})", pa['t'] + (pa['h'] - 880) * fr)
-        pg.wait_for_timeout(320)
+        alvo = pa['t'] + (pa['h'] - 880) * fr
+        pg.evaluate("(y) => window.scrollTo({top: y, behavior: 'instant'})", alvo)
+        # NADA de sleep fixo: sob carga de CPU o requestAnimationFrame do palco passa
+        # dos 320ms e a leitura pegava o estado ANTERIOR (dava [4,4,4,4], porque a
+        # checagem de cima deixa a página no fim do palco). Esperamos o DRIVER
+        # (--avanco, a entrada) alcançar a posição de rolagem, e só então lemos o
+        # RESULTADO (data-ativa, a saída) — a asserção continua honesta.
+        pg.wait_for_function(
+            """(alvo) => {
+                 if (Math.abs(window.scrollY - alvo) > 2) return false;
+                 const p = document.querySelector('.protocolo-palco').getBoundingClientRect();
+                 const curso = p.height - innerHeight;
+                 if (curso <= 0) return false;
+                 const esperado = Math.min(Math.min(Math.max(-p.top / curso, 0), 1) / 0.86, 1);
+                 const lido = parseFloat(getComputedStyle(document.querySelector('.marchas'))
+                                .getPropertyValue('--avanco')) || 0;
+                 return Math.abs(esperado - lido) < 0.01;
+               }""", arg=alvo, timeout=6000)
         sequencia.append(pg.evaluate("""() => [...document.querySelectorAll('.marcha')]
           .findIndex(l => l.hasAttribute('data-ativa')) + 1"""))
     if sequencia == sorted(sequencia) and sequencia[0] == 1 and sequencia[-1] == 4:

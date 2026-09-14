@@ -27,8 +27,10 @@ class H(http.server.SimpleHTTPRequestHandler):
     def log_message(self,*a): pass
 
 os.chdir(RAIZ)
-socketserver.TCPServer.allow_reuse_address=True
-srv=socketserver.TCPServer(('127.0.0.1',8144),H)
+# ThreadingTCPServer: ver comentario em teste_login.py
+socketserver.ThreadingTCPServer.allow_reuse_address=True
+socketserver.ThreadingTCPServer.daemon_threads=True
+srv=socketserver.ThreadingTCPServer(('127.0.0.1',8144),H)
 threading.Thread(target=srv.serve_forever,daemon=True).start()
 BASE='http://127.0.0.1:8144'
 

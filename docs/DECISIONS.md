@@ -22,7 +22,7 @@ nesta sessão) · plugin marketplace (complexidade sem ganho).
 
 **DECISÃO** Os 8 arquivos Playwright passam a viver em `agencia-hub/testes/`, fora do
 deploy via `.vercelignore`.
-**POR QUÊ** Viviam no scratchpad efêmero. ~95 verificações — site, app, portal, login,
+**POR QUÊ** Viviam no scratchpad efêmero. 91 verificações — site, app, portal, login,
 trava, CSP, fontes — sumiriam no próximo reinício do container. Regressão que ninguém
 mede volta sempre.
 **ALTERNATIVAS** Deixar no scratchpad (perda garantida) · reescrever a cada sessão
@@ -98,3 +98,100 @@ e publicar é um dos itens da lista "perguntar antes".
 | 2026-09 | Ponto azul percorrendo quadrado **removido** | não comunicava "cavalo"; o caminho medido era quadrado, não L |
 | 2026-09 | Sem seção de depoimentos | decisão do Miguel |
 | 2026-09 | Pacotes sem valor em R$ | cada cliente recebe orçamento próprio |
+
+## 2026-09-14 · Fixtures de fonte versionadas junto com a suíte
+
+**DECISÃO** `testes/fontes/` guarda 524 KB de woff2 do npm (`@fontsource-variable/
+urbanist` e `lexend`), versionados, fora do deploy. Somado: `testes/README.md` com a
+regra de execução sequencial.
+**POR QUÊ** Ao validar o resgate da suíte, `teste_fontes_mobile` quebrou com
+`FileNotFoundError` — eu tinha movido os `.py` e deixado as fixtures no scratchpad. Um
+teste que não roda é pior que nenhum: dá falsa sensação de cobertura. O sandbox não
+alcança o Google Fonts, então baixar em tempo de execução não é opção.
+**ALTERNATIVAS** Baixar do npm a cada execução (a rede libera npm, mas deixa o teste
+lento e dependente de rede) · apagar o teste (perde a verificação de tipografia mobile).
+**IMPACTO** +524 KB no repositório; a suíte passa a ser autocontida.
+**REVERSÍVEL?** Sim.
+
+## 2026-09-14 · Testes com servidor em porta fixa rodam em série, nunca em paralelo
+
+**DECISÃO** Regra documentada em `testes/README.md`: um teste de cada vez.
+**POR QUÊ** Duas rodadas simultâneas produziram uma **falha falsa** no `teste_site` e
+`OSError: Address already in use` no `teste_trava`. Rodando limpo e sozinho, `teste_site`
+passa duas vezes seguidas. Falha falsa é pior que falha: custa tempo perseguindo um bug
+que não existe, e ensina a ignorar o vermelho.
+**ALTERNATIVAS** Porta dinâmica por execução (correção melhor, mas mexe em 3 arquivos de
+teste — fica para quando a suíte for tocada de novo).
+**IMPACTO** QA confiável.
+**REVERSÍVEL?** Sim.
+
+## 2026-09-14 · Source of truth definida: o repositório Git, não a cópia de trabalho
+
+**DECISÃO**
+```
+SOURCE_OF_TRUTH_PATH  = /workspace/agencia-hub
+GIT_REPOSITORY_PATH   = /workspace/agencia-hub
+RUNTIME_WORKTREE_PATH = /home/user/agencia-hub
+```
+Autoridade final: `github.com/miguelcavalcante916-svg/agencia-hub`.
+Criada `ferramentas/espelho.sh` com `conferir` / `enviar` / `trazer`.
+**POR QUÊ** Medido: mesmo volume (`/dev/vda`), **inodes diferentes**, sem mount
+compartilhado, e escrita num caminho **não** aparece no outro (testado empiricamente).
+São duas árvores independentes ligadas só por cópia manual — e já estavam divergindo em
+10 arquivos. Só o repositório tem `.git` e remote, ou seja, só ele sobrevive ao container.
+**ALTERNATIVAS** Eleger o runtime como fonte (não tem `.git`, morre com o container) ·
+symlink do runtime para o repositório (elimina a divergência de vez, **mas exige apagar
+a cópia — passo destrutivo**, não executado; aguarda autorização) · `git worktree`
+(continuaria sendo dois diretórios).
+**IMPACTO** Divergência deixa de ser invisível: `espelho.sh conferir` sai com código 1 e
+lista os arquivos.
+**REVERSÍVEL?** Sim — nada foi apagado.
+
+## 2026-09-14 · Base visual: BLOCKED_BY_USER, porque existem dois repositórios
+
+**DECISÃO** Não identificar o commit da base visual por dedução. Marcar
+**BLOCKED_BY_USER** e não tocar em nada visual até o Miguel confirmar.
+**POR QUÊ** O deployment é `agencia-cavalcante-7d0et1r6l`. Existe um **segundo
+repositório**, `miguelcavalcante916-svg/agencia-cavalcante` (privado, último push
+07/06/2026): Next.js 16 + React 19 + Tailwind v4 + Framer Motion, paleta **dourado
+`#c8a24a` + marinho `#0b1f3f`**, **14 fotos de clientes reais** (CT Fire, Black
+Suplementos, Parque José Julião Diniz), seção de nichos, página `/trabalhos`,
+`chess-pattern`, `knight-motion-line`, `strategic-move-diagram`.
+
+O nome do projeto na URL da Vercel é **idêntico ao nome desse repositório** — e a Vercel
+deriva o nome do projeto do repositório por padrão. Mas o `README.md` do `agencia-hub`
+(linha 33) afirma que o projeto Vercel `agencia-cavalcante` está ligado a **este**
+repositório. Os dois não podem estar ligados ao mesmo projeto ao mesmo tempo.
+
+Escolher errado significaria trabalhar sobre a identidade visual errada: azul sem mídia
+× dourado com 14 fotos reais. Não é detalhe recuperável.
+**ALTERNATIVAS** Assumir o `agencia-hub` porque é onde estamos trabalhando (risco de
+descartar a base aprovada) · assumir o Next.js porque o nome bate (risco de jogar fora
+todo o trabalho de agosto e setembro).
+**IMPACTO** Nenhuma alteração visual até a confirmação. O teste que resolve leva 5
+segundos: abrir a URL e ver se é dourado com fotos ou azul sem fotos.
+**REVERSÍVEL?** O bloqueio, sim. A escolha errada, muito caro.
+
+## 2026-09-14 · Duas instabilidades de teste corrigidas no arnês, não no produto
+
+**DECISÃO** (a) Os três servidores de teste passam de `TCPServer` para
+`ThreadingTCPServer` + `daemon_threads`. (b) Em `teste_site`, dois `wait_for_timeout`
+fixos viram `wait_for_function` sobre a condição real.
+**POR QUÊ** Cada uma foi medida antes de ser tocada:
+- `teste_login` passava 6 de 8 e morria: o Chromium abandona a conexão no meio da
+  resposta ao navegar, o servidor single-thread não sobrevive ao `BrokenPipeError`, e o
+  contexto seguinte estoura em `Page.goto`. Agora **8/8**.
+- `sequência das marchas: [4,4,4,4]`: sob carga, o `requestAnimationFrame` do palco
+  passa dos 320 ms fixos e a leitura pegava o estado anterior. A lógica do produto
+  (`index.html:1816-1838`) foi lida e está correta. Agora espera o **driver**
+  (`--avanco`) alcançar a rolagem e só então lê o **resultado** (`data-ativa`) —
+  a asserção segue honesta. **3/3 estável.**
+- `pressão no CTA: matrix(1,0,0,1,0,-1)`: instrumentei 5 tentativas — `:active=True`,
+  alvo `A.btn btn-azul` e `anim=0` em **todas**; só o `transform` ainda não tinha andado
+  em uma delas. A transição dura 90 ms mas **começa** depois dos 160 ms fixos sob carga.
+  Agora espera as transições do botão assentarem antes de ler.
+**ALTERNATIVAS** Aumentar os tempos fixos (empurra o problema) · remover as checagens
+(perde cobertura real) · mexer no CSS do produto (**seria consertar o termômetro**).
+**IMPACTO** Nenhuma mudança de comportamento do produto. Zero linha de `index.html`
+tocada.
+**REVERSÍVEL?** Sim.

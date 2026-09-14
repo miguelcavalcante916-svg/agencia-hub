@@ -11,7 +11,20 @@ with sync_playwright() as p:
     browser = p.chromium.launch(headless=True, executable_path='/opt/pw-browsers/chromium')
     page = browser.new_page(viewport={'width': 1360, 'height': 850})
     page.on('pageerror', lambda e: erros.append(f'PAGEERROR: {e}'))
-    page.on('console', lambda m: erros.append(f'CONSOLE-{m.type}: {m.text}') if m.type == 'error' else None)
+    # Rodando de file:// nao existe servidor: a trava chama /api/agencia/entrar e o
+    # navegador barra por CORS, e as fontes do Google nao carregam (sandbox offline).
+    # Os dois sao ESPERADOS — a trava foi feita para abrir justamente nesse caso. Contar
+    # esse ruido como falha esconderia erro de verdade no meio dele.
+    RUIDO_FILE = ('/api/agencia/entrar', '/api/portal/', 'fonts.googleapis.com',
+                  'fonts.gstatic.com', 'ERR_CONNECTION_RESET', 'ERR_FAILED',
+                  'Failed to load resource')
+    def _console(m):
+        if m.type != 'error':
+            return
+        if any(t in m.text for t in RUIDO_FILE):
+            return
+        erros.append(f'CONSOLE-{m.type}: {m.text}')
+    page.on('console', _console)
 
     page.goto(URL)
     page.wait_for_load_state('networkidle')

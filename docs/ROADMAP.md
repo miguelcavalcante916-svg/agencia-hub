@@ -7,16 +7,22 @@ Legenda: ⬜ não começou · 🟨 em andamento · ✅ concluído · 🔒 bloque
 
 ---
 
-## PHASE 0 — Estabilizar ✅
+## PHASE 0 — Estabilizar / BASELINE LOCK 🟨
 
-Tornar o projeto sobrevivível entre sessões.
+Tornar o projeto sobrevivível e sem ambiguidade entre sessões.
 
-- ✅ Skill `agencia-cavalcante` versionada no repositório
-- ✅ Suíte de testes resgatada do scratchpad efêmero para `testes/`
+- ✅ Skill `agencia-cavalcante` versionada no repositório + espelhada para uso imediato
+- ✅ Suíte de testes resgatada do scratchpad efêmero, com fixtures e `README.md`
+- ✅ **Source of truth definida** — `SOURCE_OF_TRUTH_PATH`, `GIT_REPOSITORY_PATH`,
+  `RUNTIME_WORKTREE_PATH` + `ferramentas/espelho.sh` (`conferir`/`enviar`/`trazer`)
 - ✅ `docs/PROJECT_STATE.md`, `ROADMAP.md`, `DECISIONS.md`
-- ✅ Estrutura `assets-cavalcante/` com inventário honesto
-- ✅ `docs/`, `testes/`, `assets-cavalcante/` fora do deploy
-- ✅ Contraste da paleta confirmado por medição
+- ✅ `assets-cavalcante/` na source of truth, inventário honesto, zero arquivo inventado
+- ✅ `docs/`, `testes/`, `ferramentas/`, `assets-cavalcante/` fora do deploy
+- ✅ Contraste da paleta confirmado por medição WCAG 2.1
+- ✅ **5 defeitos de arnês de teste corrigidos** (nenhuma linha de produto tocada)
+- 🔴 **Commit da base visual — BLOCKED_BY_USER.** Descobertos **dois** repositórios com
+  identidades visuais incompatíveis. Ver `PROJECT_STATE.md` → *Approved visual base*.
+  **Nada visual pode avançar até isso ser resolvido.**
 
 ## PHASE 1 — Conversão 🟨 ← **próximo bloco executável**
 

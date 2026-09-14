@@ -48,7 +48,8 @@ contado como "linha estática".
 - [ ] Navegação por teclado + `:focus-visible` visível
 - [ ] Contraste conferido com `wcag.py` se alguma cor mudou
 - [ ] Nenhum `PLACEHOLDER`/`TODO`/lorem no que vai ao ar
-- [ ] Suíte inteira verde
+- [ ] Suíte inteira verde — **rodando em série** (`testes/rodar_tudo.sh`)
+- [ ] `ferramentas/espelho.sh conferir` sem divergência antes de commitar
 
 ## Performance
 
