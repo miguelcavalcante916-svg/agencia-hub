@@ -52,6 +52,16 @@
       --blue-soft: #91a3ff;
       --line: rgba(125, 151, 255, .22);
       --ease: cubic-bezier(.16, 1, .3, 1);
+      --ease-standard: cubic-bezier(.2, .8, .2, 1);
+      --ease-out: cubic-bezier(.16, 1, .3, 1);
+      --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+      --motion-fast: 180ms;
+      --motion-standard: 360ms;
+      --motion-slow: 850ms;
+      --icon-xs: 14px;
+      --icon-sm: 16px;
+      --icon-md: 20px;
+      --icon-lg: 24px;
       --pad: clamp(22px, 4vw, 64px);
     }
 
@@ -82,6 +92,21 @@
 
     a { color: inherit; text-decoration: none; }
     button { font: inherit; }
+    .icon {
+      display: block;
+      flex: 0 0 auto;
+      width: var(--icon-md);
+      height: var(--icon-md);
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .icon-xs { width: var(--icon-xs); height: var(--icon-xs); }
+    .icon-sm { width: var(--icon-sm); height: var(--icon-sm); }
+    .icon-lg { width: var(--icon-lg); height: var(--icon-lg); }
     .sr-only { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
     .anchor-alias { position: absolute; top: 0; left: 0; width: 1px; height: 1px; pointer-events: none; }
 
@@ -141,11 +166,9 @@
     .brand small { display: block; margin-top: 4px; color: rgba(255,255,255,.55); font-size: 8px; letter-spacing: .22em; text-transform: uppercase; }
     .head-nav { display: flex; align-items: center; gap: 28px; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
     .head-nav a { position: relative; padding: 8px 0; }
-    .head-nav a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: 2px; height: 1px; background: currentColor; transition: right .35s var(--ease); }
-    .head-nav a:hover::after, .head-nav a:focus-visible::after { right: 0; }
+    .head-nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 2px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform var(--motion-standard) var(--ease-out); }
+    .head-nav a:hover::after, .head-nav a:focus-visible::after { transform: scaleX(1); }
     .head-cta { justify-self: end; display: inline-flex; align-items: center; gap: 12px; font-size: 10px; letter-spacing: .13em; text-transform: uppercase; }
-    .head-cta::after { content: "↗"; display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid rgba(255,255,255,.55); border-radius: 50%; transition: transform .35s var(--ease), background .35s, color .35s; }
-    .head-cta:hover::after { transform: rotate(45deg); background: #fff; color: #000; }
 
     .progress-rail {
       position: fixed;
@@ -181,8 +204,11 @@
       mix-blend-mode: difference;
     }
     .cursor-dot { width: 5px; height: 5px; background: white; }
-    .cursor-ring { width: 42px; height: 42px; border: 1px solid rgba(255,255,255,.72); transition: width .3s var(--ease), height .3s var(--ease), background .3s; }
+    .cursor-ring { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid rgba(255,255,255,.72); transition: width var(--motion-standard) var(--ease-out), height var(--motion-standard) var(--ease-out), background var(--motion-standard) var(--ease-out); }
+    .cursor-ring span { opacity: 0; font-size: 8px; letter-spacing: .13em; text-transform: uppercase; transition: opacity var(--motion-fast) var(--ease-out); }
     body.is-link .cursor-ring { width: 62px; height: 62px; background: rgba(255,255,255,.14); }
+    body.is-case .cursor-ring { width: 82px; height: 82px; background: rgba(255,255,255,.92); color: #050914; }
+    body.is-case .cursor-ring span { opacity: 1; }
 
     .global-webgl,
     .horse-fallback {
@@ -323,7 +349,6 @@
       text-transform: uppercase;
       pointer-events: auto;
     }
-    .arrival-cta::after { content: "↗"; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: white; color: #050914; font-size: 15px; }
 
     .move-path {
       position: absolute;
@@ -416,14 +441,14 @@
     .reel-window {
       position: relative;
       z-index: 10;
-      width: calc(16vw + var(--reel-open, 0) * 84vw);
-      height: calc(18vh + var(--reel-open, 0) * 82vh);
+      width: 100vw;
+      height: 100svh;
       overflow: hidden;
       border-radius: calc((1 - var(--reel-open, 0)) * 42px);
       background: #050914;
       color: #fff;
       box-shadow: 0 32px 100px rgba(3,6,16,calc(.15 + var(--reel-open, 0) * .25));
-      transform: translate3d(0, calc((1 - var(--reel-open, 0)) * 18vh), 0) rotate(calc((1 - var(--reel-open, 0)) * -5deg));
+      transform: translate3d(0, calc((1 - var(--reel-open, 0)) * 18vh), 0) scale(calc(.18 + var(--reel-open, 0) * .82)) rotate(calc((1 - var(--reel-open, 0)) * -5deg));
     }
     .reel-window::before {
       content: "";
@@ -509,7 +534,6 @@
       .site-head { grid-template-columns: 1fr auto; padding: 18px 18px; }
       .head-cta { font-size: 0; }
       .head-cta::before { content: "Falar"; font-size: 10px; }
-      .head-cta::after { width: 30px; height: 30px; }
       .brand small { display: none; }
       .chapter-index { top: 86px; left: 18px; }
       .hero-copy { left: 18px; right: 18px; font-size: clamp(52px, 16vw, 76px); line-height: .84; }
@@ -569,7 +593,7 @@
       .reel-window { width: 100vw !important; height: 100svh !important; border-radius: 0 !important; transform: none !important; }
     }
   </style>
-  <link rel="stylesheet" href="cinematic-production.css?v=2">
+  <link rel="stylesheet" href="cinematic-production.css?v=3">
 </head>
 <body>
   <div class="preloader" aria-hidden="true">
@@ -588,20 +612,24 @@
       <a href="#expertise">Expertise</a>
       <a href="#work">Work</a>
     </nav>
-    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span><b>Menu</b></button>
-    <a class="head-cta" href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Quero%20come%C3%A7ar%20um%20projeto%20com%20a%20Cavalcante." target="_blank" rel="noopener" data-cta-origin="header">Start a project</a>
+    <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+      <svg class="icon icon-sm icon-menu-open" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <svg class="icon icon-sm icon-menu-close" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      <b>Menu</b>
+    </button>
+    <a class="head-cta" href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Quero%20come%C3%A7ar%20um%20projeto%20com%20a%20Cavalcante." target="_blank" rel="noopener" data-cta-origin="header"><span>Start a project</span><span class="icon-button"><svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 7h10v10M7 17 17 7"/></svg></span></a>
   </header>
   <nav class="mobile-menu" id="mobile-menu" aria-label="Navegação mobile" hidden>
     <a href="#arrival">Index</a>
     <a href="#expertise">Expertise</a>
     <a href="#work">Work</a>
     <a href="#portal">Portal</a>
-    <a href="#contact">Start a project ↗</a>
+    <a href="#contact"><span>Start a project</span><svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 7h10v10M7 17 17 7"/></svg></a>
   </nav>
 
   <div class="progress-rail" aria-hidden="true"><span></span></div>
   <div class="cursor-dot" aria-hidden="true"></div>
-  <div class="cursor-ring" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"><span>Ver case</span></div>
   <canvas id="horse-canvas" class="global-webgl" aria-hidden="true"></canvas>
   <div class="horse-fallback" aria-hidden="true"><img src="app/img/logo.svg" alt=""></div>
 
@@ -623,7 +651,7 @@
           <path d="M80 470H340V130H520" pathLength="1" style="stroke-dashoffset:calc(1 - var(--arrival-grid, 0));stroke-dasharray:1"/>
           <circle cx="80" cy="470" r="4"/><circle cx="340" cy="470" r="4"/><circle cx="340" cy="130" r="4"/><circle cx="520" cy="130" r="4"/>
         </svg>
-        <a class="arrival-cta" href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Quero%20tornar%20minha%20marca%20imposs%C3%ADvel%20de%20ignorar." target="_blank" rel="noopener" data-cta-origin="arrival">Falar com a Cavalcante</a>
+        <a class="arrival-cta" href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Quero%20tornar%20minha%20marca%20imposs%C3%ADvel%20de%20ignorar." target="_blank" rel="noopener" data-cta-origin="arrival"><span>Falar com a Cavalcante</span><span class="icon-button"><svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 7h10v10M7 17 17 7"/></svg></span></a>
         <div class="arrival-meta" aria-hidden="true"><span>Strategy</span><span>Film</span><span>Performance</span><span>Technology</span></div>
         <div class="arrival-status"><i></i>Scroll to move</div>
       </div>
@@ -669,6 +697,19 @@
             <span>Strategy · Content · Performance</span>
             <span>Sound off / Scroll to enter</span>
           </div>
+          <div class="reel-controls" aria-label="Controles do showreel">
+            <button class="reel-control" type="button" data-reel-play data-playing="false" aria-label="Reproduzir showreel">
+              <svg class="icon icon-sm icon-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 3 14 9-14 9V3z"/></svg>
+              <svg class="icon icon-sm icon-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="4" height="16" x="6" y="4" rx="1"/><rect width="4" height="16" x="14" y="4" rx="1"/></svg>
+            </button>
+            <button class="reel-control" type="button" data-reel-sound data-muted="true" aria-label="Ativar som">
+              <svg class="icon icon-sm icon-volume-on" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6 9H2v6h4l5 4V5zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+              <svg class="icon icon-sm icon-volume-off" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6 9H2v6h4l5 4V5zM22 9l-6 6M16 9l6 6"/></svg>
+            </button>
+            <button class="reel-control" type="button" data-reel-fullscreen aria-label="Exibir showreel em tela cheia">
+              <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+            </button>
+          </div>
         </div>
         <p class="reel-caption">Film, direção e performance em uma única sequência.</p>
       </div>
@@ -689,7 +730,7 @@
               <h3>CT Fire</h3>
               <p>Fire Summer — treino na areia.</p>
               <small>Captação, direção e edição.</small>
-              <a href="https://www.instagram.com/p/DUeHIHsj1ht/" target="_blank" rel="noopener" data-work-case="ct-fire">Ver trabalho publicado</a>
+              <a href="https://www.instagram.com/p/DUeHIHsj1ht/" target="_blank" rel="noopener" data-work-case="ct-fire"><span>Ver trabalho publicado</span><svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 7h10v10M7 17 17 7"/></svg></a>
             </div>
           </article>
           <article class="work-plane work-case" data-case="1">
@@ -700,7 +741,7 @@
               <h3>Parque José<br>Julião Diniz</h3>
               <p>Lançamento da Vaquejada.</p>
               <small>Estratégia, roteiro, gravação, edição e postagem.</small>
-              <a href="https://www.instagram.com/p/DYxpuoBvxgp/" target="_blank" rel="noopener" data-work-case="parque-jose-juliao-diniz">Ver trabalho publicado</a>
+              <a href="https://www.instagram.com/p/DYxpuoBvxgp/" target="_blank" rel="noopener" data-work-case="parque-jose-juliao-diniz"><span>Ver trabalho publicado</span><svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 7h10v10M7 17 17 7"/></svg></a>
             </div>
           </article>
           <article class="work-plane work-case" data-case="2">
@@ -711,13 +752,13 @@
               <h3>Black<br>Suplementos</h3>
               <p>O suplemento certo.</p>
               <small>Conteúdo educativo sobre suplementação e treino.</small>
-              <a href="https://www.instagram.com/p/DUYopZBEYK5/" target="_blank" rel="noopener" data-work-case="black-suplementos">Ver trabalho publicado</a>
+              <a href="https://www.instagram.com/p/DUYopZBEYK5/" target="_blank" rel="noopener" data-work-case="black-suplementos"><span>Ver trabalho publicado</span><svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 7h10v10M7 17 17 7"/></svg></a>
             </div>
           </article>
         </div>
         <div class="work-progress" aria-hidden="true"><span>01</span><i></i><span>03</span></div>
         <div class="work-note">
-          <a href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener">Arquivo completo no Instagram</a>
+          <a href="https://instagram.com/cavalcante.media" target="_blank" rel="noopener"><span>Arquivo completo no Instagram</span><svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 7h10v10M7 17 17 7"/></svg></a>
         </div>
       </div>
     </section>
@@ -753,7 +794,7 @@
         </div>
         <div class="portal-copy">
           <p>Projetos, aprovações, campanhas e entregas em um único lugar. A operação fica visível do briefing ao próximo movimento.</p>
-          <a href="portal/">Entrar no portal do cliente</a>
+          <a href="portal/"><span>Entrar no portal do cliente</span><svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 7h10v10M7 17 17 7"/></svg></a>
         </div>
       </div>
     </section>
@@ -789,7 +830,7 @@
       <div class="finale-inner">
         <span class="finale-kicker" id="finale-scene-label">Scene 08 / Start a project</span>
         <h2 id="finale-title">Sua próxima campanha<span>pode começar aqui.</span></h2>
-        <a class="finale-cta" href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Quero%20come%C3%A7ar%20um%20projeto%20com%20a%20Cavalcante." target="_blank" rel="noopener" data-cta-origin="finale">Começar um projeto</a>
+        <a class="finale-cta" href="https://wa.me/5584999492725?text=Ol%C3%A1%21%20Quero%20come%C3%A7ar%20um%20projeto%20com%20a%20Cavalcante." target="_blank" rel="noopener" data-cta-origin="finale"><span>Começar um projeto</span><span class="icon-button"><svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 7h10v10M7 17 17 7"/></svg></span></a>
       </div>
     </section>
   </main>
@@ -893,20 +934,36 @@
       }, { passive: true });
 
       document.querySelectorAll('a, button').forEach(element => {
-        element.addEventListener('mouseenter', () => document.body.classList.add('is-link'));
-        element.addEventListener('mouseleave', () => document.body.classList.remove('is-link'));
+        element.addEventListener('mouseenter', () => {
+          document.body.classList.add('is-link');
+          document.body.classList.toggle('is-case', element.matches('[data-work-case]'));
+        });
+        element.addEventListener('mouseleave', () => {
+          document.body.classList.remove('is-link', 'is-case');
+        });
       });
 
       menuToggle?.addEventListener('click', () => {
         const open = menuToggle.getAttribute('aria-expanded') === 'true';
         menuToggle.setAttribute('aria-expanded', String(!open));
+        menuToggle.setAttribute('aria-label', open ? 'Abrir menu' : 'Fechar menu');
         document.body.classList.toggle('menu-open', !open);
         if (mobileMenu) mobileMenu.hidden = open;
+      });
+
+      addEventListener('keydown', event => {
+        if (event.key !== 'Escape' || menuToggle?.getAttribute('aria-expanded') !== 'true') return;
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'Abrir menu');
+        document.body.classList.remove('menu-open');
+        if (mobileMenu) mobileMenu.hidden = true;
+        menuToggle.focus();
       });
 
       document.querySelectorAll('.mobile-menu a').forEach(link => {
         link.addEventListener('click', () => {
           menuToggle?.setAttribute('aria-expanded', 'false');
+          menuToggle?.setAttribute('aria-label', 'Abrir menu');
           document.body.classList.remove('menu-open');
           if (mobileMenu) mobileMenu.hidden = true;
         });
@@ -928,18 +985,19 @@
   </script>
   <script src="assets/vendor/gsap.min.js?v=3.13.0" defer></script>
   <script src="assets/vendor/ScrollTrigger.min.js?v=3.13.0" defer></script>
-  <script src="cinematic-production.js?v=2" defer></script>
-  <script src="cinematic-scroll.js?v=2" defer></script>
+  <script src="cinematic-production.js?v=3" defer></script>
+  <script src="cinematic-scroll.js?v=3" defer></script>
 
   <script type="module">
-    import * as THREE from './assets/vendor/three.module.min.js';
-
     const canvas = document.querySelector('#horse-canvas');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const coarse = matchMedia('(pointer: coarse)').matches;
+    const saveData = Boolean(navigator.connection?.saveData);
     const lowPower = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || (navigator.deviceMemory && navigator.deviceMemory <= 4);
+    const allowWebGL = !reduced && !coarse && !saveData && !lowPower;
 
-    if (!reduced && canvas) {
+    if (allowWebGL && canvas) {
+      const THREE = await import('./assets/vendor/three.module.min.js');
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !lowPower, powerPreference: 'high-performance' });
       renderer.setPixelRatio(Math.min(devicePixelRatio, lowPower || coarse ? 1.2 : 1.75));
       renderer.setSize(innerWidth, innerHeight, false);
@@ -1075,11 +1133,11 @@
         targetScale = mix(targetScale, .78, knightWeight);
 
         horse.position.x += (targetX + px * .16 - horse.position.x) * .055;
-        horse.position.y += (targetY - py * .12 - horse.position.y) * .055;
+        horse.position.y += (targetY - py * .12 + Math.sin(time * .00045) * .035 - horse.position.y) * .055;
         horse.scale.setScalar(mix(targetScale, 2.5, ease(r)));
         horse.rotation.y += ((px * .16 + a * .42 + m * 1.15) - horse.rotation.y) * .045;
         horse.rotation.x += ((-py * .08 + Math.sin(m * Math.PI) * .12) - horse.rotation.x) * .045;
-        horse.rotation.z += ((a * -.13 + m * .22) - horse.rotation.z) * .045;
+        horse.rotation.z += ((a * -.13 + m * .22 + Math.sin(time * .00032) * .012) - horse.rotation.z) * .045;
 
         const showreelOpacity = r > 0 ? 1 - ease(clamp(r * 1.18)) : 1;
         const opacity = showreelOpacity * (1 - clamp(p * .13));

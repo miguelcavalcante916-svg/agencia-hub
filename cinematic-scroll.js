@@ -31,6 +31,10 @@
       `progress: ${(state.progress || 0).toFixed(3)}`,
       `velocity: ${(state.velocity || 0).toFixed(3)}`,
       `mode: ${window.CavalcantePerformanceMode || (reduced ? 'fallback' : 'full')}`,
+      `fps: ${window.CavalcanteVitals?.fps ?? '—'}`,
+      `lcp: ${window.CavalcanteVitals?.lcp ? `${window.CavalcanteVitals.lcp}ms` : '—'}`,
+      `cls: ${(window.CavalcanteVitals?.cls || 0).toFixed(3)}`,
+      `inp: ${window.CavalcanteVitals?.inp ? `${Math.round(window.CavalcanteVitals.inp)}ms` : '—'}`,
     ].join('\n');
   };
 
@@ -230,4 +234,5 @@
   };
 
   updateDebug(lastState);
+  if (debugPanel) setInterval(() => updateDebug(lastState), 500);
 })();

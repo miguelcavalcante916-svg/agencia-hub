@@ -28,7 +28,12 @@ No performance metric is displayed because
 
 - GSAP, ScrollTrigger and Three.js are served locally from `assets/vendor/`.
 - Runtime modes: `full`, `reduced` and `fallback`.
-- Use `?motionDebug=1` to inspect the active scene, progress, velocity and mode.
+- Lucide is the single functional icon system; size tokens are 14, 16, 20 and
+  24 pixels with a shared 1.75 stroke.
+- Use `?motionDebug=1` to inspect the active scene, progress, velocity, runtime
+  mode, FPS, LCP, CLS and INP.
+- Three.js loads only for fine pointer, capable devices without data saver.
+  Other devices keep the official horse SVG with restrained idle motion.
 - To enable the showreel, place the real files in `assets-cavalcante/showreel/`
   and register their relative paths in `showreel-config.json`.
 

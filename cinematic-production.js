@@ -21,6 +21,7 @@
 
   root.dataset.performance = performanceMode;
   window.CavalcantePerformanceMode = performanceMode;
+  window.CavalcanteVitals = { fps: null, lcp: null, cls: 0, inp: null };
   if (year) year.textContent = String(new Date().getFullYear());
   if (!work || !portal || !knight || !finale) return;
 
@@ -93,6 +94,22 @@
     const useMobile = innerWidth < 760 && showreel.mobile;
     video.src = useMobile ? showreel.mobile : (showreel.desktop || showreel.mobile);
     if (showreel.poster) video.poster = showreel.poster;
+    const playButton = document.querySelector('[data-reel-play]');
+    const soundButton = document.querySelector('[data-reel-sound]');
+    const fullscreenButton = document.querySelector('[data-reel-fullscreen]');
+    const syncVideoControls = () => {
+      playButton.dataset.playing = String(!video.paused);
+      playButton.setAttribute('aria-label', video.paused ? 'Reproduzir showreel' : 'Pausar showreel');
+      soundButton.dataset.muted = String(video.muted);
+      soundButton.setAttribute('aria-label', video.muted ? 'Ativar som' : 'Desativar som');
+    };
+    playButton?.addEventListener('click', () => video.paused ? video.play() : video.pause());
+    soundButton?.addEventListener('click', () => { video.muted = !video.muted; });
+    fullscreenButton?.addEventListener('click', () => video.requestFullscreen?.());
+    video.addEventListener('play', syncVideoControls);
+    video.addEventListener('pause', syncVideoControls);
+    video.addEventListener('volumechange', syncVideoControls);
+    syncVideoControls();
     reel.hidden = false;
     document.querySelector('.reel-film-study')?.remove();
     document.querySelector('#work-scene-label')?.replaceChildren(document.createTextNode('Scene 06 / Work'));
@@ -105,6 +122,47 @@
   // Evidence stays unpublished until metrics/resultados-reais.md contains verified numbers.
   if (evidence) evidence.hidden = true;
   configureOptionalShowreel();
+
+  const observePerformance = () => {
+    if (!('PerformanceObserver' in window)) return;
+    try {
+      new PerformanceObserver(list => {
+        const entries = list.getEntries();
+        const last = entries[entries.length - 1];
+        if (last) window.CavalcanteVitals.lcp = Math.round(last.startTime);
+      }).observe({ type: 'largest-contentful-paint', buffered: true });
+    } catch {}
+    try {
+      new PerformanceObserver(list => {
+        list.getEntries().forEach(entry => {
+          if (!entry.hadRecentInput) window.CavalcanteVitals.cls += entry.value;
+        });
+      }).observe({ type: 'layout-shift', buffered: true });
+    } catch {}
+    try {
+      new PerformanceObserver(list => {
+        list.getEntries().forEach(entry => {
+          window.CavalcanteVitals.inp = Math.max(window.CavalcanteVitals.inp || 0, entry.duration || 0);
+        });
+      }).observe({ type: 'event', buffered: true, durationThreshold: 40 });
+    } catch {}
+  };
+  observePerformance();
+
+  if (new URLSearchParams(location.search).get('motionDebug') === '1') {
+    let frames = 0;
+    let sampleStarted = performance.now();
+    const sampleFps = now => {
+      frames += 1;
+      if (now - sampleStarted >= 1000) {
+        window.CavalcanteVitals.fps = Math.round(frames * 1000 / (now - sampleStarted));
+        frames = 0;
+        sampleStarted = now;
+      }
+      requestAnimationFrame(sampleFps);
+    };
+    requestAnimationFrame(sampleFps);
+  }
 
   document.addEventListener('click', event => {
     const link = event.target.closest('[data-cta-origin], [data-work-case]');
