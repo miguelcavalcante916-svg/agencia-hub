@@ -7,3 +7,8 @@ README.md
 proposta/
 
 # as funções serverless ficam em /api e são publicadas; nada a ignorar aqui
+
+# documentação interna, suíte de testes e biblioteca de masters: não vão para a web
+docs/
+testes/
+assets-cavalcante/
