@@ -1,7 +1,7 @@
 (() => {
   'use strict';
+
   const root = document.documentElement;
-  const header = document.querySelector('#site-header');
   const phases = [...document.querySelectorAll('.phase')];
   const phaseNav = [...document.querySelectorAll('.phase-nav span')];
   const cases = [...document.querySelectorAll('.case-scene')];
@@ -10,16 +10,18 @@
   const debugPanel = document.querySelector('#motion-debug');
   const debug = new URLSearchParams(location.search).get('motionDebug') === '1';
   const motionReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mobile = matchMedia('(max-width: 900px)').matches;
   const gsap = window.gsap;
   const ScrollTrigger = window.ScrollTrigger;
   const clamp = value => Math.max(0, Math.min(1, value));
   const sceneState = { scene: 'arrival', progress: 0, velocity: 0 };
   const method = [
     ['01 / Diagnóstico', 'A direção começa pelo que precisa mudar.'],
-    ['02 / Estratégia', 'Posicionamento, linguagem e objetivo apontam a próxima jogada.'],
+    ['02 / Direção', 'Briefing, posicionamento e linguagem apontam a próxima jogada.'],
     ['03 / Produção', 'Roteiro, captação, edição e design transformam intenção em presença.'],
     ['04 / Distribuição', 'A mensagem encontra formato, contexto e público.'],
-    ['05 / Próxima jogada', 'Leitura e ajuste mantêm o trabalho em movimento.']
+    ['05 / Acompanhamento', 'A leitura do trabalho orienta os ajustes que mantêm a campanha viva.'],
+    ['06 / Resultado', 'A consequência do processo aparece: cada decisão se conecta ao objetivo inicial.']
   ];
 
   window.CavalcanteMotionState = sceneState;
@@ -29,24 +31,22 @@
     sceneState.velocity = Math.max(-1, Math.min(1, velocity));
     window.CavalcanteScene?.setState(sceneState);
   };
-
-  const updatePage = () => {
-    const distance = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-    root.style.setProperty('--page-progress', clamp(scrollY / distance).toFixed(4));
+  const track = scene => self => {
+    const velocity = self.getVelocity ? self.getVelocity() / 2100 : 0;
+    setScene(scene, self.progress, velocity);
   };
-  addEventListener('scroll', updatePage, { passive: true });
-  updatePage();
 
-  let frames = 0;
+  let debugFrame = 0;
+  let frameCount = 0;
   let fps = 60;
   let stamp = performance.now();
   const countFrame = now => {
-    frames += 1;
+    frameCount += 1;
     if (now - stamp >= 500) {
-      fps = Math.round(frames * 1000 / (now - stamp));
-      frames = 0;
+      fps = Math.round(frameCount * 1000 / (now - stamp));
+      frameCount = 0;
       stamp = now;
-      if (debug) {
+      if (debugPanel) {
         debugPanel.hidden = false;
         debugPanel.textContent = [
           'CAVALCANTE / MOTION',
@@ -58,12 +58,17 @@
         ].join('\n');
       }
     }
-    requestAnimationFrame(countFrame);
+    debugFrame = requestAnimationFrame(countFrame);
   };
-  if (debug) requestAnimationFrame(countFrame);
+  if (debug) debugFrame = requestAnimationFrame(countFrame);
+  addEventListener('pagehide', () => {
+    if (debugFrame) cancelAnimationFrame(debugFrame);
+  }, { once: true });
 
   if (motionReduced || !gsap || !ScrollTrigger) {
     root.classList.add('motion-fallback');
+    root.style.setProperty('--system-progress', '1');
+    root.style.setProperty('--knight-progress', '1');
     phases.forEach(phase => {
       phase.style.opacity = '1';
       phase.style.visibility = 'visible';
@@ -73,62 +78,103 @@
       item.style.visibility = 'visible';
       item.style.clipPath = 'none';
     });
+    nodes.forEach(node => node.classList.add('is-active'));
+    if (location.hash) {
+      const alignHash = () => {
+        document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView({ block: 'start' });
+      };
+      if (document.readyState === 'complete') setTimeout(alignHash, 50);
+      else addEventListener('load', () => setTimeout(alignHash, 50), { once: true });
+    }
     return;
   }
 
   gsap.registerPlugin(ScrollTrigger);
-  gsap.set(phases, { autoAlpha: 0 });
-  gsap.set(phases[0], { autoAlpha: 1 });
-  gsap.set(cases, { autoAlpha: 0, clipPath: 'inset(0 100% 0 0)' });
-  gsap.set(cases[0], { autoAlpha: 1, clipPath: 'inset(0 0% 0 0)' });
+  const softBlur = mobile ? 'blur(0px)' : 'blur(6px)';
 
-  const track = scene => self => {
-    const velocity = self.getVelocity ? self.getVelocity() / 2100 : 0;
-    setScene(scene, self.progress, velocity);
-  };
+  gsap.set(phases, { autoAlpha: 1 });
+  gsap.set(phases.slice(1).map(phase => phase.querySelector('.phase-word')), {
+    clipPath: 'inset(100% 0 0 0)',
+    scale: .84,
+    filter: softBlur
+  });
+  gsap.set(phases.slice(1).map(phase => phase.querySelector('.phase-detail')), { autoAlpha: 0, y: 28 });
+  gsap.set(cases, { autoAlpha: 0 });
+  gsap.set(cases[0], { autoAlpha: 1, clipPath: mobile ? 'inset(9% 4% 9% 58%)' : 'inset(9% 4% 9% 52%)' });
+  gsap.set(cases[0].querySelector('.case-copy'), { autoAlpha: 0, y: 28 });
+  gsap.set('.work-portal-transition', { autoAlpha: 0, clipPath: 'inset(100% 0 0 0)' });
+
+  if (!location.hash || location.hash === '#arrival') {
+    gsap.timeline({ defaults: { ease: 'power4.out' } })
+      .fromTo('.site-header', { autoAlpha: 0, y: -16 }, { autoAlpha: 1, y: 0, duration: .7 }, 0)
+      .fromTo('.arrival .scene-label', { autoAlpha: 0, x: -14 }, { autoAlpha: 1, x: 0, duration: .7 }, .12)
+      .fromTo('.hero-copy', { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 1.2 }, .08)
+      .fromTo('.arrival-meta span', { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, stagger: .055, duration: .48 }, .55)
+      .fromTo('.arrival-cta', { autoAlpha: 0 }, { autoAlpha: 1, duration: .5 }, .72);
+  }
 
   gsap.timeline({
     defaults: { ease: 'none' },
     scrollTrigger: {
-      trigger: '.arrival', start: 'top top', end: 'bottom bottom', scrub: .72,
-      invalidateOnRefresh: true, onUpdate: track('arrival')
+      trigger: '.arrival',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: mobile ? .48 : .72,
+      invalidateOnRefresh: true,
+      onUpdate: track('arrival')
     }
   })
-    .to('.hero-copy h1 span:nth-child(1)', { x: '-7vw', y: '-5vh', rotation: -2.5, filter: 'blur(2px)', duration: .28 }, 0)
-    .to('.hero-copy h1 span:nth-child(2)', { x: '8vw', y: '5vh', rotation: 2, duration: .3 }, .04)
-    .fromTo('.hero-answer', { opacity: .55 }, { opacity: 1, letterSpacing: '-.055em', duration: .28 }, .18)
-    .to(root, { '--world-scale': 1.18, '--world-x': '3vw', duration: .38 }, .12)
-    .to('.hero-copy', { opacity: 0, scale: 1.08, filter: 'blur(8px)', duration: .25 }, .7)
-    .to(root, { '--world-scale': .72, '--world-x': '-25vw', duration: .28 }, .7);
+    .to(root, { '--arrival-light': 1, '--world-scale': mobile ? 1.07 : 1.16, duration: .38 }, .08)
+    .to('.hero-copy h1 span:nth-child(1)', { x: mobile ? '-2vw' : '-6vw', y: mobile ? '-2vh' : '-4vh', rotation: mobile ? 0 : -1.6, duration: .32 }, 0)
+    .to('.hero-copy h1 span:nth-child(2)', { x: mobile ? '2vw' : '7vw', y: mobile ? '2vh' : '4vh', rotation: mobile ? 0 : 1.3, duration: .34 }, .03)
+    .to('.hero-answer', { color: 'rgba(207,224,255,.98)', textShadow: '0 0 40px rgba(114,158,255,.24)', duration: .32 }, .14)
+    .to(root, { '--world-x': mobile ? '-5vw' : '3vw', '--world-y': mobile ? '-2vh' : '0vh', duration: .38 }, .12)
+    .to('.hero-copy', { autoAlpha: 0, scale: mobile ? 1.025 : 1.06, filter: mobile ? 'none' : 'blur(5px)', duration: .28 }, .7)
+    .to(root, { '--world-scale': mobile ? .78 : .7, '--world-x': mobile ? '-16vw' : '-24vw', duration: .28 }, .7);
 
   const phaseTimeline = gsap.timeline({
     defaults: { ease: 'power3.inOut' },
     scrollTrigger: {
-      trigger: '.system', start: 'top top', end: 'bottom bottom', scrub: .85,
+      trigger: '.system',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: mobile ? .56 : .82,
       invalidateOnRefresh: true,
       onUpdate(self) {
         track('think/create/scale')(self);
+        root.style.setProperty('--system-progress', self.progress.toFixed(4));
         const index = Math.min(2, Math.floor(self.progress * 3));
         phaseNav.forEach((item, i) => item.classList.toggle('is-active', i === index));
       }
     }
   });
+  const phase0Word = phases[0].querySelector('.phase-word');
+  const phase1Word = phases[1].querySelector('.phase-word');
+  const phase2Word = phases[2].querySelector('.phase-word');
+  const phase0Detail = phases[0].querySelector('.phase-detail');
+  const phase1Detail = phases[1].querySelector('.phase-detail');
+  const phase2Detail = phases[2].querySelector('.phase-detail');
   phaseTimeline
-    .fromTo(phases[0].querySelector('.phase-word'), { x: '-5vw', rotation: -3 }, { x: '0vw', rotation: 0, duration: .35 }, 0)
-    .to(phases[0], { autoAlpha: 0, x: '-8vw', duration: .22 }, .76)
-    .fromTo(phases[1], { autoAlpha: 0, x: '9vw' }, { autoAlpha: 1, x: 0, duration: .22 }, .82)
-    .to(root, { '--world-x': '23vw', '--world-y': '-4vh', '--world-scale': .82, duration: .3 }, .84)
-    .to(phases[1], { autoAlpha: 0, y: '-7vh', duration: .22 }, 1.62)
-    .fromTo(phases[2], { autoAlpha: 0, y: '8vh' }, { autoAlpha: 1, y: 0, duration: .22 }, 1.68)
-    .to(root, { '--world-x': '-22vw', '--world-y': '5vh', '--world-scale': .6, duration: .35 }, 1.7);
+    .fromTo(phase0Word, { xPercent: -4, scale: .96 }, { xPercent: 0, scale: 1, duration: .32 }, 0)
+    .to(phase0Word, { xPercent: -9, scale: 1.14, clipPath: 'inset(0 0 100% 0)', filter: softBlur, duration: .34 }, .63)
+    .to(phase0Detail, { autoAlpha: 0, y: -24, duration: .24 }, .62)
+    .fromTo(phase1Word, { xPercent: 10, scale: .84, clipPath: 'inset(100% 0 0 0)', filter: softBlur }, { xPercent: 0, scale: 1, clipPath: 'inset(0% 0 0 0)', filter: 'blur(0px)', duration: .42 }, .68)
+    .to(phase1Detail, { autoAlpha: 1, y: 0, duration: .3 }, .78)
+    .to(root, { '--world-x': mobile ? '8vw' : '22vw', '--world-y': '-4vh', '--world-scale': .82, duration: .34 }, .7)
+    .to(phase1Word, { yPercent: -12, scale: 1.12, clipPath: 'inset(0 0 100% 0)', filter: softBlur, duration: .34 }, 1.43)
+    .to(phase1Detail, { autoAlpha: 0, y: -24, duration: .24 }, 1.42)
+    .fromTo(phase2Word, { yPercent: 14, scale: .84, clipPath: 'inset(100% 0 0 0)', filter: softBlur }, { yPercent: 0, scale: 1, clipPath: 'inset(0% 0 0 0)', filter: 'blur(0px)', duration: .42 }, 1.48)
+    .to(phase2Detail, { autoAlpha: 1, y: 0, duration: .3 }, 1.58)
+    .to(root, { '--world-x': mobile ? '-8vw' : '-20vw', '--world-y': '5vh', '--world-scale': .62, duration: .36 }, 1.5);
 
   const workTimeline = gsap.timeline({
     defaults: { ease: 'power3.inOut' },
     scrollTrigger: {
-      trigger: '.work', start: 'top top', end: 'bottom bottom', scrub: .78,
+      trigger: '.work',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: mobile ? .52 : .76,
       invalidateOnRefresh: true,
-      onEnter: () => header.classList.remove('is-light'),
-      onEnterBack: () => header.classList.remove('is-light'),
       onUpdate(self) {
         track('selected work')(self);
         root.style.setProperty('--case-progress', self.progress.toFixed(4));
@@ -136,64 +182,111 @@
     }
   });
   workTimeline
-    .to(root, { '--world-opacity': 0, duration: .18 }, 0)
-    .to('.work-heading h2', { autoAlpha: 0, y: '-5vh', duration: .18 }, .16)
-    .fromTo(cases[0].querySelector('img'), { scale: 1.16 }, { scale: 1.02, duration: .9, ease: 'none' }, .2)
-    .fromTo(cases[1], { autoAlpha: 1, clipPath: 'inset(0 100% 0 0)' }, { autoAlpha: 1, clipPath: 'inset(0 0% 0 0)', duration: .32 }, 1)
-    .fromTo(cases[1].querySelector('img'), { scale: 1.15, xPercent: 4 }, { scale: 1.02, xPercent: 0, duration: .8, ease: 'none' }, 1)
-    .fromTo(cases[2], { autoAlpha: 1, clipPath: 'inset(100% 0 0 0)' }, { autoAlpha: 1, clipPath: 'inset(0% 0 0 0)', duration: .32 }, 2)
-    .fromTo(cases[2].querySelector('img'), { scale: 1.16, yPercent: 5 }, { scale: 1.02, yPercent: 0, duration: .8, ease: 'none' }, 2);
+    .to(root, { '--world-opacity': 0, duration: .15 }, 0)
+    .to('.work-heading h2', { autoAlpha: 0, yPercent: -12, duration: .24 }, .12)
+    .to(cases[0], { clipPath: 'inset(0% 0% 0% 0%)', duration: .42 }, .16)
+    .fromTo(cases[0].querySelector('img'), { scale: 1.2, xPercent: 3 }, { scale: 1.025, xPercent: 0, duration: .92, ease: 'none' }, .16)
+    .to(cases[0].querySelector('.case-copy'), { autoAlpha: 1, y: 0, duration: .3 }, .38)
+    .to(cases[0], { scale: .965, autoAlpha: .18, duration: .3 }, 1.08)
+    .fromTo(cases[1], { autoAlpha: 0, clipPath: 'inset(14% 18% 14% 18%)', scale: .88 }, { autoAlpha: 1, clipPath: 'inset(0% 0% 0% 0%)', scale: 1, duration: .48 }, 1.08)
+    .fromTo(cases[1].querySelector('img'), { scale: 1.22 }, { scale: 1.025, duration: .86, ease: 'none' }, 1.08)
+    .fromTo(cases[1].querySelector('.case-copy'), { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, duration: .3 }, 1.32)
+    .to(cases[1], { autoAlpha: .18, duration: .22 }, 2.02)
+    .fromTo(cases[2], { autoAlpha: 1, clipPath: 'inset(100% 0 0 0)' }, { clipPath: 'inset(0% 0 0 0)', duration: .42 }, 2.02)
+    .fromTo(cases[2].querySelector('img'), { scale: 1.18, yPercent: 8 }, { scale: 1.025, yPercent: 0, duration: .84, ease: 'none' }, 2.02)
+    .fromTo(cases[2].querySelector('.case-copy'), { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, duration: .3 }, 2.28)
+    .to(cases[2], { scale: .95, clipPath: 'inset(4% 3% 4% 3%)', duration: .3 }, 2.72)
+    .fromTo('.work-portal-transition', { autoAlpha: 0, clipPath: 'inset(100% 0 0 0)' }, { autoAlpha: 1, clipPath: 'inset(0% 0 0 0)', duration: .28 }, 2.86);
 
+  const hubLayers = [...document.querySelectorAll('.hub-layer')];
+  let hubStep = -2;
+  const updateHubStep = progress => {
+    const next = progress < .16 ? -1 : progress < .32 ? 0 : progress < .46 ? 1 : progress < .6 ? 2 : progress < .74 ? 3 : -1;
+    if (next === hubStep) return;
+    hubStep = next;
+    hubLayers.forEach((layer, index) => layer.classList.toggle('is-focused', index === next));
+    document.querySelector('.hub-device')?.setAttribute('data-stage', next < 0 ? 'complete' : String(next + 1));
+  };
   gsap.timeline({
     defaults: { ease: 'power4.inOut' },
     scrollTrigger: {
-      trigger: '.hub', start: 'top top', end: 'bottom bottom', scrub: .95,
+      trigger: '.hub',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: mobile ? .58 : .9,
       invalidateOnRefresh: true,
-      onEnter: () => header.classList.add('is-light'),
-      onEnterBack: () => header.classList.add('is-light'),
-      onLeave: () => header.classList.remove('is-light'),
-      onLeaveBack: () => header.classList.remove('is-light'),
-      onUpdate: track('agenciahub')
+      onUpdate(self) {
+        track('agenciahub')(self);
+        updateHubStep(self.progress);
+      }
     }
   })
-    .fromTo('.hub-copy', { x: '-5vw', opacity: .72 }, { x: 0, opacity: 1, duration: .26 }, 0)
-    .fromTo('.hub-device', { yPercent: 14, rotateY: -13, scale: .88 }, { yPercent: 0, rotateY: -4, scale: 1, duration: .35 }, .05)
-    .to('.layer-projects', { x: '-4vw', y: '-5vh', z: 130, rotateY: 7, duration: .28 }, .36)
-    .to('.layer-approval', { x: '4vw', y: '4vh', z: 210, rotateY: -8, duration: .28 }, .52)
-    .to('.layer-flow', { y: '5vh', z: 270, duration: .24 }, .66);
+    .fromTo('.hub-copy', { y: mobile ? 10 : 24, opacity: .74 }, { y: 0, opacity: 1, duration: .25 }, 0)
+    .fromTo('.hub-device', { y: mobile ? 18 : 54, rotateX: 6, rotateY: mobile ? -2 : -10, scale: .92, opacity: .72 }, { y: 0, rotateX: 3, rotateY: mobile ? 0 : -4, scale: 1, opacity: 1, duration: .32 }, .03)
+    .to('.layer-projects', { x: mobile ? -10 : -48, y: mobile ? -14 : -46, z: mobile ? 40 : 150, rotateY: 5, duration: .26 }, .34)
+    .to('.layer-approval', { x: mobile ? 10 : 54, y: mobile ? -8 : -26, z: mobile ? 62 : 220, rotateY: -6, duration: .26 }, .43)
+    .to('.layer-media', { x: mobile ? -8 : -38, y: mobile ? 12 : 38, z: mobile ? 78 : 280, rotateY: 5, duration: .26 }, .52)
+    .to('.layer-results', { x: mobile ? 8 : 48, y: mobile ? 14 : 44, z: mobile ? 94 : 340, rotateY: -5, duration: .26 }, .61)
+    .to(hubLayers, { x: 0, y: 0, z: 0, rotateY: 0, duration: .3, stagger: .025 }, .76)
+    .to('.hub-device', { rotateX: 1, rotateY: 0, scale: 1, duration: .3 }, .78);
+  updateHubStep(0);
 
   let knightStep = -1;
+  const updateKnight = index => {
+    if (index === knightStep || !detail) return;
+    knightStep = index;
+    nodes.forEach((node, nodeIndex) => node.classList.toggle('is-active', nodeIndex <= index));
+    gsap.killTweensOf(detail);
+    gsap.to(detail, {
+      autoAlpha: 0,
+      y: 7,
+      duration: .1,
+      ease: 'power2.in',
+      onComplete() {
+        detail.querySelector('strong').textContent = method[index][0];
+        detail.querySelector('p').textContent = method[index][1];
+        gsap.to(detail, { autoAlpha: 1, y: 0, duration: .2, ease: 'power3.out' });
+      }
+    });
+  };
+  gsap.fromTo('.knight-stage h2', { yPercent: 7, opacity: .72 }, {
+    yPercent: 0,
+    opacity: 1,
+    ease: 'none',
+    scrollTrigger: { trigger: '.knight', start: 'top top', end: '+=55%', scrub: .55 }
+  });
   ScrollTrigger.create({
-    trigger: '.knight', start: 'top top', end: 'bottom bottom', invalidateOnRefresh: true,
-    onEnter: () => header.classList.remove('is-light'),
-    onEnterBack: () => header.classList.remove('is-light'),
+    trigger: '.knight',
+    start: 'top top',
+    end: 'bottom bottom',
+    invalidateOnRefresh: true,
     onUpdate(self) {
       track('knight move')(self);
       root.style.setProperty('--knight-progress', self.progress.toFixed(4));
-      root.style.setProperty('--world-opacity', String(clamp((self.progress - .62) / .25)));
-      root.style.setProperty('--world-scale', String(.35 + self.progress * .45));
-      root.style.setProperty('--world-x', '22vw');
-      const index = Math.min(method.length - 1, Math.floor(self.progress * method.length));
-      if (index !== knightStep) {
-        knightStep = index;
-        nodes.forEach((node, i) => node.classList.toggle('is-active', i <= index));
-        detail.querySelector('strong').textContent = method[index][0];
-        detail.querySelector('p').textContent = method[index][1];
-      }
+      root.style.setProperty('--world-opacity', String(clamp((self.progress - .64) / .23)));
+      root.style.setProperty('--world-scale', String(.4 + self.progress * .42));
+      root.style.setProperty('--world-x', mobile ? '12vw' : '21vw');
+      updateKnight(Math.min(method.length - 1, Math.floor(self.progress * method.length)));
     }
   });
+  updateKnight(0);
 
+  gsap.timeline({
+    defaults: { ease: 'power3.out' },
+    scrollTrigger: { trigger: '.finale', start: 'top 72%', end: 'top 10%', scrub: .58 }
+  })
+    .fromTo('.finale h2', { y: mobile ? 34 : 58, clipPath: 'inset(0 0 100% 0)' }, { y: 0, clipPath: 'inset(0 0 0% 0)', duration: .72 }, 0)
+    .fromTo('.finale-cta', { scale: .84, rotate: 5, opacity: .55 }, { scale: 1, rotate: 0, opacity: 1, duration: .62 }, .14);
   ScrollTrigger.create({
-    trigger: '.finale', start: 'top 65%', end: 'bottom bottom',
-    onEnter: () => header.classList.add('is-light'),
-    onEnterBack: () => header.classList.add('is-light'),
-    onLeaveBack: () => header.classList.remove('is-light'),
+    trigger: '.finale',
+    start: 'top 65%',
+    end: 'bottom bottom',
     onUpdate(self) {
       track('start a project')(self);
-      root.style.setProperty('--world-opacity', String(.28 * (1 - self.progress)));
-      root.style.setProperty('--world-x', '24vw');
+      root.style.setProperty('--world-opacity', String(.25 * (1 - self.progress)));
+      root.style.setProperty('--world-x', mobile ? '12vw' : '23vw');
       root.style.setProperty('--world-y', '4vh');
-      root.style.setProperty('--world-scale', String(.7 + self.progress * .18));
+      root.style.setProperty('--world-scale', String(.7 + self.progress * .16));
     }
   });
 
@@ -201,5 +294,8 @@
   addEventListener('load', refresh, { once: true });
   addEventListener('orientationchange', refresh, { passive: true });
   document.fonts?.ready.then(refresh).catch(() => {});
+  addEventListener('pagehide', () => {
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+  }, { once: true });
   window.CavalcanteMotion = { refresh, state: () => ({ ...sceneState }) };
 })();

@@ -130,6 +130,7 @@ export async function initGlobalScene(canvas, options = {}) {
   let pointerY = 0;
   let frame = 0;
   let last = 0;
+  let lastDraw = 0;
   let elapsed = 0;
   let disposed = false;
   let lost = false;
@@ -153,6 +154,10 @@ export async function initGlobalScene(canvas, options = {}) {
   const render = time => {
     frame = 0;
     if (disposed || lost || document.hidden) return;
+    if (!full && lastDraw && time - lastDraw < 30) {
+      frame = requestAnimationFrame(render);
+      return;
+    }
     const delta = last ? Math.min((time - last) / 1000, .05) : 1 / 60;
     last = time;
     elapsed += delta;
@@ -166,6 +171,9 @@ export async function initGlobalScene(canvas, options = {}) {
     group.rotation.y += (target.ry + pointerX * .12 - group.rotation.y) * smoothing;
     group.rotation.x += (-.08 + pointerY * .08 - group.rotation.x) * smoothing;
     group.rotation.z += (target.rz + Math.sin(elapsed * .55) * .018 - group.rotation.z) * smoothing;
+    key.position.x += (-4 + pointerX * 1.3 - key.position.x) * smoothing;
+    key.position.y += (5 - pointerY * .7 - key.position.y) * smoothing;
+    rim.position.x += (6 - pointerX * .8 - rim.position.x) * smoothing;
     camera.position.z += (target.z - camera.position.z) * smoothing;
     camera.lookAt(0, 0, 0);
     ringA.rotation.z += delta * (.06 + Math.abs(state.velocity) * .25);
@@ -174,7 +182,10 @@ export async function initGlobalScene(canvas, options = {}) {
     particles.rotation.y += delta * .006;
     room.rotation.y += (state.progress * .1 - room.rotation.y) * smoothing;
     renderer.render(scene, camera);
-    frame = requestAnimationFrame(render);
+    lastDraw = time;
+    if (state.scene !== 'selected work' && state.scene !== 'agenciahub') {
+      frame = requestAnimationFrame(render);
+    }
   };
 
   const resize = () => {
@@ -202,6 +213,7 @@ export async function initGlobalScene(canvas, options = {}) {
     event.preventDefault();
     lost = true;
     cancelAnimationFrame(frame);
+    frame = 0;
     canvas.closest('.world')?.classList.remove('is-ready');
   };
   const onContextRestored = () => {
@@ -236,11 +248,17 @@ export async function initGlobalScene(canvas, options = {}) {
   canvas.addEventListener('webglcontextrestored', onContextRestored);
   addEventListener('pagehide', event => { if (!event.persisted) destroy(); });
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) cancelAnimationFrame(frame);
+    if (document.hidden) {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    }
     else if (!frame && !disposed && !lost) frame = requestAnimationFrame(render);
   });
   window.CavalcanteScene = {
-    setState(next) { Object.assign(state, next); },
+    setState(next) {
+      Object.assign(state, next);
+      if (!frame && !disposed && !lost && !document.hidden) frame = requestAnimationFrame(render);
+    },
     destroy
   };
   if (window.CavalcanteMotionState) Object.assign(state, window.CavalcanteMotionState);
