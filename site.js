@@ -70,10 +70,10 @@
     svg.setAttribute('class', 'icon icon-arrow');
     svg.setAttribute('viewBox', '0 0 24 24');
     svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', 'currentColor');
-    svg.setAttribute('stroke-width', '1.5'); svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-width', '1.75'); svg.setAttribute('stroke-linecap', 'round');
     svg.setAttribute('stroke-linejoin', 'round'); svg.setAttribute('aria-hidden', 'true');
     const path = document.createElementNS(svg.namespaceURI, 'path');
-    path.setAttribute('d', 'M5 19 19 5M5 5h14v14'); svg.append(path);
+    path.setAttribute('d', 'M7 7h10v10M7 17 17 7'); svg.append(path);
     return svg;
   }
   function card(item, index) {
@@ -105,7 +105,7 @@
     grid.classList.toggle('is-featured', filter === 'all' && !expanded);
     grid.replaceChildren(...visible.map(card));
     if (!visible.length) {
-      const message = element('p', 'work-empty', 'Novos trabalhos por aqui em breve. Acompanhe nossas publicações no Instagram.'); grid.append(message);
+      const message = element('p', 'work-empty', 'Veja os trabalhos publicados pela Cavalcante no Instagram.'); grid.append(message);
     }
     more.hidden = filter !== 'all' || selected.length <= 3;
     more.firstChild.textContent = expanded ? 'Mostrar projetos selecionados ' : `Ver todos os ${works.length} trabalhos `;
@@ -178,7 +178,8 @@
   // Progressive enhancement: typography, navigation and case links work without WebGL.
   const loadScene = () => import('./site-scene.js?v=20260912-3').then(scene => {
     drawMethod = scene.initMethod($('#method-canvas'), reduceMotion); drawMethod(activeStep);
-    if (!reduceMotion.matches && !navigator.connection?.saveData) scene.initHero($('#hero-canvas'), reduceMotion).catch(() => {});
+    const capable3D = innerWidth > 800 && matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!reduceMotion.matches && capable3D && !navigator.connection?.saveData) scene.initHero($('#hero-canvas'), reduceMotion).catch(() => {});
   }).catch(() => {});
   if ('requestIdleCallback' in window) requestIdleCallback(loadScene, { timeout: 1800 });
   else setTimeout(loadScene, 150);
