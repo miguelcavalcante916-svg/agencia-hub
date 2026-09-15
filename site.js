@@ -108,12 +108,12 @@
       const message = element('p', 'work-empty', 'Veja os trabalhos publicados pela Cavalcante no Instagram.'); grid.append(message);
     }
     more.hidden = filter !== 'all' || selected.length <= 3;
-    more.firstChild.textContent = expanded ? 'Mostrar projetos selecionados ' : `Ver todos os ${works.length} trabalhos `;
+    more.firstChild.textContent = expanded ? 'Mostrar projetos selecionados ' : 'Ver todos os trabalhos ';
     more.setAttribute('aria-expanded', String(expanded));
     $$('.work-filters button').forEach(button => {
       const active = button.dataset.filter === filter; button.classList.toggle('is-active', active); button.setAttribute('aria-pressed', String(active));
     });
-    if (announce) $('#work-announcement').textContent = `${visible.length} ${visible.length === 1 ? 'projeto exibido' : 'projetos exibidos'}.`;
+    if (announce) $('#work-announcement').textContent = 'Filtro de projetos atualizado.';
   }
   $$('.work-filters button').forEach(button => button.addEventListener('click', () => { filter = button.dataset.filter; expanded = false; renderWorks(); }));
   more.addEventListener('click', () => {
