@@ -9,6 +9,8 @@ const css = read('site-studio.css');
 const site = read('site.js');
 const motion = read('site-motion.js');
 const scene = read('site-scene.js');
+const portfolio = JSON.parse(read('portfolio.json'));
+const catalog = JSON.parse(read('project-catalog.json'));
 const failures = [];
 let checks = 0;
 
@@ -33,6 +35,20 @@ check('Showreel e Evidence permanecem fora da homepage', !/<section[^>]*(showree
 check('Selected Work contém três cases reais', (html.match(/class="case-scene"/g) || []).length === 3);
 check('Contagem total de projetos não aparece nos cases', !/Case\s+\d+\s*\/\s*\d+/i.test(html));
 check('Cada case possui imagem, texto e destino', (html.match(/data-event="case_open"/g) || []).length === 3 && (html.match(/class="case-media"/g) || []).length === 3);
+
+const requestedReels = [
+  'DdCgLFluUbA', 'DdAR3iRgvDV', 'DWu0kjvkY1R', 'Da2pXXzx5hG', 'Da-9h9yxm82',
+  'DMYjxcSy0cV', 'DMvrYfDyf1L', 'DNTxKleS8n8', 'DNyoXkIwjlI', 'DOEvPspge6g',
+  'DOwWDo3AQNS', 'DPR5IItASbE', 'DPrKwssDcjn', 'DP8j7TVDQwk', 'DdBtpXNt2K0'
+];
+const portfolioUrls = portfolio.itens.map(item => item.url);
+const catalogGroups = new Set(catalog.itens.map(item => item.grupo));
+check('Arquivo compacto de clientes está presente no Selected Work', html.includes('id="work-library"') && html.includes('data-archive-tabs') && html.includes('data-archive-track'));
+check('Portfólio contém os 29 trabalhos publicados', portfolio.itens.length === 29 && catalog.itens.length === 29);
+check('Os 15 novos Reels estão no portfólio', requestedReels.every(code => portfolioUrls.some(url => url.includes(code))));
+check('Cada cliente possui seu próprio grupo de filtro', catalogGroups.size === 8);
+check('Arquivo usa cartões leves e não incorpora players externos', !/<iframe/i.test(html) && site.includes("dataset.event = 'archive_open'"));
+check('A timeline cinematográfica termina antes do arquivo compacto', motion.includes("trigger: '.work-cinematic'"));
 
 const hubModules = ['PROJETOS / EM PRODUÇÃO', 'APROVAÇÕES', 'MÍDIA', 'RESULTADOS'];
 check('AgênciaHub apresenta os quatro módulos aprovados', hubModules.every(module => html.includes(module)) && (html.match(/class="hub-layer /g) || []).length === 4);
@@ -59,7 +75,7 @@ check('Todos os arquivos locais referenciados existem', missingRefs.length === 0
 
 const scriptSources = [...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map(match => match[1]);
 check('Scripts da homepage são locais e autocontidos', scriptSources.length === 4 && scriptSources.every(source => !/^https?:/.test(source)));
-check('Versões de cache da entrega estão sincronizadas', html.includes('site-studio.css?v=20260915-5') && html.includes('site.js?v=20260915-5') && html.includes('site-motion.js?v=20260915-5') && site.includes("site-scene.js?v=20260915-5"));
+check('Versões de cache da entrega estão sincronizadas', html.includes('site-studio.css?v=20260915-6') && html.includes('site.js?v=20260915-6') && html.includes('site-motion.js?v=20260915-6') && site.includes("site-scene.js?v=20260915-6"));
 check('Numeração das cenas é calculada a partir das cenas habilitadas', site.includes("querySelectorAll('[data-scene]')") && site.includes("dataset.sceneEnabled !== 'false'"));
 check('Fallback cobre mobile, save-data, WebGL ausente e hardware limitado', ['saveData', '!webgl', 'coarsePointer', 'innerWidth < 900', 'deviceMemory <= 2'].every(token => site.includes(token)));
 check('Movimento reduzido preserva leitura sequencial', css.includes('@media (prefers-reduced-motion: reduce)') && css.includes('.case-scene { position: relative;') && motion.includes("root.classList.add('motion-fallback')"));

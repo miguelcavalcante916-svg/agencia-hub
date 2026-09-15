@@ -9,7 +9,7 @@
 
 | Arquivo | Para que serve |
 |---|---|
-| `index.html` | Página pública gerada por `scripts/build-home.py`; sem build na Vercel |
+| `index.html` | Página pública estática; sem etapa de build na Vercel |
 | `site-studio.css` | Sistema visual responsivo da página pública; os estilos anteriores não são carregados pela home |
 | `site.js`, `site-motion.js`, `site-scene.js` | Portfólio acessível, transições de rolagem e cenas opcionais |
 | `project-catalog.json`, `assets/work/` | Descrições e capas verificadas dos trabalhos |
@@ -22,12 +22,12 @@
 
 **Todo commit neste repositório republica o site sozinho, em segundos.** Não precisa mexer na Vercel.
 
-Para mudar os textos, edite o gerador conforme a tabela abaixo e publique o HTML gerado junto com a mudança.
+Para mudar os textos, edite a página conforme a tabela abaixo e publique o commit.
 
 | O que mudar | Onde |
 |---|---|
-| Texto, títulos, perguntas do FAQ | `scripts/build-home.py`; execute `python3 scripts/build-home.py` e publique também o `index.html` gerado |
-| WhatsApp | `scripts/build-home.py` e `site.js`, procure por `5584999492725` |
+| Texto e títulos da homepage | `index.html` |
+| WhatsApp | `index.html` e `site.js`, procure por `5584999492725` |
 | Reels do portfólio | `portfolio.json` (gere a lista no app, em **Meu site**) |
 | Logo | `app/img/logo.svg` — usada diretamente na navegação e na extrusão 3D |
 
@@ -87,9 +87,9 @@ Gere um link exclusivo por cliente em **Portal do cliente** e envie no WhatsApp:
 
 ## ✏️ Personalizar o site
 
-Edite `scripts/build-home.py` para os textos e execute `python3 scripts/build-home.py`. O resultado é `index.html`, servido diretamente pela Vercel. Edite `site-studio.css` para a direção visual e os componentes da home. A galeria usa rolagem horizontal nativa nos destaques e grade ao filtrar; as imagens mantêm a proporção vertical. A cena limita a resolução de renderização, pausa fora da tela e interpola mouse/rolagem por tempo. Mantenha as descrições factuais e os links reais dos trabalhos.
+Edite `index.html` para os textos e `site-studio.css` para a direção visual e os componentes da home. O arquivo de trabalhos lê `portfolio.json` e combina cada link com os dados opcionais de `project-catalog.json`. As abas filtram por cliente e o trilho mantém os cartões em uma única faixa horizontal. A cena 3D limita a resolução de renderização, pausa fora da tela e interpola mouse/rolagem por tempo. Mantenha as descrições factuais e os links reais dos trabalhos.
 
-A edição editorial apresenta o símbolo da marca em metal 3D, tipografia em grande escala, três projetos em composições alternadas e um arquivo filtrável com os 14 trabalhos. A navegação usa rolagem nativa; as transições são opcionais e respeitam redução de movimento. Os filmes abrem pelo link real no Instagram.
+A homepage apresenta o símbolo da marca em metal 3D, tipografia em grande escala, três cases cinematográficos e um arquivo compacto com abas para oito clientes e 29 trabalhos. A navegação usa rolagem nativa; as transições são opcionais e respeitam redução de movimento. Os filmes abrem pelo link real no Instagram.
 
 ## 🛠️ Tecnologia
 

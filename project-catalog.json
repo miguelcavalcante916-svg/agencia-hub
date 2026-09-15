@@ -153,6 +153,156 @@
       "descricao": "Conteúdo sobre performance: o suplemento certo e a importância do descanso.",
       "categoria": "Conteúdo de marca",
       "destaque": false
+    },
+    {
+      "id": "work-015",
+      "url": "https://www.instagram.com/paroquiaalexandriarn/reel/DdCgLFluUbA/",
+      "titulo": "Romaria das Comunidades — Filme 01",
+      "cliente": "Paróquia de Alexandria",
+      "grupo": "paroquia-alexandria",
+      "descricao": "Registro audiovisual da Romaria das Comunidades.",
+      "categoria": "Cobertura audiovisual",
+      "destaque": false
+    },
+    {
+      "id": "work-016",
+      "url": "https://www.instagram.com/paroquiaalexandriarn/reel/DdAR3iRgvDV/",
+      "titulo": "Romaria das Comunidades — Filme 02",
+      "cliente": "Paróquia de Alexandria",
+      "grupo": "paroquia-alexandria",
+      "descricao": "Registro audiovisual da Romaria das Comunidades.",
+      "categoria": "Cobertura audiovisual",
+      "destaque": false
+    },
+    {
+      "id": "work-017",
+      "url": "https://www.instagram.com/miguelc_films/reel/DWu0kjvkY1R/",
+      "titulo": "Romaria das Comunidades — Filme 03",
+      "cliente": "Paróquia de Alexandria",
+      "grupo": "paroquia-alexandria",
+      "descricao": "Registro audiovisual da Romaria das Comunidades.",
+      "categoria": "Cobertura audiovisual",
+      "destaque": false
+    },
+    {
+      "id": "work-018",
+      "url": "https://www.instagram.com/miguelc_films/reel/Da2pXXzx5hG/",
+      "titulo": "ESP Engenharia",
+      "cliente": "ESP Engenharia",
+      "grupo": "esp-engenharia",
+      "descricao": "Produção audiovisual para a ESP Engenharia.",
+      "categoria": "Filme institucional",
+      "destaque": false
+    },
+    {
+      "id": "work-019",
+      "url": "https://www.instagram.com/cavalcante.media/reel/Da-9h9yxm82/",
+      "titulo": "15 anos de Maria Luiza",
+      "cliente": "Maria Luiza — 15 anos",
+      "grupo": "maria-luiza-15-anos",
+      "descricao": "Filme de celebração dos 15 anos de Maria Luiza.",
+      "categoria": "Filme de celebração",
+      "destaque": false
+    },
+    {
+      "id": "work-020",
+      "url": "https://www.instagram.com/drmarcosvsoares/reel/DMYjxcSy0cV/",
+      "titulo": "Dr. Marcos Soares — Filme 01",
+      "cliente": "Dr. Marcos Soares",
+      "grupo": "dr-marcos-soares",
+      "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
+      "categoria": "Conteúdo médico",
+      "destaque": false
+    },
+    {
+      "id": "work-021",
+      "url": "https://www.instagram.com/drmarcosvsoares/reel/DMvrYfDyf1L/",
+      "titulo": "Dr. Marcos Soares — Filme 02",
+      "cliente": "Dr. Marcos Soares",
+      "grupo": "dr-marcos-soares",
+      "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
+      "categoria": "Conteúdo médico",
+      "destaque": false
+    },
+    {
+      "id": "work-022",
+      "url": "https://www.instagram.com/drmarcosvsoares/reel/DNTxKleS8n8/",
+      "titulo": "Dr. Marcos Soares — Filme 03",
+      "cliente": "Dr. Marcos Soares",
+      "grupo": "dr-marcos-soares",
+      "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
+      "categoria": "Conteúdo médico",
+      "destaque": false
+    },
+    {
+      "id": "work-023",
+      "url": "https://www.instagram.com/drmarcosvsoares/reel/DNyoXkIwjlI/",
+      "titulo": "Dr. Marcos Soares — Filme 04",
+      "cliente": "Dr. Marcos Soares",
+      "grupo": "dr-marcos-soares",
+      "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
+      "categoria": "Conteúdo médico",
+      "destaque": false
+    },
+    {
+      "id": "work-024",
+      "url": "https://www.instagram.com/drmarcosvsoares/reel/DOEvPspge6g/",
+      "titulo": "Dr. Marcos Soares — Filme 05",
+      "cliente": "Dr. Marcos Soares",
+      "grupo": "dr-marcos-soares",
+      "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
+      "categoria": "Conteúdo médico",
+      "destaque": false
+    },
+    {
+      "id": "work-025",
+      "url": "https://www.instagram.com/drmarcosvsoares/reel/DOwWDo3AQNS/",
+      "titulo": "Dr. Marcos Soares — Filme 06",
+      "cliente": "Dr. Marcos Soares",
+      "grupo": "dr-marcos-soares",
+      "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
+      "categoria": "Conteúdo médico",
+      "destaque": false
+    },
+    {
+      "id": "work-026",
+      "url": "https://www.instagram.com/drmarcosvsoares/reel/DPR5IItASbE/",
+      "titulo": "Dr. Marcos Soares — Filme 07",
+      "cliente": "Dr. Marcos Soares",
+      "grupo": "dr-marcos-soares",
+      "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
+      "categoria": "Conteúdo médico",
+      "destaque": false
+    },
+    {
+      "id": "work-027",
+      "url": "https://www.instagram.com/drmarcosvsoares/reel/DPrKwssDcjn/",
+      "titulo": "Dr. Marcos Soares — Filme 08",
+      "cliente": "Dr. Marcos Soares",
+      "grupo": "dr-marcos-soares",
+      "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
+      "categoria": "Conteúdo médico",
+      "destaque": false
+    },
+    {
+      "id": "work-028",
+      "url": "https://www.instagram.com/drmarcosvsoares/reel/DP8j7TVDQwk/",
+      "titulo": "Dr. Marcos Soares — Filme 09",
+      "cliente": "Dr. Marcos Soares",
+      "grupo": "dr-marcos-soares",
+      "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
+      "categoria": "Conteúdo médico",
+      "destaque": false
+    },
+    {
+      "id": "work-029",
+      "url": "https://www.instagram.com/brunodantasadvocacia/reel/DdBtpXNt2K0/",
+      "titulo": "Bruno Dantas Advocacia",
+      "cliente": "Bruno Dantas Advocacia",
+      "grupo": "bruno-dantas-advocacia",
+      "descricao": "Conteúdo audiovisual para o escritório Bruno Dantas Advocacia.",
+      "categoria": "Conteúdo jurídico",
+      "destaque": false
     }
   ]
 }

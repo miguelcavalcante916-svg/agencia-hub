@@ -170,7 +170,7 @@
   const workTimeline = gsap.timeline({
     defaults: { ease: 'power3.inOut' },
     scrollTrigger: {
-      trigger: '.work',
+      trigger: '.work-cinematic',
       start: 'top top',
       end: 'bottom bottom',
       scrub: mobile ? .52 : .76,
@@ -290,10 +290,25 @@
     }
   });
 
+  const alignInitialHash = () => {
+    if (!location.hash) return;
+    const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (!target) return;
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ block: 'start' });
+      ScrollTrigger.update();
+    });
+  };
   const refresh = () => ScrollTrigger.refresh();
-  addEventListener('load', refresh, { once: true });
+  addEventListener('load', () => {
+    refresh();
+    alignInitialHash();
+  }, { once: true });
   addEventListener('orientationchange', refresh, { passive: true });
-  document.fonts?.ready.then(refresh).catch(() => {});
+  document.fonts?.ready.then(() => {
+    refresh();
+    if (document.readyState === 'complete') alignInitialHash();
+  }).catch(() => {});
   addEventListener('pagehide', () => {
     ScrollTrigger.getAll().forEach(trigger => trigger.kill());
   }, { once: true });
