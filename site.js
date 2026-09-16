@@ -42,6 +42,7 @@
   });
   matchMedia('(min-width: 801px)').addEventListener('change', event => { if (event.matches) setMenu(false); });
 
+  if ($('#work-grid')) {
   // Keep the AgencyHub exporter contract: portfolio.json contains only URL + title.
   // Match its entries to the local catalog to add verified images and project details.
   const catalog = JSON.parse($('#project-catalog').textContent);
@@ -156,6 +157,8 @@
     if (data.itens.length && !entries.length) return;
     works = entries; renderWorks(false);
   }).catch(() => { /* The embedded verified catalog remains usable offline. */ });
+
+  }
 
   const steps = $$('.method-steps li');
   const captions = ['Primeiro, entender o seu negócio.', 'Uma ideia encontra sua direção.', 'A estratégia ganha forma.', 'A mensagem encontra seu público.', 'Aprender. Ajustar. Continuar.'];
