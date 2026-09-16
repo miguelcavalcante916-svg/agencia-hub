@@ -290,7 +290,7 @@
   padding-top: 18px;
   border-top: 1px solid rgba(6, 9, 20, .22);
 }
-#work .work-compact .scene-label {
+#work .scene-label {
   position: static;
   display: block;
   margin-bottom: 22px;
@@ -345,24 +345,24 @@
 
 
 @media (max-width: 900px) {
-  .work-compact-inner { padding-top: calc(var(--header) + 32px); }
-  .work-compact-head { grid-template-columns: 1fr; align-items: start; gap: 16px; }
-  .work-compact .scene-label { margin-bottom: 18px; }
-  .work-compact-head > p { max-width: 480px; padding-bottom: 0; }
-  .client-gallery { margin-top: 34px; }
-  .client-gallery-nav { display: block; padding-bottom: 12px; }
-  .client-gallery .work-library-arrows { display: none; }
-  .client-gallery-track { grid-auto-columns: min(42vw, 250px); }
+  #work .work-compact-inner { padding-top: calc(var(--header) + 32px); }
+  #work .work-compact-head { grid-template-columns: 1fr; align-items: start; gap: 16px; }
+  #work .scene-label { margin-bottom: 18px; }
+  #work .work-compact-head > p { max-width: 480px; padding-bottom: 0; }
+  #work .client-gallery { margin-top: 34px; }
+  #work .client-gallery-nav { display: block; padding-bottom: 12px; }
+  #work .client-gallery .work-library-arrows { display: none; }
+  #work .client-gallery-track { grid-auto-columns: min(42vw, 250px); }
 }
 
 @media (max-width: 520px) {
-  .work-compact-inner { padding: calc(var(--header) + 28px) var(--gutter) 64px; }
-  .work-compact-head { padding-top: 15px; }
-  .work-compact-head h2 { font-size: 11vw; }
-  .work-compact-head > p { font-size: 12px; line-height: 1.5; }
-  .client-gallery { margin-top: 30px; }
-  .client-gallery-track { grid-auto-columns: min(64vw, 236px); margin-top: 13px; }
-  .client-gallery .archive-card-meta { min-height: 67px; }
+  #work .work-compact-inner { padding: calc(var(--header) + 28px) var(--gutter) 64px; }
+  #work .work-compact-head { padding-top: 15px; }
+  #work .work-compact-head h2 { font-size: 11vw; }
+  #work .work-compact-head > p { font-size: 12px; line-height: 1.5; }
+  #work .client-gallery { margin-top: 30px; }
+  #work .client-gallery-track { grid-auto-columns: min(64vw, 236px); margin-top: 13px; }
+  #work .client-gallery .archive-card-meta { min-height: 67px; }
 }
 
 
