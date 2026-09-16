@@ -89,7 +89,7 @@ Gere um link exclusivo por cliente em **Portal do cliente** e envie no WhatsApp:
 
 Edite `index.html` para os textos e `site-studio.css` para a direção visual e os componentes da home. O arquivo de trabalhos lê `portfolio.json` e combina cada link com os dados opcionais de `project-catalog.json`. As abas filtram por cliente e o trilho mantém os cartões em uma única faixa horizontal. A cena 3D limita a resolução de renderização, pausa fora da tela e interpola mouse/rolagem por tempo. Mantenha as descrições factuais e os links reais dos trabalhos.
 
-A homepage apresenta o símbolo da marca em metal 3D, tipografia em grande escala, três cases cinematográficos e um arquivo compacto com abas para oito clientes e 29 trabalhos. A navegação usa rolagem nativa; as transições são opcionais e respeitam redução de movimento. Os filmes abrem pelo link real no Instagram.
+A homepage apresenta o símbolo da marca em metal 3D, tipografia em grande escala e um portfólio compacto com abas para oito clientes e 29 trabalhos. Cada filme abre seu link real no Instagram. A navegação usa rolagem nativa e respeita redução de movimento.
 
 ## 🛠️ Tecnologia
 

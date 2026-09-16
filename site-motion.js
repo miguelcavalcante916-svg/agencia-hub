@@ -4,7 +4,6 @@
   const root = document.documentElement;
   const phases = [...document.querySelectorAll('.phase')];
   const phaseNav = [...document.querySelectorAll('.phase-nav span')];
-  const cases = [...document.querySelectorAll('.case-scene')];
   const nodes = [...document.querySelectorAll('.knight-node')];
   const detail = document.querySelector('.knight-detail');
   const debugPanel = document.querySelector('#motion-debug');
@@ -99,10 +98,6 @@
     filter: softBlur
   });
   gsap.set(phases.slice(1).map(phase => phase.querySelector('.phase-detail')), { autoAlpha: 0, y: 28 });
-  gsap.set(cases, { autoAlpha: 0 });
-  gsap.set(cases[0], { autoAlpha: 1, clipPath: mobile ? 'inset(9% 4% 9% 58%)' : 'inset(9% 4% 9% 52%)' });
-  gsap.set(cases[0].querySelector('.case-copy'), { autoAlpha: 0, y: 28 });
-  gsap.set('.work-portal-transition', { autoAlpha: 0, clipPath: 'inset(100% 0 0 0)' });
 
   if (!location.hash || location.hash === '#arrival') {
     gsap.timeline({ defaults: { ease: 'power4.out' } })
@@ -167,36 +162,20 @@
     .to(phase2Detail, { autoAlpha: 1, y: 0, duration: .3 }, 1.58)
     .to(root, { '--world-x': mobile ? '-8vw' : '-20vw', '--world-y': '5vh', '--world-scale': .62, duration: .36 }, 1.5);
 
-  const workTimeline = gsap.timeline({
-    defaults: { ease: 'power3.inOut' },
+  gsap.timeline({
+    defaults: { ease: 'power3.out' },
     scrollTrigger: {
-      trigger: '.work-cinematic',
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: mobile ? .52 : .76,
+      trigger: '.work-compact',
+      start: 'top 88%',
+      end: 'top 28%',
+      scrub: mobile ? .35 : .52,
       invalidateOnRefresh: true,
-      onUpdate(self) {
-        track('selected work')(self);
-        root.style.setProperty('--case-progress', self.progress.toFixed(4));
-      }
+      onUpdate: track('selected work')
     }
-  });
-  workTimeline
-    .to(root, { '--world-opacity': 0, duration: .15 }, 0)
-    .to('.work-heading h2', { autoAlpha: 0, yPercent: -12, duration: .24 }, .12)
-    .to(cases[0], { clipPath: 'inset(0% 0% 0% 0%)', duration: .42 }, .16)
-    .fromTo(cases[0].querySelector('img'), { scale: 1.2, xPercent: 3 }, { scale: 1.025, xPercent: 0, duration: .92, ease: 'none' }, .16)
-    .to(cases[0].querySelector('.case-copy'), { autoAlpha: 1, y: 0, duration: .3 }, .38)
-    .to(cases[0], { scale: .965, autoAlpha: .18, duration: .3 }, 1.08)
-    .fromTo(cases[1], { autoAlpha: 0, clipPath: 'inset(14% 18% 14% 18%)', scale: .88 }, { autoAlpha: 1, clipPath: 'inset(0% 0% 0% 0%)', scale: 1, duration: .48 }, 1.08)
-    .fromTo(cases[1].querySelector('img'), { scale: 1.22 }, { scale: 1.025, duration: .86, ease: 'none' }, 1.08)
-    .fromTo(cases[1].querySelector('.case-copy'), { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, duration: .3 }, 1.32)
-    .to(cases[1], { autoAlpha: .18, duration: .22 }, 2.02)
-    .fromTo(cases[2], { autoAlpha: 1, clipPath: 'inset(100% 0 0 0)' }, { clipPath: 'inset(0% 0 0 0)', duration: .42 }, 2.02)
-    .fromTo(cases[2].querySelector('img'), { scale: 1.18, yPercent: 8 }, { scale: 1.025, yPercent: 0, duration: .84, ease: 'none' }, 2.02)
-    .fromTo(cases[2].querySelector('.case-copy'), { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, duration: .3 }, 2.28)
-    .to(cases[2], { scale: .95, clipPath: 'inset(4% 3% 4% 3%)', duration: .3 }, 2.72)
-    .fromTo('.work-portal-transition', { autoAlpha: 0, clipPath: 'inset(100% 0 0 0)' }, { autoAlpha: 1, clipPath: 'inset(0% 0 0 0)', duration: .28 }, 2.86);
+  })
+    .to(root, { '--world-opacity': 0, duration: .45 }, 0)
+    .fromTo('.work-compact-head', { autoAlpha: .42, y: 28 }, { autoAlpha: 1, y: 0, duration: .72 }, .05)
+    .fromTo('.client-gallery', { autoAlpha: .34, y: 24 }, { autoAlpha: 1, y: 0, duration: .68 }, .22);
 
   const hubLayers = [...document.querySelectorAll('.hub-layer')];
   let hubStep = -2;

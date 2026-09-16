@@ -110,9 +110,9 @@
       if (/^[A-Z]{2,4}$/.test(words[0] || '')) return words[0];
       return words.slice(0, 2).map(word => word[0]).join('').toUpperCase() || 'AC';
     };
-    const arrowIcon = () => {
+    const playIcon = () => {
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('class', 'icon icon-up-right');
+      svg.setAttribute('class', 'icon icon-play');
       svg.setAttribute('viewBox', '0 0 24 24');
       svg.setAttribute('fill', 'none');
       svg.setAttribute('stroke', 'currentColor');
@@ -121,7 +121,7 @@
       svg.setAttribute('stroke-linejoin', 'round');
       svg.setAttribute('aria-hidden', 'true');
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.setAttribute('d', 'M7 17 17 7M7 7h10v10');
+      path.setAttribute('d', 'm9 7 8 5-8 5V7Z');
       svg.append(path);
       return svg;
     };
@@ -134,7 +134,7 @@
       card.dataset.group = project.grupo;
       card.dataset.event = 'archive_open';
       card.dataset.label = project.id || project.grupo;
-      card.setAttribute('aria-label', `${project.titulo}, ${project.cliente}. Abrir no Instagram`);
+      card.setAttribute('aria-label', `${project.titulo}, ${project.cliente}. Assistir no Instagram`);
 
       const media = document.createElement('span');
       media.className = 'archive-card-media';
@@ -165,7 +165,7 @@
       category.textContent = project.categoria || 'Filme';
       const open = document.createElement('span');
       open.className = 'archive-card-open';
-      open.append(arrowIcon());
+      open.append(playIcon());
       topline.append(category, open);
       media.append(topline);
 
@@ -302,55 +302,6 @@
     if (event.matches && menu?.hidden === false) setMenu(false);
   });
 
-  const workStage = document.querySelector('.work-stage');
-  const caseCursor = document.querySelector('.case-cursor');
-  const finePointer = matchMedia('(pointer: fine)').matches;
-  let cursorFrame = 0;
-  const cursorState = { x: 0, y: 0, tx: 0, ty: 0, opacity: 0, targetOpacity: 0, scale: .72, targetScale: .72, ready: false };
-  const drawCursor = () => {
-    cursorFrame = 0;
-    const ease = .18;
-    cursorState.x += (cursorState.tx - cursorState.x) * ease;
-    cursorState.y += (cursorState.ty - cursorState.y) * ease;
-    cursorState.opacity += (cursorState.targetOpacity - cursorState.opacity) * .22;
-    cursorState.scale += (cursorState.targetScale - cursorState.scale) * .2;
-    if (caseCursor) {
-      caseCursor.style.opacity = cursorState.opacity.toFixed(3);
-      caseCursor.style.transform = `translate3d(${cursorState.x}px, ${cursorState.y}px, 0) translate(-50%, -50%) scale(${cursorState.scale})`;
-    }
-    const moving = Math.abs(cursorState.tx - cursorState.x) > .15 || Math.abs(cursorState.ty - cursorState.y) > .15;
-    const fading = Math.abs(cursorState.targetOpacity - cursorState.opacity) > .015 || Math.abs(cursorState.targetScale - cursorState.scale) > .015;
-    if (moving || fading) cursorFrame = requestAnimationFrame(drawCursor);
-  };
-  const wakeCursor = () => {
-    if (!cursorFrame) cursorFrame = requestAnimationFrame(drawCursor);
-  };
-  if (finePointer && workStage && caseCursor) {
-    workStage.addEventListener('pointermove', event => {
-      const preciseTarget = Boolean(event.target.closest('a, button'));
-      cursorState.tx = Math.max(48, Math.min(innerWidth - 48, event.clientX));
-      cursorState.ty = Math.max(48, Math.min(innerHeight - 48, event.clientY));
-      if (!cursorState.ready) {
-        cursorState.x = cursorState.tx;
-        cursorState.y = cursorState.ty;
-        cursorState.ready = true;
-      }
-      cursorState.targetOpacity = preciseTarget ? 0 : 1;
-      cursorState.targetScale = preciseTarget ? .72 : 1;
-      document.body.classList.toggle('case-cursor-active', !preciseTarget);
-      wakeCursor();
-    }, { passive: true });
-    workStage.addEventListener('pointerleave', () => {
-      cursorState.targetOpacity = 0;
-      cursorState.targetScale = .72;
-      document.body.classList.remove('case-cursor-active');
-      wakeCursor();
-    });
-    addEventListener('pagehide', () => {
-      if (cursorFrame) cancelAnimationFrame(cursorFrame);
-    }, { once: true });
-  }
-
   window.dataLayer = window.dataLayer || [];
   document.addEventListener('click', event => {
     const link = event.target.closest('[data-event]');
@@ -406,7 +357,7 @@
   updateUi();
 
   if (mode !== 'fallback' && canvas) {
-    const loadScene = () => import('./site-scene.js?v=20260915-6')
+    const loadScene = () => import('./site-scene.js?v=20260915-7')
       .then(module => module.initGlobalScene(canvas, { mode, reducedMotion }))
       .catch(() => { root.dataset.performance = 'fallback'; });
     if ('requestIdleCallback' in window) requestIdleCallback(loadScene, { timeout: 900 });
