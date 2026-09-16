@@ -162,7 +162,8 @@
       "grupo": "paroquia-alexandria",
       "descricao": "Registro audiovisual da Romaria das Comunidades.",
       "categoria": "Cobertura audiovisual",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-015.jpg"
     },
     {
       "id": "work-016",
@@ -172,7 +173,8 @@
       "grupo": "paroquia-alexandria",
       "descricao": "Registro audiovisual da Romaria das Comunidades.",
       "categoria": "Cobertura audiovisual",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-016.jpg"
     },
     {
       "id": "work-017",
@@ -182,7 +184,8 @@
       "grupo": "paroquia-alexandria",
       "descricao": "Registro audiovisual da Romaria das Comunidades.",
       "categoria": "Cobertura audiovisual",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-017.jpg"
     },
     {
       "id": "work-018",
@@ -192,7 +195,8 @@
       "grupo": "esp-engenharia",
       "descricao": "Produção audiovisual para a ESP Engenharia.",
       "categoria": "Filme institucional",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-018.jpg"
     },
     {
       "id": "work-019",
@@ -202,7 +206,8 @@
       "grupo": "maria-luiza-15-anos",
       "descricao": "Filme de celebração dos 15 anos de Maria Luiza.",
       "categoria": "Filme de celebração",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-019.jpg"
     },
     {
       "id": "work-020",
@@ -212,7 +217,8 @@
       "grupo": "dr-marcos-soares",
       "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
       "categoria": "Conteúdo médico",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-020.jpg"
     },
     {
       "id": "work-021",
@@ -222,7 +228,8 @@
       "grupo": "dr-marcos-soares",
       "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
       "categoria": "Conteúdo médico",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-021.jpg"
     },
     {
       "id": "work-022",
@@ -232,7 +239,8 @@
       "grupo": "dr-marcos-soares",
       "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
       "categoria": "Conteúdo médico",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-022.jpg"
     },
     {
       "id": "work-023",
@@ -242,7 +250,8 @@
       "grupo": "dr-marcos-soares",
       "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
       "categoria": "Conteúdo médico",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-023.jpg"
     },
     {
       "id": "work-024",
@@ -252,7 +261,8 @@
       "grupo": "dr-marcos-soares",
       "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
       "categoria": "Conteúdo médico",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-024.jpg"
     },
     {
       "id": "work-025",
@@ -262,7 +272,8 @@
       "grupo": "dr-marcos-soares",
       "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
       "categoria": "Conteúdo médico",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-025.jpg"
     },
     {
       "id": "work-026",
@@ -272,7 +283,8 @@
       "grupo": "dr-marcos-soares",
       "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
       "categoria": "Conteúdo médico",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-026.jpg"
     },
     {
       "id": "work-027",
@@ -282,7 +294,8 @@
       "grupo": "dr-marcos-soares",
       "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
       "categoria": "Conteúdo médico",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-027.jpg"
     },
     {
       "id": "work-028",
@@ -292,7 +305,8 @@
       "grupo": "dr-marcos-soares",
       "descricao": "Conteúdo audiovisual para o Dr. Marcos Soares.",
       "categoria": "Conteúdo médico",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-028.jpg"
     },
     {
       "id": "work-029",
@@ -302,7 +316,8 @@
       "grupo": "bruno-dantas-advocacia",
       "descricao": "Conteúdo audiovisual para o escritório Bruno Dantas Advocacia.",
       "categoria": "Conteúdo jurídico",
-      "destaque": false
+      "destaque": false,
+      "capa": "assets/work/work-029.jpg"
     }
   ]
 }
