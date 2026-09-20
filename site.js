@@ -80,7 +80,13 @@
     }
   }, { passive: true });
 
-  if (mode !== 'fallback' && canvas) {
+  /* O three.js sao 671 KB. Antes ele baixava em TODO aparelho que nao fosse
+     'fallback' — inclusive celular no 4G, que e onde o cliente daqui abre o site.
+     Agora so desce quando ha folga real; os demais ficam com a atmosfera em CSS
+     (world-aurora + world-grid + logo), que ja existe e ja e bonita. */
+  const cabe3d = mode === 'full'
+    || (mode === 'reduced' && !saveData && memory > 4 && innerWidth >= 700);
+  if (cabe3d && canvas) {
     const load = () => import('./site-scene.js?v=20260913-1')
       .then(module => module.initGlobalScene(canvas, { mode, reducedMotion }))
       .catch(() => { root.dataset.performance = 'fallback'; });

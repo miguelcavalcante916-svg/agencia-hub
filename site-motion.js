@@ -77,6 +77,55 @@
   }
 
   gsap.registerPlugin(ScrollTrigger);
+
+  /* ---------- rolagem com inercia (Lenis 1.3.26, auto-hospedado) ----------
+     E o que separa a sensacao deste site da das referencias: elas nao rolam,
+     elas deslizam. Lenis intercepta a roda e interpola a posicao, e o
+     ScrollTrigger passa a ser atualizado por ele em vez de pelo evento nativo.
+
+     Tres cuidados que fazem isso nao virar dor de cabeca:
+     - sob prefers-reduced-motion nao entra (o return la em cima ja cortou);
+     - em ponteiro grosso fica desligado: no celular a rolagem nativa e melhor
+       e o toque com inercia artificial atrapalha;
+     - o scroll-behavior:smooth do CSS briga com o Lenis, entao e desligado. */
+  let lenis = null;
+  const podeInercia = typeof window.Lenis === 'function'
+    && !matchMedia('(pointer: coarse)').matches;
+
+  if (podeInercia) {
+    document.documentElement.style.scrollBehavior = 'auto';
+    lenis = new window.Lenis({
+      duration: 1.05,
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      syncTouch: false,
+      wheelMultiplier: 1
+    });
+
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(tempo => lenis.raf(tempo * 1000));
+    gsap.ticker.lagSmoothing(0);
+
+    /* ancoras do menu passam a ser conduzidas pelo Lenis */
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', ev => {
+        const alvo = document.querySelector(link.getAttribute('href'));
+        if (!alvo) return;
+        ev.preventDefault();
+        lenis.scrollTo(alvo, { offset: -1 });
+      });
+    });
+
+    /* menu aberto trava o corpo: o Lenis tem de parar junto, senao a pagina
+       continua deslizando por baixo do painel */
+    const corpo = document.body;
+    new MutationObserver(() => {
+      corpo.classList.contains('menu-open') ? lenis.stop() : lenis.start();
+    }).observe(corpo, { attributes: true, attributeFilter: ['class'] });
+
+    root.classList.add('inercia');
+  }
+
   gsap.set(phases, { autoAlpha: 0 });
   gsap.set(phases[0], { autoAlpha: 1 });
   gsap.set(cases, { autoAlpha: 0, clipPath: 'inset(0 100% 0 0)' });
@@ -201,5 +250,5 @@
   addEventListener('load', refresh, { once: true });
   addEventListener('orientationchange', refresh, { passive: true });
   document.fonts?.ready.then(refresh).catch(() => {});
-  window.CavalcanteMotion = { refresh, state: () => ({ ...sceneState }) };
+  window.CavalcanteMotion = { refresh, state: () => ({ ...sceneState }), lenis: () => lenis };
 })();
