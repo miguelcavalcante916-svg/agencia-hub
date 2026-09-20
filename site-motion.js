@@ -123,6 +123,35 @@
       corpo.classList.contains('menu-open') ? lenis.stop() : lenis.start();
     }).observe(corpo, { attributes: true, attributeFilter: ['class'] });
 
+    /* ---------- encaixe entre cenas (lenis-snap) ----------
+       type 'proximity': só age quando você PARA perto do começo de uma cena.
+       Snap obrigatório brigaria com o scrub interno — cada cena tem de 320 a
+       480svh de conteúdo rolado, e ser puxado no meio disso é péssimo. Assim
+       ele só arruma o pouso, não conduz a viagem. */
+    if (typeof window.Snap === 'function') {
+      let encaixe = null;
+      const montarEncaixe = () => {
+        /* destroy + new, nao add/remove: o lenis-snap expoe add() e destroy(),
+           mas nao um removeAll. Reaproveitar a instancia empilharia pontos a
+           cada resize ate o snap ficar imprevisivel. */
+        encaixe?.destroy();
+        encaixe = new window.Snap(lenis, {
+          type: 'proximity',
+          distanceThreshold: '18%',
+          duration: .8,
+          velocityThreshold: 1.2
+        });
+        document.querySelectorAll('.chapter, .finale')
+          .forEach(cena => encaixe.add(cena.offsetTop));
+      };
+      montarEncaixe();
+      let relogioEncaixe;
+      addEventListener('resize', () => {
+        clearTimeout(relogioEncaixe);
+        relogioEncaixe = setTimeout(montarEncaixe, 220);
+      }, { passive: true });
+    }
+
     root.classList.add('inercia');
   }
 

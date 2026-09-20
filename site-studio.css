@@ -32,3 +32,51 @@ main,.site-footer{position:relative;z-index:4}.chapter{position:relative;backgro
    mesma familia do azul da marca. Medido com a formula WCAG 2.1. */
 .hub,.finale{--accent:var(--blue-ink)}
 .hub .phase-detail>span,.hub .hub-copy>span,.finale .scene-label{color:#5e6571}
+
+/* ============================================================
+   REFINO DE EXECUÇÃO — abertura, cursor e títulos letra a letra
+   ============================================================ */
+
+/* ---------- 1) abertura ---------- */
+.abertura{position:fixed;z-index:900;inset:0;display:grid;place-content:center;gap:26px;background:var(--ink);clip-path:inset(0 0 0 0);transition:clip-path .86s cubic-bezier(.76,0,.24,1)}
+.abertura.saindo{clip-path:inset(0 0 100% 0)}
+.abertura-marca{display:flex;align-items:center;gap:15px;opacity:0;translate:0 14px;animation:marca-entra .5s cubic-bezier(.2,.8,.2,1) forwards}
+.abertura-marca img{width:34px;height:54px;filter:brightness(0) invert(1)}
+.abertura-marca span{font-size:clamp(21px,3vw,31px);font-weight:700;letter-spacing:-.045em}
+.abertura-regua{display:block;width:min(210px,42vw);height:1px;background:rgba(255,255,255,.14);justify-self:center;overflow:hidden}
+.abertura-regua:after{content:"";display:block;height:100%;background:var(--blue);transform-origin:left;animation:regua-corre .76s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes marca-entra{to{opacity:1;translate:0 0}}
+@keyframes regua-corre{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+html.abrindo,html.abrindo body{overflow:hidden}
+/* o herói sobe junto com a cortina, em vez de já estar lá */
+html.abrindo .hero-copy h1,html.abrindo .arrival-meta,html.abrindo .arrival-cta{opacity:0}
+
+/* ---------- 2) cursor ---------- */
+html.cursor-proprio,html.cursor-proprio a,html.cursor-proprio button{cursor:none}
+.cursor-anel,.cursor-ponto{position:fixed;z-index:950;top:0;left:0;pointer-events:none;border-radius:50%;margin:-50vmin 0 0 -50vmin;padding:50vmin}
+.cursor-anel{width:0;height:0;box-shadow:0 0 0 1px var(--blue) inset;opacity:.62;
+  /* o padding/margin acima centraliza sem translate(-50%), que brigaria com o
+     translate3d que o JS escreve a cada quadro */
+  background:none;transition:opacity .25s}
+.cursor-anel:before{content:"";position:absolute;inset:calc(50vmin - 17px);border:1px solid var(--blue);border-radius:50%;transition:inset .28s cubic-bezier(.2,.8,.2,1),opacity .28s}
+.cursor-anel.perto:before{inset:calc(50vmin - 30px);opacity:.75}
+.cursor-anel.pressionado:before{inset:calc(50vmin - 13px)}
+.cursor-ponto:before{content:"";position:absolute;inset:calc(50vmin - 2.5px);background:var(--paper);border-radius:50%}
+html.cursor-fora .cursor-anel,html.cursor-fora .cursor-ponto{opacity:0}
+/* nas cenas claras o cursor inverte, senão some no #f0f2f6 */
+.hub .cursor-anel:before,.finale .cursor-anel:before{border-color:var(--blue-ink)}
+
+/* ---------- 3) títulos letra a letra ---------- */
+.hero-copy h1 .letra{display:inline-block;opacity:0;translate:0 .42em;rotate:1.6deg;
+  animation:letra-sobe .62s cubic-bezier(.16,.84,.44,1) var(--atraso,0ms) forwards}
+@keyframes letra-sobe{to{opacity:1;translate:0 0;rotate:0deg}}
+/* quem tem abertura só começa a subir quando a cortina sai */
+html.abrindo .hero-copy h1 .letra{animation-play-state:paused}
+
+@media(prefers-reduced-motion:reduce){
+  .abertura{display:none}
+  .cursor-anel,.cursor-ponto{display:none}
+  html.cursor-proprio,html.cursor-proprio a,html.cursor-proprio button{cursor:auto}
+  .hero-copy h1 .letra{opacity:1;translate:none;rotate:none;animation:none}
+  html.abrindo .hero-copy h1,html.abrindo .arrival-meta,html.abrindo .arrival-cta{opacity:1}
+}
