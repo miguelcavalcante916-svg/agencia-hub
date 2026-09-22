@@ -4,7 +4,7 @@
   if (reduce || !window.gsap || !window.ScrollTrigger) return;
   gsap.registerPlugin(ScrollTrigger);
 
-  const heroImage = document.querySelector('.hero-art-generated .hero-fallback');
+  const heroImage = document.querySelector('.hero-art-generated .hero-motion') || document.querySelector('.hero-art-generated .hero-fallback');
   if (heroImage) {
     gsap.timeline({
       scrollTrigger: { trigger: '#arrival', start: 'top top', end: 'bottom top', scrub: 1.15 }
