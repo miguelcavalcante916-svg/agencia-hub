@@ -1,6 +1,7 @@
 :root {
-  --art-ivory: #f0eee7;
-  --art-ink: #050709;
+  --art-ivory: #eeeee7;
+  --art-ink: #080e12;
+  --art-accent: #b2d9e9;
   --art-line: rgba(255,255,255,.16);
 }
 
@@ -21,8 +22,9 @@
 }
 .hero-art-generated canvas { display:none!important; }
 .hero-art-generated::after {
-  content:"";position:absolute;inset:0;background:radial-gradient(circle at 72% 45%,transparent 0 28%,rgba(4,6,8,.42) 72%);
-  mix-blend-mode:multiply;
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 76% 34%,rgba(178,217,233,.17),transparent 27%),radial-gradient(circle at 72% 45%,transparent 0 28%,rgba(8,14,18,.48) 72%);
+  mix-blend-mode:screen;
 }
 .hero-art-credit { position:absolute;right:3.2vw;bottom:2.4rem;z-index:2;font-size:.58rem;letter-spacing:.22em;color:rgba(255,255,255,.55); }
 .hero-wordmark { color:transparent!important;-webkit-text-stroke:1px rgba(255,255,255,.13);mix-blend-mode:screen; }
